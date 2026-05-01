@@ -1,0 +1,36 @@
+@media (max-width: 768px) {
+  .login-content {
+    width: 90%;
+    min-height: auto;
+    padding: 1.25rem;
+  }
+
+  .login-form {
+    width: 100%;
+  }
+
+  .login-form label {
+    font-size: 18px;
+  }
+
+  .login-input {
+    height: 36px;
+    margin-bottom: 1rem;
+  }
+
+  .login-button-confirm {
+    font-size: 18px;
+    height: 42px;
+    margin-bottom: 1rem;
+  }
+
+  .login-img {
+    max-width: 180px;
+  }
+}
+
+@media (max-width: 319px) {
+  .login-content {
+    display: none;
+  }
+}
