@@ -2,7 +2,8 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
 import LogIn from '../pages/LogIn/LogIn'
 import Registro from '../pages/Registro/Registro'
-import TutorHome from '../pages/Tutor/Home'
+import TutorHome from '../pages/Tutor/Home/Home'
+import TutorTutoria from '../pages/Tutor/Tutoria/Tutoria'
 import TutoradoHome from '../pages/Tutorado/Home'
 
 const AppRouter = () => {
@@ -31,6 +32,15 @@ const AppRouter = () => {
         element={
           <PrivateRoute allowedRoles={['tutor']}>
             <TutorHome />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/tutor/tutoria/:id"
+        element={
+          <PrivateRoute allowedRoles={['tutor']}>
+            <TutorTutoria />
           </PrivateRoute>
         }
       />

@@ -77,12 +77,12 @@ Objetivo: reconstruir login y registro con apariencia y UX fieles al proyecto in
 
 ## 2) Pantalla principal de tutor (mis tutorias)
 
-- [ ] Definir estructura de dashboard de tutor
-- [ ] Listar tutorias creadas por el tutor
+- [x] Definir estructura de dashboard de tutor
+- [x] Listar tutorias creadas por el tutor
 - [ ] Filtros basicos (estado, fecha, modalidad)
 - [ ] Acciones por tutoria (editar, cancelar, ver inscritos)
-- [ ] Estado vacio cuando no hay tutorias
-- [ ] Integrar datos reales desde backend
+- [x] Estado vacio cuando no hay tutorias
+- [x] Integrar datos reales desde backend
 
 ## 3) Formularios: crear horario y tutoria
 
