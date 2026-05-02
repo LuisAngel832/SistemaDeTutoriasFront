@@ -1,0 +1,32 @@
+@media (max-width: 900px) {
+  .main-horario-content {
+    flex-direction: column;
+  }
+
+  .select-fecha,
+  .select-hora-min {
+    width: 100%;
+  }
+
+  .button-content {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .content-horario {
+    padding: 1rem;
+  }
+
+  .content-horario h2 {
+    font-size: 1.6rem;
+  }
+
+  .select-hora-content {
+    flex-wrap: wrap;
+  }
+
+  .btn-aceptar {
+    width: 100%;
+  }
+}

@@ -86,13 +86,13 @@ Objetivo: reconstruir login y registro con apariencia y UX fieles al proyecto in
 
 ## 3) Formularios: crear horario y tutoria
 
-- [ ] Definir modelo de datos para horario
-- [ ] Definir modelo de datos para tutoria
-- [ ] Construir formulario de crear horario
-- [ ] Construir formulario de crear tutoria
+- [x] Definir modelo de datos para horario
+- [x] Definir modelo de datos para tutoria
+- [x] Construir formulario de crear horario
+- [x] Construir formulario de crear tutoria
 - [ ] Validaciones de negocio (cupos, fechas, solapamientos)
-- [ ] Feedback visual de guardado/carga/error
-- [ ] Enviar datos al backend y refrescar listado
+- [x] Feedback visual de guardado/carga/error
+- [x] Enviar datos al backend y refrescar listado
 
 ## 4) Pantalla principal de tutorado (explorar)
 

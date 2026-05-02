@@ -1,0 +1,23 @@
+@media (max-width: 860px) {
+  .crear-tutoria-form {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .crear-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .crear-tutoria-content {
+    padding: 1rem;
+  }
+
+  .crear-tutoria-content h2 {
+    font-size: 1.6rem;
+  }
+
+  .btn-aceptar {
+    width: 100%;
+  }
+}
