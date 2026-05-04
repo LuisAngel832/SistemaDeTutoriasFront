@@ -6,7 +6,7 @@ import './login.css'
 import './Login_respon.css'
 
 const LogIn = () => {
-  const { login } = useAutentificacion()
+  const { login, loginDev, canUseDevAuth } = useAutentificacion()
 
   const [matricula, setMatricula] = useState('')
   const [contrasena, setContrasena] = useState('')
@@ -30,6 +30,20 @@ const LogIn = () => {
     <div className="Login">
       <div className="login-content">
         <img src={logo} alt="Logo de Sistema de Tutorias" className="login-img" />
+
+        {canUseDevAuth ? (
+          <section className="dev-login-box" aria-label="Acceso de desarrollo">
+            <p className="dev-login-title">Modo desarrollo activo</p>
+            <div className="dev-login-actions">
+              <button type="button" onClick={() => loginDev('tutor')}>
+                Entrar como Tutor (Demo)
+              </button>
+              <button type="button" onClick={() => loginDev('tutorado')}>
+                Entrar como Tutorado (Demo)
+              </button>
+            </div>
+          </section>
+        ) : null}
 
         {error ? <p className="error">{error}</p> : null}
 
