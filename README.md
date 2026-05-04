@@ -14,3 +14,11 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Dev auth mode
+
+For local UI testing without backend auth, create a `.env` file using `.env.example` and set:
+
+`VITE_ENABLE_DEV_AUTH=true`
+
+This only works in development (`import.meta.env.DEV`) and is automatically disabled in production builds.
