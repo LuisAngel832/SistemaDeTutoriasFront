@@ -1,0 +1,126 @@
+.home-T {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: 'Montserrat', sans-serif;
+  box-sizing: border-box;
+}
+
+.main-content-home-tutorado {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.home-tutorado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.calendario-container {
+  text-align: center;
+  margin-bottom: 20px;
+  width: 100%;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+.calendario-header {
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-transform: capitalize;
+}
+
+.calendario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 4px;
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.calendario-dia {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  color: black;
+  font-weight: 400;
+  font-size: 12px;
+  background-color: #f0f0f0;
+  padding: 6px;
+  position: relative;
+  border-radius: 4px;
+  box-sizing: border-box;
+  min-height: 80px;
+}
+
+.calendario-dia.verde {
+  background-color: #94e994;
+}
+
+.calendario-dia.azul {
+  background-color: #799ccd;
+}
+
+.calendario-dia.tutoria-tutorado {
+  background-color: #b2ff9d;
+  border: none;
+  z-index: 10;
+  transition: transform 0.2s ease;
+}
+
+.calendario-dia.tutoria-tutorado:hover {
+  background-color: #88ec88;
+  cursor: pointer;
+  border: 2px solid #fff8dc;
+  transform: scale(1.03);
+}
+
+.tutoria-info {
+  margin-top: 4px;
+  font-size: 10px;
+  color: #333;
+  padding: 2px 4px;
+  text-decoration: none;
+  font-style: normal;
+  word-break: break-word;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.error-text {
+  color: #c73636;
+}
+
+@media screen and (max-width: 480px) {
+  .calendario-header {
+    font-size: 20px;
+  }
+
+  .tutoria-info {
+    font-size: 9px;
+  }
+
+  .calendario-dia {
+    font-size: 11px;
+    padding: 4px;
+  }
+}

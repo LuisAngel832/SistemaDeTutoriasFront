@@ -96,11 +96,11 @@ Objetivo: reconstruir login y registro con apariencia y UX fieles al proyecto in
 
 ## 4) Pantalla principal de tutorado (explorar)
 
-- [ ] Definir layout de exploracion de tutorias
-- [ ] Mostrar catalogo de tutorias disponibles
+- [x] Definir layout de exploracion de tutorias
+- [x] Mostrar catalogo de tutorias disponibles
 - [ ] Busqueda por palabra clave
 - [ ] Filtros (tema, fecha, tutor, modalidad)
-- [ ] Vista de detalle de tutoria
+- [x] Vista de detalle de tutoria
 - [ ] Integrar disponibilidad/cupos en tiempo real (o pseudo-real)
 
 ## 5) Flujo de inscripcion y cancelacion
