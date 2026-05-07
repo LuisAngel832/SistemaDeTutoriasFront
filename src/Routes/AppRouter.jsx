@@ -3,7 +3,8 @@ import PrivateRoute from './PrivateRoute'
 import LogIn from '../pages/LogIn/LogIn'
 import Registro from '../pages/Registro/Registro'
 import TutorHome from '../pages/Tutor/Home'
-import TutoradoHome from '../pages/Tutorado/Home'
+import TutoradoHome from '../pages/Tutorado/HomeT/HomeT'
+import TutoriaT from '../pages/Tutorado/TutoriaT/TutoriaT'
 
 const AppRouter = () => {
   const userRole = localStorage.getItem('rol')
@@ -40,6 +41,15 @@ const AppRouter = () => {
         element={
           <PrivateRoute allowedRoles={['tutorado']}>
             <TutoradoHome />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/tutorado/infoTutoria/:id"
+        element={
+          <PrivateRoute allowedRoles={['tutorado']}>
+            <TutoriaT />
           </PrivateRoute>
         }
       />

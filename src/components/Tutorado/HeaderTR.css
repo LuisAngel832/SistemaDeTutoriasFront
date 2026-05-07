@@ -1,0 +1,99 @@
+:root {
+  --header-bg: #0047ab;
+  --text-color: #ffffff;
+  --sidebar-bg: #0047ab;
+}
+
+.header-tutorado {
+  width: 100%;
+  min-height: 70px;
+  background-color: var(--header-bg);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.menu-button span {
+  height: 3px;
+  width: 25px;
+  background: var(--text-color);
+  border-radius: 2px;
+}
+
+.header-title {
+  color: var(--text-color);
+  font-size: 1.15rem;
+  font-weight: 700;
+  width: 100%;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1050;
+}
+
+.sidebar.left {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px;
+  background-color: var(--sidebar-bg);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  transition: transform 0.3s ease;
+  transform: translateX(-100%);
+  z-index: 1100;
+}
+
+.sidebar.left.open {
+  transform: translateX(0);
+}
+
+.sidebar.left nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.left a {
+  text-decoration: none;
+}
+
+.sidebar.left button {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  padding: 0.75rem 0;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+}
+
+.sidebar.left button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar.left button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
