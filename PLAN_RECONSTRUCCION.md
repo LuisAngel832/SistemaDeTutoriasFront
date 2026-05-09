@@ -105,12 +105,12 @@ Objetivo: reconstruir login y registro con apariencia y UX fieles al proyecto in
 
 ## 5) Flujo de inscripcion y cancelacion
 
-- [ ] Definir reglas de negocio para inscripcion
-- [ ] Implementar CTA de inscripcion desde explorar/detalle
-- [ ] Confirmacion de inscripcion exitosa
-- [ ] Manejo de errores de inscripcion (sin cupo, conflicto horario, etc.)
-- [ ] Implementar cancelacion por tutorado
-- [ ] Reflejar cambios en ambas vistas (tutor y tutorado)
+- [x] Definir reglas de negocio para inscripcion
+- [x] Implementar CTA de inscripcion desde explorar/detalle
+- [x] Confirmacion de inscripcion exitosa
+- [x] Manejo de errores de inscripcion (sin cupo, conflicto horario, etc.)
+- [x] Implementar cancelacion por tutorado
+- [x] Reflejar cambios en ambas vistas (tutor y tutorado)
 - [ ] Registrar historial minimo de cambios (auditoria funcional)
 
 ## 6) Integracion completa frontend - backend
