@@ -1,0 +1,67 @@
+.crear-tutoria-page {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.main-crear-tutoria {
+  width: 100%;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.crear-tutoria-content {
+  width: min(740px, 100%);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.crear-tutoria-content h2 {
+  margin: 0 0 1rem;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.crear-tutoria-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.crear-tutoria-label {
+  font-size: 1rem;
+}
+
+.crear-tutoria-input {
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.22);
+  padding: 0 0.6rem;
+}
+
+.crear-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-aceptar {
+  border: none;
+  border-radius: 10px;
+  background-color: #28ad56;
+  color: #ffffff;
+  padding: 0.7rem 1.25rem;
+  cursor: pointer;
+}
+
+.btn-aceptar:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

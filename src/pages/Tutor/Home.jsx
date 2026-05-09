@@ -1,9 +1,14 @@
+import Header from '../../components/Tutor/Header'
+
 const TutorHome = () => {
   return (
-    <main className="home-role">
-      <h1>Inicio de Tutor</h1>
-      <p>Sesion iniciada correctamente como tutor.</p>
-    </main>
+    <div>
+      <Header />
+      <main className="home-role">
+        <h1>Mis Tutorias</h1>
+        <p>Panel principal del tutor.</p>
+      </main>
+    </div>
   )
 }
 

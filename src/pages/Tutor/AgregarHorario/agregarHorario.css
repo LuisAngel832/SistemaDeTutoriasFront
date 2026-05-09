@@ -1,0 +1,109 @@
+.agregar-horario-page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.main-agregar-horario {
+  width: 100%;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.content-horario {
+  width: min(980px, 100%);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.content-horario h2 {
+  margin: 0 0 1rem;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.main-horario-content {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.select-fecha {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fecha-input {
+  height: 42px;
+  border: 1px solid rgba(0, 0, 0, 0.22);
+  border-radius: 8px;
+  padding: 0 0.6rem;
+}
+
+.select-hora-min {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.select-hora {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  padding: 0.75rem;
+}
+
+.select-hora-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.select-hora-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.select-hora-input-content {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.select-hora-input {
+  width: 84px;
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 0 0.5rem;
+}
+
+.select-hora-input-text,
+.select-hora-puntos,
+.select-hora-am-pm p {
+  margin: 0;
+}
+
+.button-content {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-aceptar {
+  border: none;
+  border-radius: 10px;
+  background-color: #28ad56;
+  color: #ffffff;
+  padding: 0.7rem 1.25rem;
+  cursor: pointer;
+}
+
+.btn-aceptar:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
