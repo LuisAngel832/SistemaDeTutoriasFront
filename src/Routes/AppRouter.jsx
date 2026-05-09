@@ -6,6 +6,8 @@ import TutorHome from '../pages/Tutor/Home'
 import AgregarHorario from '../pages/Tutor/AgregarHorario/AgregarHorario'
 import CrearTutoria from '../pages/Tutor/CrearTutoria/CrearTutoria'
 import TutoradoHome from '../pages/Tutorado/Home'
+import TutoriaDetalle from '../pages/Tutorado/TutoriaDetalle'
+import MisTutorias from '../pages/Tutorado/MisTutorias'
 
 const AppRouter = () => {
   const userRole = localStorage.getItem('rol')
@@ -60,6 +62,24 @@ const AppRouter = () => {
         element={
           <PrivateRoute allowedRoles={['tutorado']}>
             <TutoradoHome />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/tutorado/infoTutoria/:id"
+        element={
+          <PrivateRoute allowedRoles={['tutorado']}>
+            <TutoriaDetalle />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/tutorado/tutorias"
+        element={
+          <PrivateRoute allowedRoles={['tutorado']}>
+            <MisTutorias />
           </PrivateRoute>
         }
       />

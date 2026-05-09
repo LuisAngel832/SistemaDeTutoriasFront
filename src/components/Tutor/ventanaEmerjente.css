@@ -9,7 +9,7 @@
 }
 
 .ventana-emergente {
-  width: min(90%, 420px);
+  width: min(92%, 460px);
   background: #ffffff;
   border-radius: 12px;
   padding: 1.25rem;
@@ -24,6 +24,11 @@
   margin: 0;
 }
 
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
 .ventana-emergente button {
   border: none;
   border-radius: 8px;
@@ -31,4 +36,8 @@
   color: #ffffff;
   padding: 0.6rem 1rem;
   cursor: pointer;
+}
+
+.ventana-emergente button.secondary {
+  background-color: #2d5fa7;
 }
