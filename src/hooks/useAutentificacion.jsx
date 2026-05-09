@@ -1,8 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
 const BASE_URL = 'https://backtutorias.onrender.com'
-const DEV_AUTH_ENABLED =
-  import.meta.env.DEV && import.meta.env.VITE_ENABLE_DEV_AUTH === 'true'
 
 const buildJsonConfig = (payload) => ({
   method: 'POST',
@@ -31,28 +29,6 @@ const normalizeErrorMessage = async (response, fallback) => {
 const useAutentificacion = () => {
   const navigate = useNavigate()
 
-  const setSessionData = ({ token, rol, matricula, nombre, correo }) => {
-    localStorage.setItem('token', token)
-    localStorage.setItem('rol', rol)
-    localStorage.setItem('matricula', matricula)
-    localStorage.setItem('nombre', nombre || '')
-    localStorage.setItem('correo', correo || '')
-  }
-
-  const navigateByRole = (rol) => {
-    if (rol === 'tutor') {
-      navigate('/tutor/home')
-      return
-    }
-
-    if (rol === 'tutorado') {
-      navigate('/tutorado/home')
-      return
-    }
-
-    navigate('/login')
-  }
-
   const login = async (matricula, password, setError) => {
     setError('')
 
@@ -72,50 +48,22 @@ const useAutentificacion = () => {
       }
 
       const data = await response.json()
-      setSessionData({
-        token: data.token,
-        rol: data.rol,
-        matricula,
-        nombre: data.nombre,
-        correo: data.correo,
-      })
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('rol', data.rol)
+      localStorage.setItem('matricula', matricula)
+      localStorage.setItem('nombre', data.nombre || '')
+      localStorage.setItem('correo', data.correo || '')
 
-      navigateByRole(data.rol)
+      if (data.rol === 'tutor') {
+        navigate('/tutor/home')
+      } else if (data.rol === 'tutorado') {
+        navigate('/tutorado/home')
+      } else {
+        navigate('/login')
+      }
     } catch {
       setError('Error al conectar con el servidor')
     }
-  }
-
-  const loginDev = (rol) => {
-    if (!DEV_AUTH_ENABLED) {
-      return false
-    }
-
-    const sessionByRole = {
-      tutor: {
-        token: 'dev-token-tutor',
-        rol: 'tutor',
-        matricula: 'DEV-TUTOR',
-        nombre: 'Tutor Demo',
-        correo: 'tutor.demo@local.dev',
-      },
-      tutorado: {
-        token: 'dev-token-tutorado',
-        rol: 'tutorado',
-        matricula: 'DEV-TUTORADO',
-        nombre: 'Tutorado Demo',
-        correo: 'tutorado.demo@local.dev',
-      },
-    }
-
-    const session = sessionByRole[rol]
-    if (!session) {
-      return false
-    }
-
-    setSessionData(session)
-    navigateByRole(rol)
-    return true
   }
 
   const registro = async (rol, usuario, setError) => {
@@ -160,8 +108,6 @@ const useAutentificacion = () => {
     login,
     registro,
     logout,
-    loginDev,
-    canUseDevAuth: DEV_AUTH_ENABLED,
   }
 }
 
