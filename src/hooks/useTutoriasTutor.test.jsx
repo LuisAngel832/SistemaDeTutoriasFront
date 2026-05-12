@@ -14,7 +14,7 @@ const tutoriaSample = {
 describe('useTutoriasTutor', () => {
   beforeEach(() => {
     localStorage.setItem('token', 'fake-token')
-    vi.spyOn(global, 'fetch')
+    vi.spyOn(globalThis, 'fetch')
   })
 
   afterEach(() => {
@@ -23,7 +23,7 @@ describe('useTutoriasTutor', () => {
   })
 
   it('loads tutorias on mount', async () => {
-    global.fetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({ data: [tutoriaSample] }),
     })
@@ -38,7 +38,7 @@ describe('useTutoriasTutor', () => {
   })
 
   it('exposes a friendly error on non-ok response', async () => {
-    global.fetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: false,
       json: async () => ({ message: 'No autorizado' }),
     })
@@ -52,7 +52,7 @@ describe('useTutoriasTutor', () => {
   })
 
   it('falls back to generic message when backend gives none', async () => {
-    global.fetch.mockResolvedValueOnce({
+    globalThis.fetch.mockResolvedValueOnce({
       ok: false,
       json: async () => ({}),
     })
@@ -65,7 +65,7 @@ describe('useTutoriasTutor', () => {
   })
 
   it('handles network failure without crashing', async () => {
-    global.fetch.mockRejectedValueOnce(new Error('network down'))
+    globalThis.fetch.mockRejectedValueOnce(new Error('network down'))
 
     const { result } = renderHook(() => useTutoriasTutor())
 
@@ -76,7 +76,7 @@ describe('useTutoriasTutor', () => {
   })
 
   it('refetch reruns the request and clears previous error', async () => {
-    global.fetch
+    globalThis.fetch
       .mockResolvedValueOnce({ ok: false, json: async () => ({ message: 'boom' }) })
       .mockResolvedValueOnce({ ok: true, json: async () => ({ data: [tutoriaSample] }) })
 
@@ -84,11 +84,11 @@ describe('useTutoriasTutor', () => {
 
     await waitFor(() => expect(result.current.error).toBe('boom'))
 
-    await act(async () => {
-      await result.current.refetch()
+    act(() => {
+      result.current.refetch()
     })
 
+    await waitFor(() => expect(result.current.tutorias).toEqual([tutoriaSample]))
     expect(result.current.error).toBe('')
-    expect(result.current.tutorias).toEqual([tutoriaSample])
   })
 })
