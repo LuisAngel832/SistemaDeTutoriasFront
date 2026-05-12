@@ -25,6 +25,49 @@
   color: #52606d;
 }
 
+.tutorias-filters {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.tutorias-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.tutorias-filter-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #52606d;
+  letter-spacing: 0.02em;
+}
+
+.tutorias-filter input,
+.tutorias-filter select {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #cbd2d9;
+  border-radius: 8px;
+  background-color: #ffffff;
+  font-size: 0.95rem;
+  color: #1f2933;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tutorias-filter input:focus,
+.tutorias-filter select:focus {
+  outline: none;
+  border-color: #28ad56;
+  box-shadow: 0 0 0 3px rgba(40, 173, 86, 0.15);
+}
+
 .tutor-home-error {
   color: #b3261e;
 }
