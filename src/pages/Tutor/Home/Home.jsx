@@ -2,13 +2,15 @@ import { useMemo, useState } from 'react'
 import Header from '../../../components/Tutor/Header'
 import TutoriaCard from './TutoriaCard'
 import TutoriasFilters from './TutoriasFilters'
+import EmptyState from './EmptyState'
+import ErrorState from './ErrorState'
 import { filterTutorias } from './filterTutorias'
 import { useTutoriasTutor } from '../../../hooks/useTutoriasTutor'
 import './home.css'
 import './homeR.css'
 
 const TutorHome = () => {
-  const { tutorias, isLoading, error } = useTutoriasTutor()
+  const { tutorias, isLoading, error, refetch } = useTutoriasTutor()
   const [search, setSearch] = useState('')
   const [estado, setEstado] = useState('')
 
@@ -19,6 +21,7 @@ const TutorHome = () => {
 
   const hasActiveFilters = Boolean(search.trim() || estado)
   const ready = !isLoading && !error
+  const showFilters = ready && tutorias.length > 0
 
   return (
     <div className="tutor-home">
@@ -27,7 +30,7 @@ const TutorHome = () => {
       <main className="tutor-home-main">
         <h1 className="tutor-home-title">Mis Tutorías</h1>
 
-        {ready && tutorias.length > 0 ? (
+        {showFilters ? (
           <TutoriasFilters
             search={search}
             estado={estado}
@@ -38,28 +41,26 @@ const TutorHome = () => {
 
         {isLoading ? <p className="tutor-home-state">Cargando tutorías...</p> : null}
 
-        {!isLoading && error ? (
-          <p className="tutor-home-state tutor-home-error" role="alert">
-            {error}
-          </p>
-        ) : null}
+        {!isLoading && error ? <ErrorState message={error} onRetry={refetch} /> : null}
 
         {ready ? (
-          <section className="tutor-home-grid" aria-label="Listado de tutorías">
-            {filtered.length > 0 ? (
-              filtered.map((tutoria) => (
-                <TutoriaCard key={tutoria.idTutoria} tutoria={tutoria} />
-              ))
-            ) : (
-              <p className="tutor-home-state">
-                {tutorias.length === 0
-                  ? 'No hay tutorías para mostrar.'
-                  : hasActiveFilters
+          tutorias.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <section className="tutor-home-grid" aria-label="Listado de tutorías">
+              {filtered.length > 0 ? (
+                filtered.map((tutoria) => (
+                  <TutoriaCard key={tutoria.idTutoria} tutoria={tutoria} />
+                ))
+              ) : (
+                <p className="tutor-home-state">
+                  {hasActiveFilters
                     ? 'Ninguna tutoría coincide con los filtros.'
                     : 'No hay tutorías para mostrar.'}
-              </p>
-            )}
-          </section>
+                </p>
+              )}
+            </section>
+          )
         ) : null}
       </main>
     </div>
