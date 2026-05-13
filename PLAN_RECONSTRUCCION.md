@@ -77,12 +77,18 @@ Objetivo: reconstruir login y registro con apariencia y UX fieles al proyecto in
 
 ## 2) Pantalla principal de tutor (mis tutorias)
 
-- [ ] Definir estructura de dashboard de tutor
-- [ ] Listar tutorias creadas por el tutor
-- [ ] Filtros basicos (estado, fecha, modalidad)
-- [ ] Acciones por tutoria (editar, cancelar, ver inscritos)
-- [ ] Estado vacio cuando no hay tutorias
-- [ ] Integrar datos reales desde backend
+- [x] Definir estructura de dashboard de tutor
+- [x] Listar tutorias creadas por el tutor
+- [x] Filtros basicos (estado, busqueda por materia)
+- [ ] Acciones por tutoria (editar, cancelar, ver inscritos) — siguiente PR (requiere pantalla de detalle)
+- [x] Estado vacio cuando no hay tutorias
+- [x] Integrar datos reales desde backend
+
+### Notas de implementacion - Mision 2 (listado)
+
+- Filtro de "modalidad" descartado: el modelo de datos del backend no expone ese campo. Se sustituyo por busqueda libre por nombre de materia.
+- Acciones por tutoria quedan fuera del alcance del PR de listado porque requieren su propia pantalla de detalle del tutor; se abordaran como sub-tarea independiente.
+- Stack de pruebas: Vitest + React Testing Library configurado en este PR; cubre el hook, componentes y un test de integracion end-to-end con `fetch` mockeado.
 
 ## 3) Formularios: crear horario y tutoria
 
