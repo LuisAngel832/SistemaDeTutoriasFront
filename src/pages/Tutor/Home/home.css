@@ -1,0 +1,245 @@
+.tutor-home {
+  font-family: 'Montserrat', sans-serif;
+  min-height: 100vh;
+  background-color: #f7f8fa;
+}
+
+.tutor-home-main {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 0 3rem;
+  box-sizing: border-box;
+}
+
+.tutor-home-title {
+  margin: 0 0 1.5rem;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1f2933;
+}
+
+.tutor-home-state {
+  margin: 1.5rem 0;
+  font-size: 1rem;
+  color: #52606d;
+}
+
+.tutorias-filters {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.tutorias-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.tutorias-filter-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #52606d;
+  letter-spacing: 0.02em;
+}
+
+.tutorias-filter input,
+.tutorias-filter select {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #cbd2d9;
+  border-radius: 8px;
+  background-color: #ffffff;
+  font-size: 0.95rem;
+  color: #1f2933;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tutorias-filter input:focus,
+.tutorias-filter select:focus {
+  outline: none;
+  border-color: #28ad56;
+  box-shadow: 0 0 0 3px rgba(40, 173, 86, 0.15);
+}
+
+.tutor-home-error {
+  color: #b3261e;
+}
+
+.tutor-home-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  background-color: #fdf2f3;
+  border: 1px solid #f5c2c7;
+  border-radius: 12px;
+  margin: 1rem 0;
+}
+
+.tutor-home-retry {
+  background-color: #1f2933;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.tutor-home-retry:hover {
+  background-color: #323f4b;
+}
+
+.tutor-home-retry:focus-visible {
+  outline: 2px solid #28ad56;
+  outline-offset: 2px;
+}
+
+.tutor-home-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding: 3rem 1.5rem;
+  background-color: #ffffff;
+  border: 1px dashed #cbd2d9;
+  border-radius: 12px;
+  color: #52606d;
+}
+
+.tutor-home-empty h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1f2933;
+}
+
+.tutor-home-empty p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.tutor-home-empty-cta {
+  margin-top: 0.5rem;
+  display: inline-block;
+  background-color: #28ad56;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 0.625rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
+}
+
+.tutor-home-empty-cta:hover {
+  background-color: #1f8a43;
+}
+
+.tutor-home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.tutoria-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tutoria-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.tutoria-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tutoria-card-materia {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2933;
+  line-height: 1.3;
+}
+
+.tutoria-card-estado {
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background-color: #e4e7eb;
+  color: #52606d;
+}
+
+.tutoria-card-estado.estado-programada {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.tutoria-card-estado.estado-en_curso {
+  background-color: #fff7e0;
+  color: #8a6d00;
+}
+
+.tutoria-card-estado.estado-completada {
+  background-color: #e6f4ea;
+  color: #1e7a3a;
+}
+
+.tutoria-card-estado.estado-cancelada {
+  background-color: #fde7e9;
+  color: #b3261e;
+}
+
+.tutoria-card-grid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem 1rem;
+}
+
+.tutoria-card-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.tutoria-card-item dt {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(31, 41, 51, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tutoria-card-item dd {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1f2933;
+}
