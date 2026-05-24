@@ -14,8 +14,10 @@ const Registro = () => {
   const [apellidoM, setApellidoM] = useState('')
   const [correo, setCorreo] = useState('')
   const [password, setPassword] = useState('')
-  const [rol, setRol] = useState('alumno')
+  const [rol, setRol] = useState('tutorado')
   const [matricula, setMatricula] = useState('')
+
+  const ROL_IDS = { tutor: 2, tutorado: 3 }
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -41,17 +43,29 @@ const Registro = () => {
       return
     }
 
+    if (password.length < 8) {
+      setError('La contrasena debe tener al menos 8 caracteres')
+      return
+    }
+
+    const rolId = ROL_IDS[rol]
+    if (!rolId) {
+      setError('Rol invalido')
+      return
+    }
+
     const usuario = {
       matricula,
       nombre,
       apellidoP,
       apellidoM,
       correo,
-      password,
+      pwd: password,
+      rol: rolId,
     }
 
     setIsSubmitting(true)
-    await registro(rol, usuario, setError)
+    await registro(usuario, setError)
     setIsSubmitting(false)
   }
 
@@ -154,8 +168,8 @@ const Registro = () => {
             }}
             required
           >
-            <option value="alumno">Alumno</option>
-            <option value="profesor">Profesor</option>
+            <option value="tutorado">Tutorado</option>
+            <option value="tutor">Tutor</option>
           </select>
 
           <button type="submit" className="button-confirm" disabled={isSubmitting}>
