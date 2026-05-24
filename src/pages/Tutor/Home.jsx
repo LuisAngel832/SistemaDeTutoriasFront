@@ -29,44 +29,48 @@ const TutoriaCard = ({ tutoria }) => {
   const estadoClass = ESTADO_CLASS[tutoria.estado?.toUpperCase()] || 'otro'
 
   return (
-    <article className="tutoria-card">
-      <div className="tutoria-card-top">
-        <div>
-          <h3 className="tutoria-materia">{tutoria.materia || 'Materia sin nombre'}</h3>
-          {tutoria.nombreTutor ? (
-            <p className="tutoria-tutor">{tutoria.nombreTutor}</p>
-          ) : null}
+    <Link to={`/tutor/tutoria/${tutoria.id}`} className="tutoria-card-link">
+      <article className="tutoria-card">
+        <div className="tutoria-card-top">
+          <div>
+            <h3 className="tutoria-materia">{tutoria.materia || 'Materia sin nombre'}</h3>
+            {tutoria.nombreTutor ? (
+              <p className="tutoria-tutor">{tutoria.nombreTutor}</p>
+            ) : null}
+          </div>
+          <span className={`tutoria-estado ${estadoClass}`}>
+            {tutoria.estado || 'SIN ESTADO'}
+          </span>
         </div>
-        <span className={`tutoria-estado ${estadoClass}`}>
-          {tutoria.estado || 'SIN ESTADO'}
-        </span>
-      </div>
 
-      <div className="tutoria-info">
-        <span className="tutoria-info-label">Fecha:</span>
-        <span>{formatFecha(tutoria.fecha)}</span>
+        <div className="tutoria-info">
+          <span className="tutoria-info-label">Fecha:</span>
+          <span>{formatFecha(tutoria.fecha)}</span>
 
-        <span className="tutoria-info-label">Horario:</span>
-        <span>
-          {formatHora(tutoria.horaInicio)} – {formatHora(tutoria.horaFin)}
-        </span>
+          <span className="tutoria-info-label">Horario:</span>
+          <span>
+            {formatHora(tutoria.horaInicio)} – {formatHora(tutoria.horaFin)}
+          </span>
 
-        <span className="tutoria-info-label">Lugar:</span>
-        <span>
-          Edificio {tutoria.edificio ?? '—'} · Aula {tutoria.aula ?? '—'}
-        </span>
-      </div>
-
-      {tutoria.temas?.length ? (
-        <div className="tutoria-temas">
-          {tutoria.temas.map((tema, index) => (
-            <span key={tema.idTema ?? index} className="tutoria-tema-chip">
-              {tema.tema || tema.nombre || String(tema)}
-            </span>
-          ))}
+          <span className="tutoria-info-label">Lugar:</span>
+          <span>
+            Edificio {tutoria.edificio ?? '—'} · Aula {tutoria.aula ?? '—'}
+          </span>
         </div>
-      ) : null}
-    </article>
+
+        {tutoria.temas?.length ? (
+          <div className="tutoria-temas">
+            {tutoria.temas.map((tema, index) => (
+              <span key={tema.idTema ?? index} className="tutoria-tema-chip">
+                {tema.tema || tema.nombre || String(tema)}
+              </span>
+            ))}
+          </div>
+        ) : null}
+
+        <span className="tutoria-card-hint">Ver detalle →</span>
+      </article>
+    </Link>
   )
 }
 

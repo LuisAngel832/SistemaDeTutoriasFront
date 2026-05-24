@@ -5,6 +5,7 @@ import Registro from '../pages/Registro/Registro'
 import TutorHome from '../pages/Tutor/Home'
 import AgregarHorario from '../pages/Tutor/AgregarHorario/AgregarHorario'
 import CrearTutoria from '../pages/Tutor/CrearTutoria/CrearTutoria'
+import TutoriaDetalleTutor from '../pages/Tutor/TutoriaDetalle/TutoriaDetalle'
 import TutoradoHome from '../pages/Tutorado/Home'
 import TutoriaDetalle from '../pages/Tutorado/TutoriaDetalle'
 import MisTutorias from '../pages/Tutorado/MisTutorias'
@@ -53,6 +54,15 @@ const AppRouter = () => {
         element={
           <PrivateRoute allowedRoles={['tutor']}>
             <CrearTutoria />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/tutor/tutoria/:id"
+        element={
+          <PrivateRoute allowedRoles={['tutor']}>
+            <TutoriaDetalleTutor />
           </PrivateRoute>
         }
       />
