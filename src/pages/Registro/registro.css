@@ -1,95 +1,92 @@
-.registro {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #f5f5f5;
-  padding: 1rem 0;
-  box-sizing: border-box;
+/* Reutiliza estilos .auth-* del login.css. Aqui solo viven los del registro. */
+
+.auth-form.registro-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.registro-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 40vw;
-  max-width: 708px;
-  background-color: rgba(208, 208, 208, 0.31);
-  border-radius: 30px;
-  padding: 1rem 0;
+.auth-field.full {
+  grid-column: 1 / -1;
 }
 
-.registro-img {
-  width: 100%;
-  max-width: 220px;
-  height: auto;
+/* Chips de rol */
+.rol-chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
 }
 
-.registro-form {
-  margin: 0;
-  padding: 0;
+.rol-chip {
   display: flex;
   flex-direction: column;
-  width: 60%;
-  box-sizing: border-box;
-}
-
-.registro-form label {
-  padding: 0;
-  font-size: 20px;
+  align-items: flex-start;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #d4dae4;
+  background-color: #ffffff;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #485468;
   text-align: left;
-  margin: 10px 0;
+  font-family: inherit;
+  transition: border-color 0.18s ease, background-color 0.18s ease,
+    color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
 }
 
-.registro-input {
-  height: 34px;
-  border-radius: 5px;
-  border: 0.5px solid rgba(0, 0, 0, 0.2);
-  font-size: 1rem;
-  padding: 0 0.5rem;
+.rol-chip:hover {
+  border-color: #b9c1cf;
+  background-color: #f9fafc;
+  color: #1c2a44;
 }
 
-.button-confirm {
-  border: none;
-  border-radius: 5px;
-  background-color: #28ad56;
-  height: 40px;
-  color: white;
-  font-size: 22px;
-  margin: 1rem 0;
-  cursor: pointer;
+.rol-chip:active {
+  transform: scale(0.97);
 }
 
-.button-confirm:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+.rol-chip.active {
+  border-color: #2d5fa7;
+  background-color: #eef4fc;
+  color: #1c2a44;
+  box-shadow: 0 0 0 3px rgba(45, 95, 167, 0.12);
 }
 
-.registro-buttons {
+.rol-chip-title {
+  font-size: 0.95rem;
+  font-weight: 600;
   display: flex;
-  justify-content: center;
-  width: 100%;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-.registro-buttons button {
-  border: none;
+.rol-chip-radio {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #b9c1cf;
   background-color: transparent;
-  text-decoration: underline;
-  font-size: 1rem;
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
 }
 
-.content-title {
-  font-weight: 400;
-  text-align: center;
-  margin: 0 0 0.5rem;
-  padding: 0;
+.rol-chip.active .rol-chip-radio {
+  border-color: #2d5fa7;
+  background-color: #2d5fa7;
+  box-shadow: inset 0 0 0 3px #ffffff;
 }
 
-.registro-error {
-  color: #d12b2b;
-  text-align: center;
-  font-size: 1rem;
-  margin: 0.25rem 0 0.75rem;
+.rol-chip-desc {
+  font-size: 0.78rem;
+  color: #5b6778;
+}
+
+/* Override del shell del registro: con form mas grande, mas espacio */
+.auth-shell.registro-shell {
+  min-height: auto;
+}
+
+.auth-form-panel.registro-panel {
+  padding: 2.25rem 2.5rem;
 }
