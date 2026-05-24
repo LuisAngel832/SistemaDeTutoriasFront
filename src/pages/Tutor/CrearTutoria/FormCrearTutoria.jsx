@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import TemasInput from '../../../components/Tutor/TemasInput'
 
 const FormCrearTutoria = ({
   nrcMateria,
@@ -11,6 +12,9 @@ const FormCrearTutoria = ({
   setEdificio,
   aula,
   setAula,
+  temas,
+  agregarTema,
+  quitarTema,
   horariosDisponibles,
   materiasDisponibles,
 }) => {
@@ -138,6 +142,11 @@ const FormCrearTutoria = ({
             })}
           </select>
         </div>
+      </div>
+
+      <div className="input-group full">
+        <label className="crear-tutoria-label">Temas a tratar</label>
+        <TemasInput temas={temas} onAdd={agregarTema} onRemove={quitarTema} />
       </div>
     </form>
   )

@@ -20,6 +20,9 @@ const CrearTutoria = () => {
     mensaje,
     showModal,
     setShowModal,
+    temas,
+    agregarTema,
+    quitarTema,
     handleSubmit,
     horariosDisponibles,
     materiasDisponibles,
@@ -32,6 +35,7 @@ const CrearTutoria = () => {
     setFecha('')
     setEdificio('')
     setAula('')
+    ;[...temas].forEach((t) => quitarTema(t))
   }
 
   return (
@@ -71,6 +75,9 @@ const CrearTutoria = () => {
             setAula={setAula}
             horariosDisponibles={horariosDisponibles}
             materiasDisponibles={materiasDisponibles}
+            temas={temas}
+            agregarTema={agregarTema}
+            quitarTema={quitarTema}
           />
 
           <div className="crear-actions">

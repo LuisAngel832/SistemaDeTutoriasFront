@@ -1,0 +1,139 @@
+.temas-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.temas-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.temas-input-field {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid #d4dae4;
+  padding: 0 0.85rem;
+  font-size: 0.95rem;
+  color: #1c2a44;
+  background-color: #ffffff;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.temas-input-field:hover:not(:focus):not(:disabled) {
+  border-color: #b9c1cf;
+}
+
+.temas-input-field:focus {
+  outline: none;
+  border-color: #2d5fa7;
+  box-shadow: 0 0 0 3px rgba(45, 95, 167, 0.15);
+}
+
+.temas-input-field:disabled {
+  background-color: #f6f7fa;
+  cursor: not-allowed;
+}
+
+.temas-input-add {
+  height: 42px;
+  padding: 0 1rem;
+  border-radius: 8px;
+  border: 1px solid #2d5fa7;
+  background-color: #2d5fa7;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.18s ease, transform 0.12s ease;
+}
+
+.temas-input-add:hover:not(:disabled) {
+  background-color: #1f4581;
+}
+
+.temas-input-add:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.temas-input-add:disabled {
+  background-color: #b9c1cf;
+  border-color: #b9c1cf;
+  cursor: not-allowed;
+}
+
+.temas-input-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.temas-input-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #eef4fc;
+  color: #1f5aab;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.3rem 0.4rem 0.3rem 0.75rem;
+  border-radius: 999px;
+  animation: chip-in 0.2s ease-out;
+}
+
+@keyframes chip-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.temas-input-chip-x {
+  width: 18px;
+  height: 18px;
+  border: none;
+  background-color: transparent;
+  color: #1f5aab;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.temas-input-chip-x:hover:not(:disabled) {
+  background-color: rgba(31, 90, 171, 0.15);
+}
+
+.temas-input-chip-x:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.temas-input-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #8a93a3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .temas-input-field,
+  .temas-input-add,
+  .temas-input-chip,
+  .temas-input-chip-x {
+    animation: none;
+    transition: none;
+  }
+}

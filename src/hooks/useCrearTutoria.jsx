@@ -13,11 +13,24 @@ const useCrearTutoria = () => {
   const [fecha, setFecha] = useState('')
   const [edificio, setEdificio] = useState('')
   const [aula, setAula] = useState('')
+  const [temas, setTemas] = useState([])
   const [mensaje, setMensaje] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [horariosDisponibles, setHorariosDisponibles] = useState([])
   const [materiasDisponibles, setMateriasDisponibles] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const agregarTema = (tema) => {
+    const limpio = tema.trim()
+    if (!limpio) return
+    setTemas((prev) =>
+      prev.some((t) => t.toLowerCase() === limpio.toLowerCase()) ? prev : [...prev, limpio],
+    )
+  }
+
+  const quitarTema = (tema) => {
+    setTemas((prev) => prev.filter((t) => t !== tema))
+  }
 
   const handleSubmit = async () => {
     if (!nrcMateria || !horario || !fecha || !edificio || !aula) {
@@ -48,7 +61,7 @@ const useCrearTutoria = () => {
       edificio: edificioNum,
       aula: aulaNum,
       nrc: nrcNum,
-      temas: [],
+      temas,
     }
 
     setIsSubmitting(true)
@@ -75,6 +88,7 @@ const useCrearTutoria = () => {
       setFecha('')
       setEdificio('')
       setAula('')
+      setTemas([])
     } catch {
       setMensaje('Error al conectar con el servidor')
       setShowModal(true)
@@ -142,6 +156,9 @@ const useCrearTutoria = () => {
     mensaje,
     showModal,
     setShowModal,
+    temas,
+    agregarTema,
+    quitarTema,
     handleSubmit,
     horariosDisponibles,
     materiasDisponibles,
