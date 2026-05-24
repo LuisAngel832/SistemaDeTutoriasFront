@@ -1,32 +1,41 @@
-@media (max-width: 900px) {
-  .main-horario-content {
-    flex-direction: column;
+@media (max-width: 720px) {
+  .main-agregar-horario {
+    padding: 1.5rem 0.75rem;
   }
 
-  .select-fecha,
-  .select-hora-min {
+  .content-horario {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .content-horario h2 {
+    font-size: 1.4rem;
+  }
+
+  .horario-form {
+    grid-template-columns: 1fr;
+  }
+
+  .dia-chips {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .horario-actions {
+    flex-direction: column-reverse;
+  }
+
+  .horario-actions .btn-aceptar,
+  .horario-actions .btn-secundario {
     width: 100%;
-  }
-
-  .button-content {
     justify-content: center;
   }
 }
 
-@media (max-width: 640px) {
-  .content-horario {
-    padding: 1rem;
+@media (max-width: 420px) {
+  .dia-chips {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .content-horario h2 {
-    font-size: 1.6rem;
-  }
-
-  .select-hora-content {
-    flex-wrap: wrap;
-  }
-
-  .btn-aceptar {
-    width: 100%;
+  .dia-chip-full {
+    display: none;
   }
 }

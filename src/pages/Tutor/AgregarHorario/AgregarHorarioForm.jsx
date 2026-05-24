@@ -1,160 +1,220 @@
-import { useMemo, useState } from 'react'
-import VentanaEmerjente from '../../../components/Tutor/VentanaEmerjente'
-import SelectHora from './SelectHora'
+import { useState } from 'react'
+import useHorarios from '../../../hooks/useHorarios'
 
-const BASE_URL = 'https://backtutorias.onrender.com'
-
-const DAY_LABELS = [
-  'DOMINGO',
-  'LUNES',
-  'MARTES',
-  'MIERCOLES',
-  'JUEVES',
-  'VIERNES',
-  'SABADO',
+const DIAS = [
+  { key: 'LUNES', short: 'LUN', label: 'Lunes' },
+  { key: 'MARTES', short: 'MAR', label: 'Martes' },
+  { key: 'MIERCOLES', short: 'MIE', label: 'Miercoles' },
+  { key: 'JUEVES', short: 'JUE', label: 'Jueves' },
+  { key: 'VIERNES', short: 'VIE', label: 'Viernes' },
+  { key: 'SABADO', short: 'SAB', label: 'Sabado' },
+  { key: 'DOMINGO', short: 'DOM', label: 'Domingo' },
 ]
 
-const formatHour = (value) => value.toString().padStart(2, '0')
+const toSeconds = (time) => (time ? `${time}:00` : '')
 
 const AgregarHorarioForm = () => {
-  const [fecha, setFecha] = useState('')
+  const { horarios, isLoading, error: errorLista, crearHorario, eliminarHorario } =
+    useHorarios()
+
+  const [dia, setDia] = useState('')
   const [horaInicio, setHoraInicio] = useState('')
-  const [minutosInicio, setMinutosInicio] = useState('')
   const [horaFin, setHoraFin] = useState('')
-  const [minutosFin, setMinutosFin] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showModal, setShowModal] = useState(false)
-  const [modalText, setModalText] = useState('')
+  const [feedback, setFeedback] = useState(null)
+  const [eliminandoId, setEliminandoId] = useState(null)
 
-  const propsHora = useMemo(
-    () => ({
-      horaInicio,
-      setHoraInicio,
-      minutosInicio,
-      setMinutosInicio,
-      horaFin,
-      setHoraFin,
-      minutosFin,
-      setMinutosFin,
-    }),
-    [horaInicio, minutosInicio, horaFin, minutosFin],
-  )
+  const limpiar = () => {
+    setDia('')
+    setHoraInicio('')
+    setHoraFin('')
+  }
 
-  const camposIncompletos =
-    !fecha ||
-    horaInicio === '' ||
-    minutosInicio === '' ||
-    horaFin === '' ||
-    minutosFin === ''
+  const handleAgregar = async () => {
+    setFeedback(null)
 
-  const inicioMinutos = Number(horaInicio) * 60 + Number(minutosInicio)
-  const finMinutos = Number(horaFin) * 60 + Number(minutosFin)
-
-  const isHorarioValido = finMinutos > inicioMinutos
-
-  const toggleModal = () => setShowModal((prev) => !prev)
-
-  const handleAgregarHorario = async () => {
-    if (camposIncompletos) {
-      setModalText('Completa todos los campos')
-      setShowModal(true)
+    if (!dia || !horaInicio || !horaFin) {
+      setFeedback({ type: 'error', text: 'Completa todos los campos.' })
       return
     }
 
-    if (!isHorarioValido) {
-      setModalText('La hora final debe ser mayor que la hora de inicio')
-      setShowModal(true)
+    if (horaFin <= horaInicio) {
+      setFeedback({
+        type: 'error',
+        text: 'La hora final debe ser mayor que la hora de inicio.',
+      })
       return
     }
 
-    const selectedDate = new Date(`${fecha}T00:00:00`)
-    const dia = DAY_LABELS[selectedDate.getDay()]
-
-    const horario = {
-      dia,
-      horaInicio: `${formatHour(Number(horaInicio))}:${formatHour(Number(minutosInicio))}`,
-      horaFin: `${formatHour(Number(horaFin))}:${formatHour(Number(minutosFin))}`,
+    const payload = {
+      dia: DIAS.find((d) => d.key === dia)?.label || dia,
+      horaInicio: toSeconds(horaInicio),
+      horaFin: toSeconds(horaFin),
     }
 
     setIsSubmitting(true)
-
     try {
-      const response = await fetch(`${BASE_URL}/horarios/crear-horario`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify(horario),
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        setModalText('Horario agregado con exito')
-        setFecha('')
-        setHoraInicio('')
-        setMinutosInicio('')
-        setHoraFin('')
-        setMinutosFin('')
-      } else {
-        setModalText(`Error al agregar horario: ${data?.message || 'Error desconocido'}`)
-      }
-
-      setShowModal(true)
-    } catch {
-      setModalText('Error al conectar con el servidor, intentalo mas tarde')
-      setShowModal(true)
+      await crearHorario(payload)
+      setFeedback({ type: 'success', text: 'Horario agregado correctamente.' })
+      limpiar()
+    } catch (err) {
+      setFeedback({ type: 'error', text: err.message })
     } finally {
       setIsSubmitting(false)
     }
   }
 
+  const handleEliminar = async (idHorario) => {
+    if (!idHorario) return
+    setFeedback(null)
+    setEliminandoId(idHorario)
+    try {
+      await eliminarHorario(idHorario)
+      setFeedback({ type: 'success', text: 'Horario eliminado.' })
+    } catch (err) {
+      setFeedback({ type: 'error', text: err.message })
+    } finally {
+      setEliminandoId(null)
+    }
+  }
+
   return (
-    <>
-      {showModal ? (
-        <VentanaEmerjente
-          text={modalText}
-          textBtn1="Aceptar"
-          handleClickBtn1={toggleModal}
-        />
-      ) : null}
+    <section className="main-agregar-horario">
+      <div className="content-horario">
+        <div className="horario-header">
+          <h2>
+            <span className="horario-icon" aria-hidden="true">🕐</span>
+            Agregar Horario
+          </h2>
+          <p className="horario-subtitle">
+            Define los bloques recurrentes en los que puedes dar tutorias.
+          </p>
+        </div>
 
-      <section className="main-agregar-horario">
-        <section className="content-horario">
-          <h2>Agregar Horario</h2>
+        {feedback ? (
+          <div className={`horario-feedback ${feedback.type}`}>{feedback.text}</div>
+        ) : null}
 
-          <div className="main-horario-content">
-            <div className="select-fecha">
-              <label htmlFor="fecha-horario">Fecha</label>
-              <input
-                id="fecha-horario"
-                type="date"
-                className="fecha-input"
-                value={fecha}
-                onChange={(event) => setFecha(event.target.value)}
-              />
-            </div>
-
-            <div className="select-hora-min">
-              <SelectHora title="Hora de Inicio" value="inicio" {...propsHora} />
-              <SelectHora title="Hora Final" value="fin" {...propsHora} />
+        <div className="horario-form">
+          <div className="form-field full">
+            <label className="form-label">Dia de la semana</label>
+            <div className="dia-chips" role="radiogroup" aria-label="Dia de la semana">
+              {DIAS.map((d) => (
+                <button
+                  key={d.key}
+                  type="button"
+                  role="radio"
+                  aria-checked={dia === d.key}
+                  className={`dia-chip${dia === d.key ? ' active' : ''}`}
+                  onClick={() => setDia(d.key)}
+                >
+                  <span className="dia-chip-short">{d.short}</span>
+                  <span className="dia-chip-full">{d.label}</span>
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="button-content">
-            <button
-              type="button"
-              className="btn-aceptar"
-              onClick={handleAgregarHorario}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Guardando...' : 'Agregar Horario'}
-            </button>
+          <div className="form-field">
+            <label htmlFor="hora-inicio" className="form-label">
+              Hora de inicio
+            </label>
+            <input
+              id="hora-inicio"
+              type="time"
+              className="form-input"
+              value={horaInicio}
+              onChange={(event) => setHoraInicio(event.target.value)}
+              required
+            />
           </div>
-        </section>
-      </section>
-    </>
+
+          <div className="form-field">
+            <label htmlFor="hora-fin" className="form-label">
+              Hora final
+            </label>
+            <input
+              id="hora-fin"
+              type="time"
+              className="form-input"
+              value={horaFin}
+              onChange={(event) => setHoraFin(event.target.value)}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="horario-actions">
+          <button
+            type="button"
+            className="btn-secundario"
+            onClick={limpiar}
+            disabled={isSubmitting}
+          >
+            Limpiar
+          </button>
+          <button
+            type="button"
+            className="btn-aceptar"
+            onClick={handleAgregar}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <span className="btn-spinner" aria-hidden="true" />
+                Guardando...
+              </>
+            ) : (
+              'Agregar Horario'
+            )}
+          </button>
+        </div>
+
+        <div className="horarios-lista-wrap">
+          <div className="horarios-lista-header">
+            <h3>Mis horarios</h3>
+            <span className="horarios-count">{horarios.length}</span>
+          </div>
+
+          {errorLista ? <div className="horario-feedback error">{errorLista}</div> : null}
+
+          {isLoading ? (
+            <div className="horarios-lista">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="horario-item skeleton" />
+              ))}
+            </div>
+          ) : horarios.length === 0 ? (
+            <div className="horarios-empty">
+              Aun no tienes horarios. Agrega uno arriba para empezar.
+            </div>
+          ) : (
+            <ul className="horarios-lista">
+              {horarios.map((h) => (
+                <li key={h.idHorario} className="horario-item">
+                  <div className="horario-item-info">
+                    <span className="horario-item-dia">{h.dia}</span>
+                    <span className="horario-item-hora">
+                      {h.horaInicio?.slice(0, 5)} – {h.horaFin?.slice(0, 5)}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className="horario-item-del"
+                    onClick={() => handleEliminar(h.idHorario)}
+                    disabled={eliminandoId === h.idHorario}
+                    aria-label={`Eliminar horario ${h.dia}`}
+                    title="Eliminar horario"
+                  >
+                    {eliminandoId === h.idHorario ? '…' : '×'}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </section>
   )
 }
 
