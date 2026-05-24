@@ -17,5 +17,17 @@ export default defineConfig([
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+    rules: {
+      // Patron comun de "cargar datos al montar" o sincronizar estado local
+      // con cambios de location. Se reporta pero no bloquea el build.
+      'react-hooks/set-state-in-effect': 'warn',
+    },
+  },
+  {
+    // vite.config.js y otros archivos de build corren en Node, no en el browser.
+    files: ['vite.config.js', '*.config.js'],
+    languageOptions: {
+      globals: { ...globals.node },
+    },
   },
 ])

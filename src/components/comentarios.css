@@ -1,0 +1,251 @@
+.cmt-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* Form */
+.cmt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  background-color: #f9fafc;
+  border: 1px solid #e6eaf2;
+  border-radius: 10px;
+  padding: 0.85rem;
+}
+
+.cmt-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #d4dae4;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: #1c2a44;
+  background-color: #ffffff;
+  resize: vertical;
+  min-height: 70px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.cmt-textarea:focus {
+  outline: none;
+  border-color: #2d5fa7;
+  box-shadow: 0 0 0 3px rgba(45, 95, 167, 0.15);
+}
+
+.cmt-textarea:disabled {
+  background-color: #f6f7fa;
+  cursor: not-allowed;
+}
+
+.cmt-form-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.cmt-count {
+  font-size: 0.78rem;
+  color: #8a93a3;
+}
+
+.cmt-btn-primary {
+  border: none;
+  border-radius: 8px;
+  background-color: #2d5fa7;
+  color: #ffffff;
+  padding: 0.55rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.18s ease, transform 0.12s ease;
+}
+
+.cmt-btn-primary:hover:not(:disabled) {
+  background-color: #1f4581;
+}
+
+.cmt-btn-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.cmt-btn-primary:disabled {
+  background-color: #b9c1cf;
+  cursor: not-allowed;
+}
+
+/* Feedback */
+.cmt-feedback {
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.85rem;
+  animation: cmt-fb-in 0.2s ease-out;
+}
+
+@keyframes cmt-fb-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cmt-feedback.success {
+  background-color: #eaf5ef;
+  border: 1px solid #b6dec5;
+  color: #1e7a3f;
+}
+
+.cmt-feedback.error {
+  background-color: #fbe5e7;
+  border: 1px solid #f5c2c7;
+  color: #a4252f;
+}
+
+.cmt-loading,
+.cmt-empty {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #8a93a3;
+  background-color: #f9fafc;
+  border: 1px dashed #d4dae4;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Lista */
+.cmt-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.cmt-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.85rem;
+  background-color: #ffffff;
+  border: 1px solid #e6eaf2;
+  border-radius: 10px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  animation: cmt-item-in 0.2s ease-out;
+}
+
+@keyframes cmt-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cmt-item:hover {
+  border-color: #d4dae4;
+  box-shadow: 0 2px 8px rgba(15, 30, 60, 0.04);
+}
+
+.cmt-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2d5fa7 0%, #1f4581 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.cmt-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.cmt-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.cmt-autor {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1c2a44;
+}
+
+.cmt-yo {
+  background-color: #eef4fc;
+  color: #1f5aab;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-left: 0.4rem;
+}
+
+.cmt-texto {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #1c2a44;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.cmt-del {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: #8a93a3;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.cmt-del:hover:not(:disabled) {
+  background-color: #fbe5e7;
+  color: #a4252f;
+}
+
+.cmt-del:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cmt-textarea,
+  .cmt-btn-primary,
+  .cmt-feedback,
+  .cmt-item,
+  .cmt-del {
+    animation: none;
+    transition: none;
+  }
+}

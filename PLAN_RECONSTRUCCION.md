@@ -86,13 +86,13 @@ Objetivo: reconstruir login y registro con apariencia y UX fieles al proyecto in
 
 ## 3) Formularios: crear horario y tutoria
 
-- [ ] Definir modelo de datos para horario
-- [ ] Definir modelo de datos para tutoria
-- [ ] Construir formulario de crear horario
-- [ ] Construir formulario de crear tutoria
+- [x] Definir modelo de datos para horario
+- [x] Definir modelo de datos para tutoria
+- [x] Construir formulario de crear horario
+- [x] Construir formulario de crear tutoria
 - [ ] Validaciones de negocio (cupos, fechas, solapamientos)
-- [ ] Feedback visual de guardado/carga/error
-- [ ] Enviar datos al backend y refrescar listado
+- [x] Feedback visual de guardado/carga/error
+- [x] Enviar datos al backend y refrescar listado
 
 ## 4) Pantalla principal de tutorado (explorar)
 
@@ -105,12 +105,12 @@ Objetivo: reconstruir login y registro con apariencia y UX fieles al proyecto in
 
 ## 5) Flujo de inscripcion y cancelacion
 
-- [ ] Definir reglas de negocio para inscripcion
-- [ ] Implementar CTA de inscripcion desde explorar/detalle
-- [ ] Confirmacion de inscripcion exitosa
-- [ ] Manejo de errores de inscripcion (sin cupo, conflicto horario, etc.)
-- [ ] Implementar cancelacion por tutorado
-- [ ] Reflejar cambios en ambas vistas (tutor y tutorado)
+- [x] Definir reglas de negocio para inscripcion
+- [x] Implementar CTA de inscripcion desde explorar/detalle
+- [x] Confirmacion de inscripcion exitosa
+- [x] Manejo de errores de inscripcion (sin cupo, conflicto horario, etc.)
+- [x] Implementar cancelacion por tutorado
+- [x] Reflejar cambios en ambas vistas (tutor y tutorado)
 - [ ] Registrar historial minimo de cambios (auditoria funcional)
 
 ## 6) Integracion completa frontend - backend

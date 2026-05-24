@@ -1,0 +1,263 @@
+.crear-tutoria-page {
+  min-height: 100vh;
+  background-color: #f5f7fb;
+}
+
+.main-crear-tutoria {
+  width: 100%;
+  padding: 2.5rem 1rem;
+  display: flex;
+  justify-content: center;
+  animation: ct-fade-in 0.35s ease-out;
+}
+
+@keyframes ct-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.crear-tutoria-content {
+  width: min(760px, 100%);
+  background-color: #ffffff;
+  border: 1px solid #e6eaf2;
+  border-radius: 14px;
+  padding: 2rem;
+  box-shadow: 0 4px 24px rgba(15, 30, 60, 0.05);
+}
+
+/* Header de la card */
+.crear-tutoria-header {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #eef1f6;
+}
+
+.crear-tutoria-content h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #1c2a44;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.crear-tutoria-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #eaf5ef;
+  color: #2d8f4f;
+  border-radius: 8px;
+  font-size: 1.1rem;
+}
+
+.crear-tutoria-subtitle {
+  margin: 0;
+  color: #5b6778;
+  font-size: 0.92rem;
+}
+
+/* Form */
+.crear-tutoria-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem 1.25rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.input-group.full {
+  grid-column: 1 / -1;
+}
+
+.crear-tutoria-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #485468;
+}
+
+.crear-tutoria-input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid #d4dae4;
+  padding: 0 0.85rem;
+  font-size: 0.95rem;
+  color: #1c2a44;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.crear-tutoria-input::placeholder {
+  color: #9aa3b2;
+}
+
+.crear-tutoria-input:hover:not(:focus) {
+  border-color: #b9c1cf;
+}
+
+.crear-tutoria-input:focus {
+  outline: none;
+  border-color: #2d5fa7;
+  box-shadow: 0 0 0 3px rgba(45, 95, 167, 0.15);
+}
+
+.crear-tutoria-input:disabled {
+  background-color: #f6f7fa;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Selects con chevron custom */
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper::after {
+  content: '';
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #5b6778;
+  border-bottom: 2px solid #5b6778;
+  transform: translateY(-75%) rotate(45deg);
+  pointer-events: none;
+  transition: border-color 0.2s ease;
+}
+
+.select-wrapper:hover::after {
+  border-color: #1c2a44;
+}
+
+.crear-tutoria-input.select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2.2rem;
+  cursor: pointer;
+  background-image: none;
+}
+
+/* Mensaje cuando no hay horarios */
+.empty-horarios {
+  font-size: 0.82rem;
+  color: #8a6d3b;
+  background-color: #fff8e6;
+  border: 1px solid #f5e0a3;
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  margin-top: 0.3rem;
+}
+
+.empty-horarios a {
+  color: #2d5fa7;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.empty-horarios a:hover {
+  text-decoration: underline;
+}
+
+/* Acciones */
+.crear-actions {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #eef1f6;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.btn-secundario {
+  background-color: transparent;
+  color: #485468;
+  border: 1px solid #d4dae4;
+  border-radius: 8px;
+  padding: 0.65rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-secundario:hover {
+  background-color: #f1f3f8;
+  color: #1c2a44;
+}
+
+.btn-aceptar {
+  border: none;
+  border-radius: 8px;
+  background-color: #28ad56;
+  color: #ffffff;
+  padding: 0.65rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 6px rgba(40, 173, 86, 0.25);
+}
+
+.btn-aceptar:hover:not(:disabled) {
+  background-color: #239a4b;
+  box-shadow: 0 4px 10px rgba(40, 173, 86, 0.35);
+}
+
+.btn-aceptar:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-aceptar:disabled {
+  background-color: #9ed3b1;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Spinner inline en el botón */
+.btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: btn-spin 0.7s linear infinite;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main-crear-tutoria,
+  .crear-tutoria-input,
+  .btn-aceptar,
+  .btn-secundario,
+  .btn-spinner {
+    animation: none;
+    transition: none;
+  }
+}
