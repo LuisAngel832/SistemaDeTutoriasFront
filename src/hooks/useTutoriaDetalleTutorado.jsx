@@ -20,12 +20,23 @@ const findInscripcion = async (idTutoria) => {
   })
   if (!response.ok) return null
   const inscripciones = data?.data || []
+  const target = Number(idTutoria)
+
+  console.log('[detalle] buscando inscripcion para tutoria', target, 'en', inscripciones)
+
   return (
-    inscripciones.find(
-      (item) =>
-        item.idTutoria === Number(idTutoria) ||
-        item.tutoria?.idTutoria === Number(idTutoria),
-    ) || null
+    inscripciones.find((item) => {
+      const candidatos = [
+        item.idTutoria,
+        item.tutoria?.idTutoria,
+        item.tutoria?.id,
+        item.idTutoriaInscrita,
+      ]
+        .filter((v) => v != null)
+        .map(Number)
+
+      return candidatos.includes(target)
+    }) || null
   )
 }
 
