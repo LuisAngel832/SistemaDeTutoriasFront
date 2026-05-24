@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const BASE_URL = 'https://backtutorias.onrender.com'
+const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
 const getAuthHeaders = () => ({
   'Content-Type': 'application/json',
@@ -13,10 +13,24 @@ const useCrearTutoria = () => {
   const [fecha, setFecha] = useState('')
   const [edificio, setEdificio] = useState('')
   const [aula, setAula] = useState('')
+  const [temas, setTemas] = useState([])
   const [mensaje, setMensaje] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [horariosDisponibles, setHorariosDisponibles] = useState([])
+  const [materiasDisponibles, setMateriasDisponibles] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const agregarTema = (tema) => {
+    const limpio = tema.trim()
+    if (!limpio) return
+    setTemas((prev) =>
+      prev.some((t) => t.toLowerCase() === limpio.toLowerCase()) ? prev : [...prev, limpio],
+    )
+  }
+
+  const quitarTema = (tema) => {
+    setTemas((prev) => prev.filter((t) => t !== tema))
+  }
 
   const handleSubmit = async () => {
     if (!nrcMateria || !horario || !fecha || !edificio || !aula) {
@@ -25,18 +39,35 @@ const useCrearTutoria = () => {
       return
     }
 
+    const idHorarioNum = Number(horario)
+    const edificioNum = Number(edificio)
+    const aulaNum = Number(aula)
+    const nrcNum = Number(nrcMateria)
+
+    if (
+      !Number.isFinite(idHorarioNum) ||
+      !Number.isFinite(edificioNum) ||
+      !Number.isFinite(aulaNum) ||
+      !Number.isFinite(nrcNum)
+    ) {
+      setMensaje('Hay campos numericos invalidos. Revisa Horario, Edificio, Aula y NRC.')
+      setShowModal(true)
+      return
+    }
+
     const payload = {
-      idHorario: Number(horario),
+      idHorario: idHorarioNum,
       fecha,
-      edificio: Number(edificio),
-      aula: Number(aula),
-      nrcMateria: Number(nrcMateria),
+      edificio: edificioNum,
+      aula: aulaNum,
+      nrc: nrcNum,
+      temas,
     }
 
     setIsSubmitting(true)
 
     try {
-      const response = await fetch(`${BASE_URL}/tutorias/genera-tutoria`, {
+      const response = await fetch(`${BASE_URL}/tutoria`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(payload),
@@ -57,6 +88,7 @@ const useCrearTutoria = () => {
       setFecha('')
       setEdificio('')
       setAula('')
+      setTemas([])
     } catch {
       setMensaje('Error al conectar con el servidor')
       setShowModal(true)
@@ -68,7 +100,7 @@ const useCrearTutoria = () => {
   useEffect(() => {
     const fetchHorarios = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/tutor/misHorarios`, {
+        const response = await fetch(`${BASE_URL}/horario`, {
           method: 'GET',
           headers: getAuthHeaders(),
         })
@@ -78,13 +110,36 @@ const useCrearTutoria = () => {
         }
 
         const data = await response.json()
-        setHorariosDisponibles(data?.data || [])
+        const lista = (data?.data || []).map((h) => ({
+          ...h,
+          idHorario: h.idHorario ?? h.id ?? h.idHorarios ?? h.horarioId,
+        }))
+        setHorariosDisponibles(lista)
       } catch {
         setHorariosDisponibles([])
       }
     }
 
+    const fetchMaterias = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/materia`, {
+          method: 'GET',
+          headers: getAuthHeaders(),
+        })
+
+        if (!response.ok) {
+          return
+        }
+
+        const data = await response.json()
+        setMateriasDisponibles(data?.data || [])
+      } catch {
+        setMateriasDisponibles([])
+      }
+    }
+
     fetchHorarios()
+    fetchMaterias()
   }, [])
 
   return {
@@ -101,8 +156,12 @@ const useCrearTutoria = () => {
     mensaje,
     showModal,
     setShowModal,
+    temas,
+    agregarTema,
+    quitarTema,
     handleSubmit,
     horariosDisponibles,
+    materiasDisponibles,
     isSubmitting,
   }
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const BASE_URL = 'https://backtutorias.onrender.com'
+const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
 const getAuthHeaders = () => ({
   'Content-Type': 'application/json',
@@ -9,81 +9,40 @@ const getAuthHeaders = () => ({
 
 export const useTutoriasTutorado = () => {
   const [tutorias, setTutorias] = useState([])
+  // El back actual no expone un endpoint de tutorias canceladas para el tutorado.
+  // Se deja vacio hasta que GET /asistencia/mis-inscripciones (o equivalente) lo incluya.
   const [tutoriasCanceladas, setTutoriasCanceladas] = useState([])
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
 
-  const refetch = async () => {
+  const fetchInscripciones = async () => {
     setIsLoading(true)
     setError('')
 
     try {
-      const [activasResponse, canceladasResponse] = await Promise.all([
-        fetch(`${BASE_URL}/tutorado/mis-tutorias`, {
-          method: 'GET',
-          headers: getAuthHeaders(),
-        }),
-        fetch(`${BASE_URL}/tutorado/misTutoriasCanceladas`, {
-          method: 'GET',
-          headers: getAuthHeaders(),
-        }),
-      ])
+      const response = await fetch(`${BASE_URL}/asistencia/mis-inscripciones`, {
+        method: 'GET',
+        headers: getAuthHeaders(),
+      })
 
-      const activasData = await activasResponse.json()
-      const canceladasData = await canceladasResponse.json()
+      const body = await response.json().catch(() => null)
 
-      if (!activasResponse.ok) {
-        throw new Error(activasData?.message || 'Error al obtener tutorias')
+      if (!response.ok) {
+        setError(body?.message || 'Error al obtener tutorias')
+        return
       }
 
-      if (!canceladasResponse.ok) {
-        throw new Error(canceladasData?.message || 'Error al obtener tutorias canceladas')
-      }
-
-      setTutorias(activasData?.data || [])
-      setTutoriasCanceladas(canceladasData?.data || [])
+      setTutorias(body?.data || [])
+      setTutoriasCanceladas([])
     } catch (fetchError) {
-      setError(fetchError.message)
+      setError(fetchError.message || 'Error al conectar con el servidor')
     } finally {
       setIsLoading(false)
     }
   }
 
   useEffect(() => {
-    const fetchOnMount = async () => {
-      try {
-        const [activasResponse, canceladasResponse] = await Promise.all([
-          fetch(`${BASE_URL}/tutorado/mis-tutorias`, {
-            method: 'GET',
-            headers: getAuthHeaders(),
-          }),
-          fetch(`${BASE_URL}/tutorado/misTutoriasCanceladas`, {
-            method: 'GET',
-            headers: getAuthHeaders(),
-          }),
-        ])
-
-        const activasData = await activasResponse.json()
-        const canceladasData = await canceladasResponse.json()
-
-        if (!activasResponse.ok) {
-          throw new Error(activasData?.message || 'Error al obtener tutorias')
-        }
-
-        if (!canceladasResponse.ok) {
-          throw new Error(canceladasData?.message || 'Error al obtener tutorias canceladas')
-        }
-
-        setTutorias(activasData?.data || [])
-        setTutoriasCanceladas(canceladasData?.data || [])
-      } catch (fetchError) {
-        setError(fetchError.message)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchOnMount()
+    fetchInscripciones()
   }, [])
 
   return {
@@ -91,6 +50,6 @@ export const useTutoriasTutorado = () => {
     tutoriasCanceladas,
     error,
     isLoading,
-    refetch,
+    refetch: fetchInscripciones,
   }
 }

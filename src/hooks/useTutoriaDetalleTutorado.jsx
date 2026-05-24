@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-const BASE_URL = 'https://backtutorias.onrender.com'
+const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
 const getAuthHeaders = () => ({
   'Content-Type': 'application/json',
@@ -9,12 +9,40 @@ const getAuthHeaders = () => ({
 
 const fetchJson = async (url, options = {}) => {
   const response = await fetch(url, options)
-  const data = await response.json()
+  const data = await response.json().catch(() => null)
   return { response, data }
+}
+
+const findInscripcion = async (idTutoria) => {
+  const { response, data } = await fetchJson(`${BASE_URL}/asistencia/mis-inscripciones`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  })
+  if (!response.ok) return null
+  const inscripciones = data?.data || []
+  const target = Number(idTutoria)
+
+  console.log('[detalle] buscando inscripcion para tutoria', target, 'en', inscripciones)
+
+  return (
+    inscripciones.find((item) => {
+      const candidatos = [
+        item.idTutoria,
+        item.tutoria?.idTutoria,
+        item.tutoria?.id,
+        item.idTutoriaInscrita,
+      ]
+        .filter((v) => v != null)
+        .map(Number)
+
+      return candidatos.includes(target)
+    }) || null
+  )
 }
 
 export const useTutoriaDetalleTutorado = (id) => {
   const [tutoria, setTutoria] = useState(null)
+  const [inscripcion, setInscripcion] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -27,7 +55,7 @@ export const useTutoriaDetalleTutorado = (id) => {
       setError('')
 
       try {
-        const { response, data } = await fetchJson(`${BASE_URL}/tutorias/${id}`, {
+        const { response, data } = await fetchJson(`${BASE_URL}/tutoria/${id}`, {
           method: 'GET',
           headers: getAuthHeaders(),
         })
@@ -38,6 +66,8 @@ export const useTutoriaDetalleTutorado = (id) => {
         }
 
         setTutoria(data?.data || null)
+        const insc = await findInscripcion(id)
+        setInscripcion(insc)
       } catch {
         setError('Error al conectar con el servidor')
       } finally {
@@ -48,35 +78,16 @@ export const useTutoriaDetalleTutorado = (id) => {
   )
 
   useEffect(() => {
-    const fetchInitialTutoria = async () => {
-      try {
-        const { response, data } = await fetchJson(`${BASE_URL}/tutorias/${id}`, {
-          method: 'GET',
-          headers: getAuthHeaders(),
-        })
-
-        if (!response.ok) {
-          setError(data?.message || 'No se pudo cargar la tutoria')
-          return
-        }
-
-        setTutoria(data?.data || null)
-      } catch {
-        setError('Error al conectar con el servidor')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchInitialTutoria()
-  }, [id])
+    fetchTutoria(true)
+  }, [fetchTutoria])
 
   const inscribirse = async () => {
     setIsSubmitting(true)
     try {
-      const { response, data } = await fetchJson(`${BASE_URL}/tutorado/inscribirse/${id}`, {
+      const { response, data } = await fetchJson(`${BASE_URL}/asistencia`, {
         method: 'POST',
         headers: getAuthHeaders(),
+        body: JSON.stringify({ idTutoria: Number(id) }),
       })
 
       if (!response.ok) {
@@ -95,8 +106,14 @@ export const useTutoriaDetalleTutorado = (id) => {
   const cancelarInscripcion = async () => {
     setIsSubmitting(true)
     try {
-      const { response, data } = await fetchJson(`${BASE_URL}/tutorado/cancelar/${id}`, {
-        method: 'POST',
+      const insc = inscripcion || (await findInscripcion(id))
+      const idAsistencia = insc?.idAsistencia
+      if (!idAsistencia) {
+        return 'No tienes una inscripcion para cancelar'
+      }
+
+      const { response, data } = await fetchJson(`${BASE_URL}/asistencia/${idAsistencia}`, {
+        method: 'DELETE',
         headers: getAuthHeaders(),
       })
 
@@ -115,6 +132,7 @@ export const useTutoriaDetalleTutorado = (id) => {
 
   return {
     tutoria,
+    inscripcion,
     isLoading,
     error,
     isSubmitting,
