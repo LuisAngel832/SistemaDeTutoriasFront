@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const BASE_URL = 'https://backtutorias.onrender.com'
+const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
 const getAuthHeaders = () => ({
   'Content-Type': 'application/json',
@@ -15,7 +15,7 @@ export const useTutoriasExplorar = () => {
   useEffect(() => {
     const fetchTutorias = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/tutorias/all`, {
+        const response = await fetch(`${BASE_URL}/tutoria/disponibles`, {
           method: 'GET',
           headers: getAuthHeaders(),
         })
@@ -26,8 +26,7 @@ export const useTutoriasExplorar = () => {
         }
 
         const data = await response.json()
-        const activas = (data?.data || []).filter((item) => item.estado === 'PENDIENTE')
-        setTutorias(activas)
+        setTutorias(data?.data || [])
       } catch {
         setError('Error al conectar con el servidor')
       } finally {
