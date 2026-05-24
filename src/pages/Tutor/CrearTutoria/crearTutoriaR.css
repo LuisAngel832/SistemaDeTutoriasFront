@@ -1,23 +1,27 @@
-@media (max-width: 860px) {
+@media (max-width: 720px) {
   .crear-tutoria-form {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 
-  .crear-actions {
-    justify-content: center;
+  .main-crear-tutoria {
+    padding: 1.5rem 0.75rem;
   }
-}
 
-@media (max-width: 640px) {
   .crear-tutoria-content {
-    padding: 1rem;
+    padding: 1.5rem 1.25rem;
   }
 
   .crear-tutoria-content h2 {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 
-  .btn-aceptar {
+  .crear-actions {
+    flex-direction: column-reverse;
+  }
+
+  .crear-actions .btn-aceptar,
+  .crear-actions .btn-secundario {
     width: 100%;
+    justify-content: center;
   }
 }
