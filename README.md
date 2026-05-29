@@ -129,6 +129,34 @@ Por eso los hooks del front pegan a paths relativos (`/auth/signin`, etc.) en
 vez de URLs absolutas, salvo que definas `VITE_API_URL` apuntando a un
 backend desplegado.
 
+## Despliegue en Render (Static Site)
+
+El front se despliega como **Static Site** en Render usando el blueprint
+[`render.yaml`](render.yaml):
+
+| Parametro | Valor |
+| --- | --- |
+| Build command | `npm ci && npm run build` |
+| Publish directory | `dist` |
+| Rewrite (SPA) | `/*` -> `/index.html` |
+| `VITE_API_URL` | `https://tutoriasbe.onrender.com` |
+
+Pasos:
+
+1. En Render: **New + > Blueprint** y selecciona este repositorio. Render lee
+   `render.yaml` y crea el servicio con la configuracion anterior.
+   - Alternativa manual: **New + > Static Site**, build `npm ci && npm run build`,
+     publish `dist`, agrega la env var `VITE_API_URL` y la regla de *rewrite*.
+2. La URL de produccion del backend se toma de [`.env.production`](.env.production)
+   (versionado, sin secretos) y/o de la env var `VITE_API_URL` de Render. Se
+   incrusta en el bundle durante el build.
+
+> **Importante — CORS:** en produccion **no existe el proxy de Vite**, así que el
+> navegador llama al backend en `https://tutoriasbe.onrender.com` desde otro
+> origen. El backend de Spring Boot debe habilitar CORS para el dominio del
+> Static Site (ej. `https://tutorias-frontend.onrender.com`), de lo contrario las
+> peticiones seran bloqueadas por el navegador.
+
 ## Estructura del proyecto
 
 ```
