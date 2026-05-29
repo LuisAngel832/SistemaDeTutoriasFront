@@ -1,0 +1,18 @@
+# Blueprint de Render para desplegar el frontend como Static Site.
+# Importa este repo en Render (New + > Blueprint) y se creara el servicio.
+services:
+  - type: web
+    name: tutorias-frontend
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      # URL del backend que se "hornea" en el bundle durante el build.
+      - key: VITE_API_URL
+        value: https://tutoriasbe.onrender.com
+    # Regla SPA: cualquier ruta sirve index.html para que React Router maneje
+    # el enrutado del lado cliente (evita 404 al recargar /tutor/home, etc.).
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
