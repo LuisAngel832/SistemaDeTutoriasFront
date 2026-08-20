@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import HeaderTR from '../../components/Tutorado/HeaderTR'
+import AppLayout from '../../components/layout/AppLayout'
 import Comentarios from '../../components/Comentarios'
 import { useTutoriaDetalleTutorado } from '../../hooks/useTutoriaDetalleTutorado'
 import './tutoriaDetalle.css'
@@ -109,9 +109,7 @@ const TutoriaDetalle = () => {
   const noInscribible = noInscribiblePorEstado || tooLateParaInscribir
 
   return (
-    <div className="td-page">
-      <HeaderTR />
-
+    <AppLayout className="td-page">
       <main className="td-main">
         <button
           type="button"
@@ -323,7 +321,7 @@ const TutoriaDetalle = () => {
           </div>
         ) : null}
       </main>
-    </div>
+    </AppLayout>
   )
 }
 

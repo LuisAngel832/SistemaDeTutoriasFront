@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import Header from '../../../components/Tutor/Header'
+import AppLayout from '../../../components/layout/AppLayout'
 import Comentarios from '../../../components/Comentarios'
 import useHorarios from '../../../hooks/useHorarios'
 import useTutoriaDetalleTutor from '../../../hooks/useTutoriaDetalleTutor'
@@ -180,9 +180,7 @@ const TutoriaDetalleTutor = () => {
   const hoy = new Date().toISOString().split('T')[0]
 
   return (
-    <div className="tdt-page">
-      <Header />
-
+    <AppLayout className="tdt-page">
       <main className="tdt-main">
         <button
           type="button"
@@ -569,7 +567,7 @@ const TutoriaDetalleTutor = () => {
           </>
         ) : null}
       </main>
-    </div>
+    </AppLayout>
   )
 }
 

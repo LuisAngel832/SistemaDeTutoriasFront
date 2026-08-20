@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import Header from '../../components/Tutor/Header'
+import AppLayout from '../../components/layout/AppLayout'
 import useMisTutorias from '../../hooks/useMisTutorias'
 import './home.css'
 
@@ -78,9 +78,7 @@ const TutorHome = () => {
   const { tutorias, isLoading, error } = useMisTutorias()
 
   return (
-    <div className="tutor-home-page">
-      <Header />
-
+    <AppLayout className="tutor-home-page">
       <main className="tutor-home-main">
         <div className="tutor-home-header">
           <div>
@@ -118,7 +116,7 @@ const TutorHome = () => {
           </div>
         )}
       </main>
-    </div>
+    </AppLayout>
   )
 }
 
