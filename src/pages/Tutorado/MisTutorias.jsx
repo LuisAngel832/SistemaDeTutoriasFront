@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import HeaderTR from '../../components/Tutorado/HeaderTR'
+import AppLayout from '../../components/layout/AppLayout'
 import { useTutoriasTutorado } from '../../hooks/useTutoriasTutorado'
 import './misTutorias.css'
 
@@ -109,9 +109,7 @@ const MisTutorias = () => {
   const todasSinDatos = normalizadas.length > 0 && normalizadas.every((t) => !t.materia)
 
   return (
-    <div className="mt-page">
-      <HeaderTR />
-
+    <AppLayout className="mt-page">
       <main className="mt-main">
         <div className="mt-header">
           <h1>Mis Tutorias</h1>
@@ -164,7 +162,7 @@ const MisTutorias = () => {
           </div>
         )}
       </main>
-    </div>
+    </AppLayout>
   )
 }
 

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import HeaderTR from '../../components/Tutorado/HeaderTR'
+import AppLayout from '../../components/layout/AppLayout'
 import { useTutoriasExplorar } from '../../hooks/useTutoriasExplorar'
 import './homeTutorado.css'
 
@@ -94,9 +94,7 @@ const TutoradoHome = () => {
   }, [tutorias, query])
 
   return (
-    <div className="ex-page">
-      <HeaderTR />
-
+    <AppLayout className="ex-page">
       <main className="ex-main">
         <div className="ex-header">
           <div>
@@ -153,7 +151,7 @@ const TutoradoHome = () => {
           </>
         )}
       </main>
-    </div>
+    </AppLayout>
   )
 }
 

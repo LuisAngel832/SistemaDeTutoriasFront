@@ -1,4 +1,4 @@
-import Header from '../../../components/Tutor/Header'
+import AppLayout from '../../../components/layout/AppLayout'
 import VentanaEmerjente from '../../../components/Tutor/VentanaEmerjente'
 import useCrearTutoria from '../../../hooks/useCrearTutoria'
 import FormCrearTutoria from './FormCrearTutoria'
@@ -39,9 +39,7 @@ const CrearTutoria = () => {
   }
 
   return (
-    <div className="crear-tutoria-page">
-      <Header />
-
+    <AppLayout className="crear-tutoria-page">
       {showModal ? (
         <VentanaEmerjente
           text={mensaje}
@@ -107,7 +105,7 @@ const CrearTutoria = () => {
           </div>
         </div>
       </section>
-    </div>
+    </AppLayout>
   )
 }
 
