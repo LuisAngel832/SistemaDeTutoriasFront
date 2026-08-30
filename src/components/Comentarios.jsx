@@ -41,7 +41,11 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
     <div className="cmt-wrap">
       {puedeEscribir ? (
         <form className="cmt-form" onSubmit={handleEnviar}>
+          <label htmlFor="cmt-texto" className="cmt-label">
+            Tema u observacion que quieres compartir con el tutor
+          </label>
           <textarea
+            id="cmt-texto"
             className="cmt-textarea"
             placeholder="Sugiere un tema o deja una observacion para el tutor..."
             value={texto}

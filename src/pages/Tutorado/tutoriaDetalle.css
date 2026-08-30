@@ -213,8 +213,11 @@
   color: #1f5aab;
   font-size: 0.82rem;
   padding: 0.3rem 0.7rem;
-  border-radius: 999px;
+  border-radius: 14px;
   font-weight: 500;
+  /* Un tema largo se ajusta a la tarjeta en vez de desbordarla. */
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 /* SIDEBAR */

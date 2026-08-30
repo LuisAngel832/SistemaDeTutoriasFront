@@ -54,17 +54,28 @@ const useAutentificacion = () => {
         return
       }
 
-      const { token, rol } = body.data ?? {}
+      const { token, rol, nombre, apellidoP, apellidoM } = body.data ?? {}
       if (!token || !rol) {
         setError('Respuesta del servidor invalida')
         return
       }
 
       const rolNormalizado = normalizeRol(rol)
+      const nombreCompleto = [nombre, apellidoP, apellidoM]
+        .filter(Boolean)
+        .join(' ')
+        .trim()
 
       localStorage.setItem('token', token)
       localStorage.setItem('rol', rolNormalizado)
       localStorage.setItem('matricula', matricula)
+
+      // El nombre es opcional: no todos los endpoints de login lo devuelven.
+      if (nombreCompleto) {
+        localStorage.setItem('nombre', nombreCompleto)
+      } else {
+        localStorage.removeItem('nombre')
+      }
 
       if (rolNormalizado === 'tutor') {
         navigate('/tutor/home')

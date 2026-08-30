@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
+import { getSesion, suscribirSesion } from '../../utils/sesion'
 import '../../assets/css/components/sidebar.css'
 
 const MENU_POR_ROL = {
@@ -10,7 +11,7 @@ const MENU_POR_ROL = {
     items: [
       { to: '/tutor/home', label: 'Mis Tutorias', icon: 'tutorias', end: true },
       { to: '/tutor/crear', label: 'Crear Tutoria', icon: 'crear' },
-      { to: '/tutor/agregar-horario', label: 'Agregar Horario', icon: 'horario' },
+      { to: '/tutor/agregar-horario', label: 'Crear Horario', icon: 'horario' },
     ],
   },
   tutorado: {
@@ -31,17 +32,19 @@ const AppLayout = ({ children, className = '' }) => {
     () => localStorage.getItem(STORAGE_KEY) === 'true',
   )
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [sesion, setSesion] = useState(getSesion)
 
-  const rol = localStorage.getItem('rol') || ''
+  const { nombre, matricula, rol } = sesion
   const menu = MENU_POR_ROL[rol] ?? MENU_POR_ROL.tutorado
-  const usuario =
-    localStorage.getItem('nombre') || localStorage.getItem('matricula') || 'Usuario'
 
   const activo = menu.items.find((item) =>
     item.end
       ? location.pathname === item.to
       : location.pathname.startsWith(item.to),
   )
+
+  // El nombre puede completarse despues del login (ver utils/sesion).
+  useEffect(() => suscribirSesion(() => setSesion(getSesion())), [])
 
   useEffect(() => {
     setMobileOpen(false)
@@ -75,7 +78,8 @@ const AppLayout = ({ children, className = '' }) => {
         items={menu.items}
         brandTo={menu.brandTo}
         seccion={menu.seccion}
-        usuario={usuario}
+        nombre={nombre}
+        matricula={matricula}
         rol={rol}
         collapsed={collapsed}
         onToggleCollapse={toggleCollapse}

@@ -15,6 +15,15 @@
   padding: 0.85rem;
 }
 
+.cmt-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #485468;
+  overflow-wrap: anywhere;
+}
+
 .cmt-textarea {
   width: 100%;
   box-sizing: border-box;

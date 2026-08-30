@@ -111,10 +111,10 @@ const useTutoriaDetalleTutor = (id) => {
         body: JSON.stringify({ idTutoria: Number(id), tema: limpio }),
       })
       if (!response.ok) {
-        return { ok: false, message: data?.message || 'No se pudo agregar el tema' }
+        return { ok: false, message: data?.message || 'No se pudo crear el tema' }
       }
       await fetchTutoria(false)
-      return { ok: true, message: data?.message || 'Tema agregado' }
+      return { ok: true, message: data?.message || 'Tema creado' }
     } catch {
       return { ok: false, message: 'Error al conectar con el servidor' }
     }

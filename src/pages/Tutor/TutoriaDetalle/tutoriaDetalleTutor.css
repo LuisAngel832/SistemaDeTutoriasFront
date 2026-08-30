@@ -234,6 +234,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .tdt-tema-chip {
@@ -241,11 +243,20 @@
   color: #1f5aab;
   font-size: 0.82rem;
   padding: 0.3rem 0.7rem;
-  border-radius: 999px;
+  /* Radio suave: un tema largo puede ocupar mas de una linea. */
+  border-radius: 14px;
   font-weight: 500;
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.tdt-tema-chip-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .tdt-tema-chip.editable {
@@ -265,6 +276,7 @@
 }
 
 .tdt-tema-x {
+  flex-shrink: 0;
   width: 18px;
   height: 18px;
   border: none;
@@ -301,8 +313,18 @@
 
 .tdt-tema-add {
   display: flex;
+  align-items: center;
   gap: 0.4rem;
-  max-width: 360px;
+  max-width: 100%;
+  width: 360px;
+  min-width: 0;
+}
+
+.tdt-tema-add-count {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  color: #8a93a3;
+  font-variant-numeric: tabular-nums;
 }
 
 .tdt-tema-add-input {

@@ -55,7 +55,7 @@ const AgregarHorarioForm = () => {
     setIsSubmitting(true)
     try {
       await crearHorario(payload)
-      setFeedback({ type: 'success', text: 'Horario agregado correctamente.' })
+      setFeedback({ type: 'success', text: 'Horario creado correctamente.' })
       limpiar()
     } catch (err) {
       setFeedback({ type: 'error', text: err.message })
@@ -84,7 +84,7 @@ const AgregarHorarioForm = () => {
         <div className="horario-header">
           <h2>
             <span className="horario-icon" aria-hidden="true">🕐</span>
-            Agregar Horario
+            Crear Horario
           </h2>
           <p className="horario-subtitle">
             Define los bloques recurrentes en los que puedes dar tutorias.
@@ -97,8 +97,14 @@ const AgregarHorarioForm = () => {
 
         <div className="horario-form">
           <div className="form-field full">
-            <label className="form-label">Dia de la semana</label>
-            <div className="dia-chips" role="radiogroup" aria-label="Dia de la semana">
+            <label className="form-label" id="label-dia-semana">
+              Dia de la semana en que estaras disponible
+            </label>
+            <div
+              className="dia-chips"
+              role="radiogroup"
+              aria-labelledby="label-dia-semana"
+            >
               {DIAS.map((d) => (
                 <button
                   key={d.key}
@@ -117,7 +123,7 @@ const AgregarHorarioForm = () => {
 
           <div className="form-field">
             <label htmlFor="hora-inicio" className="form-label">
-              Hora de inicio
+              Hora en que inicia tu disponibilidad
             </label>
             <input
               id="hora-inicio"
@@ -131,7 +137,7 @@ const AgregarHorarioForm = () => {
 
           <div className="form-field">
             <label htmlFor="hora-fin" className="form-label">
-              Hora final
+              Hora en que termina tu disponibilidad
             </label>
             <input
               id="hora-fin"
@@ -165,7 +171,7 @@ const AgregarHorarioForm = () => {
                 Guardando...
               </>
             ) : (
-              'Agregar Horario'
+              'Crear Horario'
             )}
           </button>
         </div>
@@ -186,7 +192,7 @@ const AgregarHorarioForm = () => {
             </div>
           ) : horarios.length === 0 ? (
             <div className="horarios-empty">
-              Aun no tienes horarios. Agrega uno arriba para empezar.
+              Aun no tienes horarios. Crea uno arriba para empezar.
             </div>
           ) : (
             <ul className="horarios-lista">

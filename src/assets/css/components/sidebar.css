@@ -201,7 +201,7 @@
 
 .sidebar-user {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.65rem;
   padding: 0.6rem 0.65rem;
   border-radius: 10px;
@@ -215,6 +215,7 @@
   justify-content: center;
   width: 34px;
   height: 34px;
+  margin-top: 2px;
   flex-shrink: 0;
   border-radius: 50%;
   background-color: #4ade80;
@@ -240,10 +241,20 @@
   text-overflow: ellipsis;
 }
 
+.sidebar-user-matricula {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.74rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .sidebar-user-role {
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 0.75rem;
-  text-transform: capitalize;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

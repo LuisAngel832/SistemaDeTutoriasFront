@@ -108,8 +108,10 @@ const TutoradoHome = () => {
             <span className="ex-search-icon" aria-hidden="true">🔍</span>
             <input
               type="search"
+              id="buscar-tutoria"
               className="ex-search-input"
-              placeholder="Buscar por materia o tutor..."
+              aria-label="Buscar tutorias por materia o por nombre del tutor"
+              placeholder="Buscar por materia o nombre del tutor..."
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
