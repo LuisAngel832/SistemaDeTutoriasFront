@@ -48,7 +48,7 @@ const useHorarios = () => {
     })
     const body = await response.json().catch(() => null)
     if (!response.ok) {
-      throw new Error(body?.message || 'No se pudo agregar el horario')
+      throw new Error(body?.message || 'No se pudo crear el horario')
     }
     await fetchHorarios()
     return body

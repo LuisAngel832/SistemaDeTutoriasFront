@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AppLayout from '../../components/layout/AppLayout'
 import useMisTutorias from '../../hooks/useMisTutorias'
+import { guardarNombreUsuario } from '../../utils/sesion'
 import './home.css'
 
 const ESTADO_CLASS = {
@@ -76,6 +78,13 @@ const TutoriaCard = ({ tutoria }) => {
 
 const TutorHome = () => {
   const { tutorias, isLoading, error } = useMisTutorias()
+
+  // El login no devuelve el nombre del tutor, pero si viene en sus tutorias:
+  // lo guardamos para poder mostrarlo en la tarjeta del sidebar.
+  useEffect(() => {
+    const conNombre = tutorias.find((tutoria) => tutoria.nombreTutor)
+    if (conNombre) guardarNombreUsuario(conNombre.nombreTutor)
+  }, [tutorias])
 
   return (
     <AppLayout className="tutor-home-page">

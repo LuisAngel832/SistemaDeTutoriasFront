@@ -26,7 +26,7 @@ const FormCrearTutoria = ({
     <form className="crear-tutoria-form" onSubmit={(event) => event.preventDefault()}>
       <div className="input-group">
         <label htmlFor="nrc-materia" className="crear-tutoria-label">
-          Materia
+          Materia que impartiras
         </label>
         <div className="select-wrapper">
           <select
@@ -56,7 +56,7 @@ const FormCrearTutoria = ({
 
       <div className="input-group">
         <label htmlFor="horario" className="crear-tutoria-label">
-          Horario
+          Horario en el que daras la tutoria
         </label>
         <div className="select-wrapper">
           <select
@@ -79,7 +79,7 @@ const FormCrearTutoria = ({
         </div>
         {sinHorarios ? (
           <p className="empty-horarios">
-            Primero <Link to="/tutor/agregar-horario">agrega un horario</Link> para
+            Primero <Link to="/tutor/agregar-horario">crea un horario</Link> para
             poder crear una tutoria.
           </p>
         ) : null}
@@ -87,7 +87,7 @@ const FormCrearTutoria = ({
 
       <div className="input-group">
         <label htmlFor="fecha" className="crear-tutoria-label">
-          Fecha
+          Fecha en que se dara la tutoria
         </label>
         <input
           type="date"
@@ -102,7 +102,7 @@ const FormCrearTutoria = ({
 
       <div className="input-group">
         <label htmlFor="edificio" className="crear-tutoria-label">
-          Edificio
+          Edificio donde se dara la tutoria
         </label>
         <div className="select-wrapper">
           <select
@@ -121,7 +121,7 @@ const FormCrearTutoria = ({
 
       <div className="input-group full">
         <label htmlFor="aula" className="crear-tutoria-label">
-          Aula
+          Aula donde se dara la tutoria
         </label>
         <div className="select-wrapper">
           <select
@@ -145,8 +145,15 @@ const FormCrearTutoria = ({
       </div>
 
       <div className="input-group full">
-        <label className="crear-tutoria-label">Temas a tratar</label>
-        <TemasInput temas={temas} onAdd={agregarTema} onRemove={quitarTema} />
+        <label htmlFor="tema-nuevo" className="crear-tutoria-label">
+          Temas a tratar durante la tutoria (opcional)
+        </label>
+        <TemasInput
+          inputId="tema-nuevo"
+          temas={temas}
+          onAdd={agregarTema}
+          onRemove={quitarTema}
+        />
       </div>
     </form>
   )

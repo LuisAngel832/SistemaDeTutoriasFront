@@ -127,8 +127,14 @@ const Registro = () => {
 
           <form className="auth-form registro-grid" onSubmit={handleRegistro}>
             <div className="auth-field full">
-              <label className="auth-label">Soy</label>
-              <div className="rol-chips" role="radiogroup" aria-label="Tipo de cuenta">
+              <label className="auth-label" id="label-tipo-cuenta">
+                Tipo de cuenta que quieres crear
+              </label>
+              <div
+                className="rol-chips"
+                role="radiogroup"
+                aria-labelledby="label-tipo-cuenta"
+              >
                 {ROLES.map((r) => (
                   <button
                     key={r.key}
@@ -153,7 +159,7 @@ const Registro = () => {
 
             <div className="auth-field">
               <label htmlFor="nombre" className="auth-label">
-                Nombre
+                Nombre(s)
               </label>
               <input
                 id="nombre"
@@ -171,7 +177,7 @@ const Registro = () => {
 
             <div className="auth-field">
               <label htmlFor="matricula" className="auth-label">
-                Matricula
+                Matricula institucional
               </label>
               <input
                 id="matricula"
@@ -225,7 +231,7 @@ const Registro = () => {
 
             <div className="auth-field full">
               <label htmlFor="correo" className="auth-label">
-                Correo electronico
+                Correo electronico de contacto
               </label>
               <input
                 id="correo"
@@ -243,7 +249,7 @@ const Registro = () => {
 
             <div className="auth-field full">
               <label htmlFor="password" className="auth-label">
-                Contrasena
+                Contrasena para tu cuenta
               </label>
               <div className="auth-input-wrap">
                 <input

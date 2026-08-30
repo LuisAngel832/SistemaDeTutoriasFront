@@ -28,12 +28,14 @@ const formatFecha = (fecha) => {
 
 const formatHora = (hora) => (hora ? hora.slice(0, 5) : '—')
 
+const MAX_CARACTERES_TEMA = 60
+
 const TemaQuickInput = ({ onAdd, disabled }) => {
   const [draft, setDraft] = useState('')
 
   const submit = () => {
     if (!draft.trim()) return
-    onAdd(draft)
+    onAdd(draft.slice(0, MAX_CARACTERES_TEMA))
     setDraft('')
   }
 
@@ -42,9 +44,10 @@ const TemaQuickInput = ({ onAdd, disabled }) => {
       <input
         type="text"
         className="tdt-tema-add-input"
-        placeholder="Agregar un tema..."
+        placeholder="Escribe un tema nuevo..."
+        aria-label="Tema nuevo para esta tutoria"
         value={draft}
-        onChange={(e) => setDraft(e.target.value)}
+        onChange={(e) => setDraft(e.target.value.slice(0, MAX_CARACTERES_TEMA))}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ',') {
             e.preventDefault()
@@ -52,16 +55,21 @@ const TemaQuickInput = ({ onAdd, disabled }) => {
           }
         }}
         disabled={disabled}
-        maxLength={80}
+        maxLength={MAX_CARACTERES_TEMA}
       />
       <button
         type="button"
         className="tdt-tema-add-btn"
         onClick={submit}
         disabled={disabled || !draft.trim()}
+        aria-label="Crear tema"
+        title="Crear tema"
       >
         +
       </button>
+      <span className="tdt-tema-add-count">
+        {draft.length}/{MAX_CARACTERES_TEMA}
+      </span>
     </div>
   )
 }
@@ -278,7 +286,9 @@ const TutoriaDetalleTutor = () => {
                                   key={tema.idTema ?? index}
                                   className="tdt-tema-chip editable"
                                 >
-                                  {tema.tema || tema.nombre || String(tema)}
+                                  <span className="tdt-tema-chip-text">
+                                    {tema.tema || tema.nombre || String(tema)}
+                                  </span>
                                   {tema.idTema ? (
                                     <button
                                       type="button"
@@ -294,7 +304,7 @@ const TutoriaDetalleTutor = () => {
                               ))
                             ) : (
                               <span className="tdt-temas-empty">
-                                Aun no hay temas. Agrega abajo.
+                                Aun no hay temas. Crea uno abajo.
                               </span>
                             )}
                           </div>
@@ -310,7 +320,9 @@ const TutoriaDetalleTutor = () => {
                         <div className="tdt-temas">
                           {tutoria.temas.map((tema, index) => (
                             <span key={tema.idTema ?? index} className="tdt-tema-chip">
-                              {tema.tema || tema.nombre || String(tema)}
+                              <span className="tdt-tema-chip-text">
+                                {tema.tema || tema.nombre || String(tema)}
+                              </span>
                             </span>
                           ))}
                         </div>
@@ -326,7 +338,7 @@ const TutoriaDetalleTutor = () => {
                     <div className="tdt-form-grid">
                       <div className="tdt-field">
                         <label className="tdt-label" htmlFor="edit-horario">
-                          Horario
+                          Horario en el que daras la tutoria
                         </label>
                         <select
                           id="edit-horario"
@@ -345,7 +357,7 @@ const TutoriaDetalleTutor = () => {
 
                       <div className="tdt-field">
                         <label className="tdt-label" htmlFor="edit-fecha">
-                          Fecha
+                          Fecha en que se dara la tutoria
                         </label>
                         <input
                           id="edit-fecha"
@@ -359,7 +371,7 @@ const TutoriaDetalleTutor = () => {
 
                       <div className="tdt-field">
                         <label className="tdt-label" htmlFor="edit-edificio">
-                          Edificio
+                          Edificio donde se dara la tutoria
                         </label>
                         <select
                           id="edit-edificio"
@@ -375,7 +387,7 @@ const TutoriaDetalleTutor = () => {
 
                       <div className="tdt-field">
                         <label className="tdt-label" htmlFor="edit-aula">
-                          Aula
+                          Aula donde se dara la tutoria
                         </label>
                         <select
                           id="edit-aula"

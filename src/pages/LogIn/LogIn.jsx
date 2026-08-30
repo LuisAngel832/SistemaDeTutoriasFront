@@ -79,7 +79,7 @@ const LogIn = () => {
           <form className="auth-form" onSubmit={handleLogin}>
             <div className="auth-field">
               <label htmlFor="matricula" className="auth-label">
-                Matricula
+                Matricula institucional
               </label>
               <input
                 type="text"
@@ -97,7 +97,7 @@ const LogIn = () => {
 
             <div className="auth-field">
               <label htmlFor="contrasena" className="auth-label">
-                Contrasena
+                Contrasena de tu cuenta
               </label>
               <div className="auth-input-wrap">
                 <input

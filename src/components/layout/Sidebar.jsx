@@ -30,7 +30,8 @@ const Sidebar = ({
   items,
   brandTo,
   seccion,
-  usuario,
+  nombre,
+  matricula,
   rol,
   collapsed,
   onToggleCollapse,
@@ -38,6 +39,9 @@ const Sidebar = ({
   onCloseMobile,
 }) => {
   const { logout } = useAutentificacion()
+
+  const nombreVisible = nombre || 'Usuario'
+  const resumenUsuario = [nombre, matricula, rol].filter(Boolean).join(' - ')
 
   return (
     <aside
@@ -97,12 +101,19 @@ const Sidebar = ({
       </nav>
 
       <div className="sidebar-footer">
-        <div className="sidebar-user" title={collapsed ? usuario : undefined}>
+        <div className="sidebar-user" title={collapsed ? resumenUsuario : undefined}>
           <span className="sidebar-avatar" aria-hidden="true">
-            {getIniciales(usuario)}
+            {getIniciales(nombre || matricula || 'Usuario')}
           </span>
           <span className="sidebar-user-info">
-            <span className="sidebar-user-name">{usuario}</span>
+            <span className="sidebar-user-name" title={nombreVisible}>
+              {nombreVisible}
+            </span>
+            {matricula ? (
+              <span className="sidebar-user-matricula">
+                Matricula: {matricula}
+              </span>
+            ) : null}
             {rol ? <span className="sidebar-user-role">{rol}</span> : null}
           </span>
         </div>
