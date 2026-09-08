@@ -7,8 +7,8 @@ import './crearTutoriaR.css'
 
 const CrearTutoria = () => {
   const {
-    nrcMateria,
-    setNrcMateria,
+    nrcExperiencia,
+    setNrcExperiencia,
     horario,
     setHorario,
     fecha,
@@ -25,12 +25,12 @@ const CrearTutoria = () => {
     quitarTema,
     handleSubmit,
     horariosDisponibles,
-    materiasDisponibles,
+    experienciasDisponibles,
     isSubmitting,
   } = useCrearTutoria()
 
   const handleLimpiar = () => {
-    setNrcMateria('')
+    setNrcExperiencia('')
     setHorario('')
     setFecha('')
     setEdificio('')
@@ -61,8 +61,8 @@ const CrearTutoria = () => {
           </div>
 
           <FormCrearTutoria
-            nrcMateria={nrcMateria}
-            setNrcMateria={setNrcMateria}
+            nrcExperiencia={nrcExperiencia}
+            setNrcExperiencia={setNrcExperiencia}
             horario={horario}
             setHorario={setHorario}
             fecha={fecha}
@@ -72,7 +72,7 @@ const CrearTutoria = () => {
             aula={aula}
             setAula={setAula}
             horariosDisponibles={horariosDisponibles}
-            materiasDisponibles={materiasDisponibles}
+            experienciasDisponibles={experienciasDisponibles}
             temas={temas}
             agregarTema={agregarTema}
             quitarTema={quitarTema}

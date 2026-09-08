@@ -33,7 +33,7 @@ const TutoriaCard = ({ tutoria }) => {
     <article className="ex-card">
       <div className="ex-card-top">
         <div className="ex-card-titles">
-          <h3 className="ex-materia">{tutoria.materia || 'Materia sin nombre'}</h3>
+          <h3 className="ex-experiencia">{tutoria.materia || 'Experiencia Educativa sin nombre'}</h3>
           {tutoria.nombreTutor ? (
             <p className="ex-tutor">Imparte {tutoria.nombreTutor}</p>
           ) : null}
@@ -110,8 +110,8 @@ const TutoradoHome = () => {
               type="search"
               id="buscar-tutoria"
               className="ex-search-input"
-              aria-label="Buscar tutorias por materia o por nombre del tutor"
-              placeholder="Buscar por materia o nombre del tutor..."
+              aria-label="Buscar tutorias por Experiencia Educativa o por nombre del tutor"
+              placeholder="Buscar por Experiencia Educativa o nombre del tutor..."
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />

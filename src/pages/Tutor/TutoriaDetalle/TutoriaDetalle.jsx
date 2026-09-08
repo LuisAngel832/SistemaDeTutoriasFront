@@ -221,8 +221,8 @@ const TutoriaDetalleTutor = () => {
               <article className="tdt-hero">
                 <div className="tdt-hero-header">
                   <div className="tdt-hero-titles">
-                    <h1 className="tdt-materia">
-                      {tutoria.materia || 'Materia sin nombre'}
+                    <h1 className="tdt-experiencia">
+                      {tutoria.materia || 'Experiencia Educativa sin nombre'}
                     </h1>
                     {tutoria.nombreTutor ? (
                       <p className="tdt-tutor">

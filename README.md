@@ -29,7 +29,7 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 
 ### Panel del Tutor
 - Listado de tutorias propias con estado, fecha, horario, lugar y temas.
-- Creacion de tutorias: seleccion de materia (cargada del back), horario, fecha,
+- Creacion de tutorias: seleccion de Experiencia Educativa (cargada del back), horario, fecha,
   edificio, aula y **temas tentativos** (chips dinamicos).
 - Gestion de horarios recurrentes con selector de dia, hora inicio/fin y lista
   inline de los horarios creados (eliminacion en un click).
@@ -41,7 +41,7 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
   - Vista de comentarios y sugerencias de los tutorados.
 
 ### Panel del Tutorado
-- Explorar tutorias disponibles con buscador por materia o tutor.
+- Explorar tutorias disponibles con buscador por Experiencia Educativa o tutor.
 - Detalle de tutoria con inscripcion y cancelacion (la cancelacion respeta la
   regla del backend: hasta 15 min antes de inicio).
 - Zona de comentarios para sugerir temas u observaciones previas a la sesion.
@@ -222,7 +222,7 @@ Endpoints consumidos:
 
 - `POST /auth/signup`, `POST /auth/signin`
 - `GET/POST/PUT/DELETE /horario`, `GET /horario/{id}`
-- `GET /materia` (cargado de la lista de materias para crear tutoria)
+- `GET /materia` (cargado de la lista de experiencias educativas para crear tutoria)
 - `POST /tutoria`, `GET /tutoria/mis-tutorias`, `GET /tutoria/disponibles`,
   `GET/PUT/DELETE /tutoria/{id}`, `PUT /tutoria/completar/{id}`
 - `POST /temas`, `GET /temas/tutoria/{id}`, `DELETE /temas/{id}` (RF14)

@@ -34,7 +34,7 @@ const normalizar = (item, index) => {
   return {
     key: item.idAsistencia ?? tutoria.id ?? tutoria.idTutoria ?? `item-${index}`,
     idTutoria: tutoria.id ?? tutoria.idTutoria,
-    materia: tutoria.materia,
+    experiencia: tutoria.materia,
     fecha: tutoria.fecha,
     horaInicio: tutoria.horaInicio ?? tutoria.horario?.horaInicio,
     horaFin: tutoria.horaFin ?? tutoria.horario?.horaFin,
@@ -47,7 +47,7 @@ const normalizar = (item, index) => {
 
 const Card = ({ item }) => {
   const estadoClass = ESTADO_CLASS[item.estado?.toUpperCase()] || 'otro'
-  const sinDatos = !item.materia && !item.fecha
+  const sinDatos = !item.experiencia && !item.fecha
 
   if (sinDatos) {
     return (
@@ -64,7 +64,7 @@ const Card = ({ item }) => {
     <article className="mt-card">
       <div className="mt-card-top">
         <div className="mt-titles">
-          <h3 className="mt-materia">{item.materia || 'Materia sin nombre'}</h3>
+          <h3 className="mt-experiencia">{item.experiencia || 'Experiencia Educativa sin nombre'}</h3>
           {item.nombreTutor ? (
             <p className="mt-tutor">Imparte {item.nombreTutor}</p>
           ) : null}
@@ -106,7 +106,7 @@ const MisTutorias = () => {
   const { tutorias, isLoading, error } = useTutoriasTutorado()
 
   const normalizadas = tutorias.map(normalizar)
-  const todasSinDatos = normalizadas.length > 0 && normalizadas.every((t) => !t.materia)
+  const todasSinDatos = normalizadas.length > 0 && normalizadas.every((t) => !t.experiencia)
 
   return (
     <AppLayout className="mt-page">

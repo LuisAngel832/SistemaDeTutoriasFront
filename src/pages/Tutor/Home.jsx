@@ -35,7 +35,7 @@ const TutoriaCard = ({ tutoria }) => {
       <article className="tutoria-card">
         <div className="tutoria-card-top">
           <div>
-            <h3 className="tutoria-materia">{tutoria.materia || 'Materia sin nombre'}</h3>
+            <h3 className="tutoria-experiencia">{tutoria.materia || 'Experiencia Educativa sin nombre'}</h3>
             {tutoria.nombreTutor ? (
               <p className="tutoria-tutor">{tutoria.nombreTutor}</p>
             ) : null}

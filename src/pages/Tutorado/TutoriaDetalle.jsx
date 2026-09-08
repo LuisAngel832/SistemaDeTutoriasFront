@@ -138,7 +138,7 @@ const TutoriaDetalle = () => {
             <article className="td-hero">
               <div className="td-hero-header">
                 <div className="td-hero-titles">
-                  <h1 className="td-materia">{tutoria.materia || 'Materia sin nombre'}</h1>
+                  <h1 className="td-experiencia">{tutoria.materia || 'Experiencia Educativa sin nombre'}</h1>
                   {tutoria.nombreTutor ? (
                     <p className="td-tutor">
                       <span className="td-tutor-label">Imparte</span>{' '}

@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom'
 import TemasInput from '../../../components/Tutor/TemasInput'
 
 const FormCrearTutoria = ({
-  nrcMateria,
-  setNrcMateria,
+  nrcExperiencia,
+  setNrcExperiencia,
   horario,
   setHorario,
   fecha,
@@ -16,40 +16,42 @@ const FormCrearTutoria = ({
   agregarTema,
   quitarTema,
   horariosDisponibles,
-  materiasDisponibles,
+  experienciasDisponibles,
 }) => {
   const sinHorarios = horariosDisponibles.length === 0
-  const sinMaterias = materiasDisponibles.length === 0
+  const sinExperiencias = experienciasDisponibles.length === 0
   const hoy = new Date().toISOString().split('T')[0]
 
   return (
     <form className="crear-tutoria-form" onSubmit={(event) => event.preventDefault()}>
       <div className="input-group">
-        <label htmlFor="nrc-materia" className="crear-tutoria-label">
-          Materia que impartiras
+        <label htmlFor="nrc-experiencia" className="crear-tutoria-label">
+          Experiencia Educativa que impartiras
         </label>
         <div className="select-wrapper">
           <select
             className="crear-tutoria-input select"
-            id="nrc-materia"
-            value={nrcMateria}
-            onChange={(event) => setNrcMateria(event.target.value)}
+            id="nrc-experiencia"
+            value={nrcExperiencia}
+            onChange={(event) => setNrcExperiencia(event.target.value)}
             required
-            disabled={sinMaterias}
+            disabled={sinExperiencias}
           >
             <option value="">
-              {sinMaterias ? 'No hay materias registradas' : 'Selecciona la materia'}
+              {sinExperiencias
+                ? 'No hay experiencias educativas registradas'
+                : 'Selecciona la Experiencia Educativa'}
             </option>
-            {materiasDisponibles.map((m) => (
+            {experienciasDisponibles.map((m) => (
               <option key={m.nrc} value={m.nrc}>
                 {m.materia} (NRC {m.nrc})
               </option>
             ))}
           </select>
         </div>
-        {sinMaterias ? (
+        {sinExperiencias ? (
           <p className="empty-horarios">
-            No hay materias disponibles. Pide a un administrador que las registre.
+            No hay experiencias educativas disponibles. Pide a un administrador que las registre.
           </p>
         ) : null}
       </div>

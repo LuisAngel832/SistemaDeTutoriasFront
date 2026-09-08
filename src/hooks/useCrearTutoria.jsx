@@ -8,7 +8,7 @@ const getAuthHeaders = () => ({
 })
 
 const useCrearTutoria = () => {
-  const [nrcMateria, setNrcMateria] = useState('')
+  const [nrcExperiencia, setNrcExperiencia] = useState('')
   const [horario, setHorario] = useState('')
   const [fecha, setFecha] = useState('')
   const [edificio, setEdificio] = useState('')
@@ -17,7 +17,7 @@ const useCrearTutoria = () => {
   const [mensaje, setMensaje] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [horariosDisponibles, setHorariosDisponibles] = useState([])
-  const [materiasDisponibles, setMateriasDisponibles] = useState([])
+  const [experienciasDisponibles, setExperienciasDisponibles] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const agregarTema = (tema) => {
@@ -33,7 +33,7 @@ const useCrearTutoria = () => {
   }
 
   const handleSubmit = async () => {
-    if (!nrcMateria || !horario || !fecha || !edificio || !aula) {
+    if (!nrcExperiencia || !horario || !fecha || !edificio || !aula) {
       setMensaje('Completa todos los campos')
       setShowModal(true)
       return
@@ -42,7 +42,7 @@ const useCrearTutoria = () => {
     const idHorarioNum = Number(horario)
     const edificioNum = Number(edificio)
     const aulaNum = Number(aula)
-    const nrcNum = Number(nrcMateria)
+    const nrcNum = Number(nrcExperiencia)
 
     if (
       !Number.isFinite(idHorarioNum) ||
@@ -83,7 +83,7 @@ const useCrearTutoria = () => {
 
       setMensaje('Tutoria creada correctamente')
       setShowModal(true)
-      setNrcMateria('')
+      setNrcExperiencia('')
       setHorario('')
       setFecha('')
       setEdificio('')
@@ -120,7 +120,7 @@ const useCrearTutoria = () => {
       }
     }
 
-    const fetchMaterias = async () => {
+    const fetchExperiencias = async () => {
       try {
         const response = await fetch(`${BASE_URL}/materia`, {
           method: 'GET',
@@ -132,19 +132,19 @@ const useCrearTutoria = () => {
         }
 
         const data = await response.json()
-        setMateriasDisponibles(data?.data || [])
+        setExperienciasDisponibles(data?.data || [])
       } catch {
-        setMateriasDisponibles([])
+        setExperienciasDisponibles([])
       }
     }
 
     fetchHorarios()
-    fetchMaterias()
+    fetchExperiencias()
   }, [])
 
   return {
-    nrcMateria,
-    setNrcMateria,
+    nrcExperiencia,
+    setNrcExperiencia,
     horario,
     setHorario,
     fecha,
@@ -161,7 +161,7 @@ const useCrearTutoria = () => {
     quitarTema,
     handleSubmit,
     horariosDisponibles,
-    materiasDisponibles,
+    experienciasDisponibles,
     isSubmitting,
   }
 }
