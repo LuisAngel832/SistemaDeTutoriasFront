@@ -1,0 +1,5 @@
+# Commits de formato masivo que se omiten en git blame.
+# Uso local: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: formatear el proyecto con prettier
+956df5be2a80930ee6bfbcb69a59e3e234e25e12
