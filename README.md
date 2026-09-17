@@ -66,6 +66,7 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 | Build & dev server | [Vite](https://vitejs.dev/) 8                                             |
 | UI                 | [React](https://react.dev/) 19                                            |
 | Routing            | [react-router-dom](https://reactrouter.com/) 7                            |
+| Pruebas            | Vitest + Testing Library (jsdom) y MSW                                    |
 | Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh` |
 | Formato            | Prettier 3 + lint-staged (pre-commit) y commitlint (commit-msg)           |
 | Lenguaje           | JavaScript (JSX)                                                          |
@@ -111,14 +112,17 @@ local esta listado en `.gitignore`.
 
 ## Scripts disponibles
 
-| Comando                | Descripcion                                                                                              |
-| ---------------------- | -------------------------------------------------------------------------------------------------------- |
-| `npm run dev`          | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
-| `npm run build`        | Compila a produccion en la carpeta `dist/`.                                                              |
-| `npm run preview`      | Sirve el `dist/` localmente para probar el build.                                                        |
-| `npm run lint`         | Ejecuta ESLint sobre todo el codigo.                                                                     |
-| `npm run format`       | Formatea todo el proyecto con Prettier.                                                                  |
-| `npm run format:check` | Verifica el formato sin modificar archivos (lo usa el CI).                                               |
+| Comando                 | Descripcion                                                                                              |
+| ----------------------- | -------------------------------------------------------------------------------------------------------- |
+| `npm run dev`           | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
+| `npm run build`         | Compila a produccion en la carpeta `dist/`.                                                              |
+| `npm run preview`       | Sirve el `dist/` localmente para probar el build.                                                        |
+| `npm run lint`          | Ejecuta ESLint sobre todo el codigo.                                                                     |
+| `npm run format`        | Formatea todo el proyecto con Prettier.                                                                  |
+| `npm run format:check`  | Verifica el formato sin modificar archivos (lo usa el CI).                                               |
+| `npm run test`          | Ejecuta las pruebas con Vitest en modo watch.                                                            |
+| `npm run test:run`      | Ejecuta las pruebas una sola vez (lo usa el CI).                                                         |
+| `npm run test:coverage` | Ejecuta las pruebas y genera el reporte de cobertura en `coverage/`.                                     |
 
 ## Calidad de codigo
 
@@ -126,7 +130,7 @@ local esta listado en `.gitignore`.
   en stage, y commitlint valida que el mensaje siga Conventional Commits. Se instalan solos
   con `npm install`.
 - **CI (GitHub Actions):** cada push y PR hacia `main` o `develop` corre lint, verificacion de
-  formato y build ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+  formato, pruebas y build ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 - **Dependabot** propone actualizaciones semanales de dependencias.
 - **git blame:** para omitir el commit de formato masivo ejecuta una vez
   `git config blame.ignoreRevsFile .git-blame-ignore-revs`.

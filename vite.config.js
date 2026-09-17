@@ -28,5 +28,17 @@ export default defineConfig(({ mode }) => {
         '/comentarios': proxyTarget,
       },
     },
+    test: {
+      environment: 'jsdom',
+      setupFiles: ['./src/test/setup.js'],
+      css: false,
+      restoreMocks: true,
+      coverage: {
+        provider: 'v8',
+        include: ['src/**/*.{js,jsx}'],
+        exclude: ['src/test/**', 'src/main.jsx', 'src/**/*.test.{js,jsx}'],
+        reporter: ['text-summary', 'html'],
+      },
+    },
   }
 })

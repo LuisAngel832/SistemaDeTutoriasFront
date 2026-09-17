@@ -31,6 +31,13 @@ export default defineConfig([
       globals: { ...globals.node },
     },
   },
+  {
+    // Las pruebas corren en Node (Vitest) con un DOM simulado.
+    files: ['src/test/**', '**/*.test.{js,jsx}'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+    },
+  },
   // Siempre al final: desactiva las reglas de estilo que resuelve Prettier.
   prettier,
 ])
