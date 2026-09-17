@@ -13,11 +13,12 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 - [Instalacion](#instalacion)
 - [Configuracion del entorno](#configuracion-del-entorno)
 - [Scripts disponibles](#scripts-disponibles)
+- [Calidad de codigo](#calidad-de-codigo)
 - [Proxy de desarrollo y CORS](#proxy-de-desarrollo-y-cors)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Rutas principales](#rutas-principales)
 - [Integracion con el backend](#integracion-con-el-backend)
-- [Convenciones de commits y ramas](#convenciones-de-commits-y-ramas)
+- [Contribuir](#contribuir)
 - [Solucion de problemas comunes](#solucion-de-problemas-comunes)
 
 ## Funcionalidades
@@ -53,7 +54,8 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 ### Interfaz
 
 - Diseno responsive con breakpoints para escritorio, tablet y movil.
-- Header con menu hamburguesa y drawer lateral en pantallas pequenas.
+- Sidebar lateral colapsable (se recuerda la preferencia) y drawer con menu hamburguesa en
+  pantallas pequenas.
 - Tema visual unificado (paleta azul/verde) con animaciones sutiles.
 - Soporte para `prefers-reduced-motion`.
 
@@ -65,12 +67,14 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 | UI                 | [React](https://react.dev/) 19                                            |
 | Routing            | [react-router-dom](https://reactrouter.com/) 7                            |
 | Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh` |
+| Formato            | Prettier 3 + lint-staged (pre-commit) y commitlint (commit-msg)           |
 | Lenguaje           | JavaScript (JSX)                                                          |
-| Estilos            | CSS plano por componente                                                  |
+| Estilos            | CSS plano por componente y tipografia Montserrat (Fontsource)             |
 
 ## Requisitos
 
-- **Node.js 20.19+** o **22.12+** (requerido por Vite 8).
+- **Node.js 22.12+** (Vite 8 y commitlint lo requieren). El repo incluye `.nvmrc`:
+  con nvm basta ejecutar `nvm use`.
 - **npm 10+** (incluido con Node).
 - Backend del [Sistema de Tutorias](https://github.com/Shtven/TutoriasBackend)
   corriendo (por defecto en `http://localhost:8080`) si quieres usar las
@@ -107,12 +111,25 @@ local esta listado en `.gitignore`.
 
 ## Scripts disponibles
 
-| Comando           | Descripcion                                                                                              |
-| ----------------- | -------------------------------------------------------------------------------------------------------- |
-| `npm run dev`     | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
-| `npm run build`   | Compila a produccion en la carpeta `dist/`.                                                              |
-| `npm run preview` | Sirve el `dist/` localmente para probar el build.                                                        |
-| `npm run lint`    | Ejecuta ESLint sobre todo el codigo.                                                                     |
+| Comando                | Descripcion                                                                                              |
+| ---------------------- | -------------------------------------------------------------------------------------------------------- |
+| `npm run dev`          | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
+| `npm run build`        | Compila a produccion en la carpeta `dist/`.                                                              |
+| `npm run preview`      | Sirve el `dist/` localmente para probar el build.                                                        |
+| `npm run lint`         | Ejecuta ESLint sobre todo el codigo.                                                                     |
+| `npm run format`       | Formatea todo el proyecto con Prettier.                                                                  |
+| `npm run format:check` | Verifica el formato sin modificar archivos (lo usa el CI).                                               |
+
+## Calidad de codigo
+
+- **Hooks de git (Husky):** al hacer commit se ejecutan ESLint y Prettier sobre los archivos
+  en stage, y commitlint valida que el mensaje siga Conventional Commits. Se instalan solos
+  con `npm install`.
+- **CI (GitHub Actions):** cada push y PR hacia `main` o `develop` corre lint, verificacion de
+  formato y build ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+- **Dependabot** propone actualizaciones semanales de dependencias.
+- **git blame:** para omitir el commit de formato masivo ejecuta una vez
+  `git config blame.ignoreRevsFile .git-blame-ignore-revs`.
 
 ## Proxy de desarrollo y CORS
 
@@ -167,23 +184,26 @@ Pasos:
 src/
   Routes/
     AppRouter.jsx          # Configuracion de rutas y proteccion por rol
-    PrivateRoute.jsx       # HOC que valida token y rol antes de renderizar
-  assets/
-    css/components/        # CSS compartido (header, etc.)
+    PrivateRoute.jsx       # Valida token y rol antes de renderizar
+  assets/css/components/   # CSS compartido (sidebar)
   components/
-    Comentarios.jsx        # Componente reusable de comentarios (RF15)
+    Comentarios.jsx        # Comentarios de una tutoria (RF15)
+    layout/
+      AppLayout.jsx        # Estructura de las paginas privadas (sidebar + contenido)
+      Sidebar.jsx          # Navegacion lateral por rol
+      icons.jsx            # Iconos SVG de la navegacion
     Tutor/
-      Header.jsx           # Header del tutor con drawer mobile
       TemasInput.jsx       # Input de chips para temas (RF14)
-    Tutorado/
-      HeaderTR.jsx         # Header del tutorado con drawer mobile
+      VentanaEmerjente.jsx # Modal de resultado
+  constants/               # Roles, estados de tutoria, espacios y dias de la semana
   hooks/
+    useAhora.js            # Hora actual que se refresca periodicamente
     useAutentificacion.jsx # Login, signup y logout
     useComentarios.jsx     # CRUD de comentarios sobre una tutoria
     useCrearTutoria.jsx    # Estado y submit de crear tutoria
     useHorarios.jsx        # CRUD de horarios del tutor
     useMisTutorias.jsx     # Tutorias del tutor autenticado
-    useTutoriaDetalleTutor.jsx     # Detalle, edicion, cancel, completar, temas
+    useTutoriaDetalleTutor.jsx     # Detalle, edicion, cancelar, completar, temas
     useTutoriaDetalleTutorado.jsx  # Detalle + inscripcion + cancelacion
     useTutoriasExplorar.jsx        # Listado de tutorias disponibles
     useTutoriasTutorado.jsx        # Inscripciones del tutorado
@@ -199,6 +219,11 @@ src/
       Home.jsx             # Explorar tutorias
       MisTutorias.jsx
       TutoriaDetalle.jsx
+  utils/
+    fechas.js              # Fechas en hora local y tiempo restante
+    formatters.js          # Formato de fechas, horas, temas e iniciales
+    sesion.js              # Datos de sesion guardados en localStorage
+    tutoria.js             # Reglas de dominio (estado, horario de una tutoria)
 ```
 
 ## Rutas principales
@@ -242,13 +267,11 @@ Wrapper de respuesta esperado del backend:
 { "success": true, "message": "...", "data": {} }
 ```
 
-## Convenciones de commits y ramas
+## Contribuir
 
-- Commits en formato [Conventional Commits](https://www.conventionalcommits.org/)
-  (`feat:`, `fix:`, `chore:`, `build:`, `docs:`, etc.).
-- Ramas con prefijo segun proposito: `feat/`, `fix/`, `chore/`, `docs/`.
-- Las ramas de feature se abren contra `develop`. Despues de QA, `develop` se
-  promueve a `main`.
+Las convenciones de ramas, commits, codigo y el checklist de cada PR estan en
+[CONTRIBUTING.md](CONTRIBUTING.md). El plan de mejoras en curso esta en
+[PLAN_IMPLEMENTACION.md](PLAN_IMPLEMENTACION.md).
 
 ## Solucion de problemas comunes
 
