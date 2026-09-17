@@ -1,164 +1,73 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
+import { asistenciaApi } from '../api/asistencia'
+import { esCancelacion } from '../api/client'
+import { temasApi } from '../api/temas'
+import { tutoriasApi } from '../api/tutorias'
+import { useRecurso } from './useRecurso'
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? ''
-
-const getAuthHeaders = () => ({
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${localStorage.getItem('token')}`,
-})
-
-const fetchJson = async (url, options = {}) => {
-  const response = await fetch(url, options)
-  const data = await response.json().catch(() => null)
-  return { response, data }
-}
+const DETALLE_INICIAL = { tutoria: null, inscritos: [] }
 
 const useTutoriaDetalleTutor = (id) => {
-  const [tutoria, setTutoria] = useState(null)
-  const [inscritos, setInscritos] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const fetchTutoria = useCallback(
-    async (showLoading = true) => {
-      if (showLoading) setIsLoading(true)
-      setError('')
-
-      try {
-        const [det, ins] = await Promise.all([
-          fetchJson(`${BASE_URL}/tutoria/${id}`, {
-            method: 'GET',
-            headers: getAuthHeaders(),
-          }),
-          fetchJson(`${BASE_URL}/asistencia/tutoria/${id}`, {
-            method: 'GET',
-            headers: getAuthHeaders(),
-          }),
-        ])
-
-        if (!det.response.ok) {
-          setError(det.data?.message || 'No se pudo cargar la tutoria')
-          return
-        }
-
-        setTutoria(det.data?.data || null)
-
-        if (ins.response.ok) {
-          setInscritos(ins.data?.data || [])
-        } else {
-          setInscritos([])
-        }
-      } catch {
-        setError('Error al conectar con el servidor')
-      } finally {
-        setIsLoading(false)
-      }
+  // La lista de inscritos es secundaria: si falla se muestra vacia y el detalle sigue visible.
+  const cargarDetalle = useCallback(
+    async ({ signal }) => {
+      const [tutoria, inscritos] = await Promise.all([
+        tutoriasApi.detalle(id, { signal }),
+        asistenciaApi.inscritosDeTutoria(id, { signal }).catch((error) => {
+          if (esCancelacion(error)) throw error
+          return []
+        }),
+      ])
+      return { tutoria, inscritos }
     },
     [id],
   )
 
-  useEffect(() => {
-    fetchTutoria(true)
-  }, [fetchTutoria])
+  const { datos, isLoading, error, recargar, refrescar } = useRecurso(
+    cargarDetalle,
+    DETALLE_INICIAL,
+  )
 
-  const actualizar = async (payload) => {
-    setIsSubmitting(true)
+  // Ejecuta una mutacion, refresca el detalle y devuelve { ok, message } para la pantalla.
+  const ejecutar = async (accion, mensajeExito, { bloquear = true } = {}) => {
+    if (bloquear) setIsSubmitting(true)
     try {
-      const { response, data } = await fetchJson(`${BASE_URL}/tutoria/${id}`, {
-        method: 'PUT',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      })
-      if (!response.ok) {
-        return { ok: false, message: data?.message || 'No se pudo actualizar' }
-      }
-      await fetchTutoria(false)
-      return { ok: true, message: data?.message || 'Tutoria actualizada' }
-    } catch {
-      return { ok: false, message: 'Error al conectar con el servidor' }
+      await accion()
+      await refrescar()
+      return { ok: true, message: mensajeExito }
+    } catch (err) {
+      return { ok: false, message: err.message }
     } finally {
-      setIsSubmitting(false)
+      if (bloquear) setIsSubmitting(false)
     }
   }
 
-  const cancelar = async () => {
-    setIsSubmitting(true)
-    try {
-      const { response, data } = await fetchJson(`${BASE_URL}/tutoria/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders(),
-      })
-      if (!response.ok) {
-        return { ok: false, message: data?.message || 'No se pudo cancelar la tutoria' }
-      }
-      await fetchTutoria(false)
-      return { ok: true, message: data?.message || 'Tutoria cancelada' }
-    } catch {
-      return { ok: false, message: 'Error al conectar con el servidor' }
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
+  const actualizar = (payload) =>
+    ejecutar(() => tutoriasApi.actualizar(id, payload), 'Tutoria actualizada')
+
+  const cancelar = () => ejecutar(() => tutoriasApi.cancelar(id), 'Tutoria cancelada')
+
+  const completar = () =>
+    ejecutar(() => tutoriasApi.completar(id), 'Tutoria marcada como completada')
 
   const agregarTema = async (tema) => {
     const limpio = (tema || '').trim()
     if (!limpio) return { ok: false, message: 'El tema no puede estar vacio' }
-    try {
-      const { response, data } = await fetchJson(`${BASE_URL}/temas`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ idTutoria: Number(id), tema: limpio }),
-      })
-      if (!response.ok) {
-        return { ok: false, message: data?.message || 'No se pudo crear el tema' }
-      }
-      await fetchTutoria(false)
-      return { ok: true, message: data?.message || 'Tema creado' }
-    } catch {
-      return { ok: false, message: 'Error al conectar con el servidor' }
-    }
+    return ejecutar(() => temasApi.crear({ idTutoria: id, tema: limpio }), 'Tema agregado', {
+      bloquear: false,
+    })
   }
 
   const quitarTema = async (idTema) => {
     if (!idTema) return { ok: false, message: 'Tema invalido' }
-    try {
-      const { response, data } = await fetchJson(`${BASE_URL}/temas/${idTema}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders(),
-      })
-      if (!response.ok) {
-        return { ok: false, message: data?.message || 'No se pudo eliminar el tema' }
-      }
-      await fetchTutoria(false)
-      return { ok: true, message: data?.message || 'Tema eliminado' }
-    } catch {
-      return { ok: false, message: 'Error al conectar con el servidor' }
-    }
-  }
-
-  const completar = async () => {
-    setIsSubmitting(true)
-    try {
-      const { response, data } = await fetchJson(`${BASE_URL}/tutoria/completar/${id}`, {
-        method: 'PUT',
-        headers: getAuthHeaders(),
-      })
-      if (!response.ok) {
-        return { ok: false, message: data?.message || 'No se pudo completar la tutoria' }
-      }
-      await fetchTutoria(false)
-      return { ok: true, message: data?.message || 'Tutoria marcada como completada' }
-    } catch {
-      return { ok: false, message: 'Error al conectar con el servidor' }
-    } finally {
-      setIsSubmitting(false)
-    }
+    return ejecutar(() => temasApi.eliminar(idTema), 'Tema eliminado', { bloquear: false })
   }
 
   return {
-    tutoria,
-    inscritos,
+    tutoria: datos.tutoria,
+    inscritos: datos.inscritos,
     isLoading,
     error,
     isSubmitting,
@@ -167,7 +76,7 @@ const useTutoriaDetalleTutor = (id) => {
     completar,
     agregarTema,
     quitarTema,
-    recargar: () => fetchTutoria(true),
+    recargar,
   }
 }
 
