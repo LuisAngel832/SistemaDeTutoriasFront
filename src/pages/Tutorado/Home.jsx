@@ -33,14 +33,12 @@ const TutoriaCard = ({ tutoria }) => {
     <article className="ex-card">
       <div className="ex-card-top">
         <div className="ex-card-titles">
-          <h3 className="ex-experiencia">{tutoria.materia || 'Experiencia Educativa sin nombre'}</h3>
-          {tutoria.nombreTutor ? (
-            <p className="ex-tutor">Imparte {tutoria.nombreTutor}</p>
-          ) : null}
+          <h3 className="ex-experiencia">
+            {tutoria.materia || 'Experiencia Educativa sin nombre'}
+          </h3>
+          {tutoria.nombreTutor ? <p className="ex-tutor">Imparte {tutoria.nombreTutor}</p> : null}
         </div>
-        <span className={`ex-estado ${estadoClass}`}>
-          {tutoria.estado || 'SIN ESTADO'}
-        </span>
+        <span className={`ex-estado ${estadoClass}`}>{tutoria.estado || 'SIN ESTADO'}</span>
       </div>
 
       <div className="ex-info">
@@ -68,10 +66,7 @@ const TutoriaCard = ({ tutoria }) => {
         </div>
       ) : null}
 
-      <Link
-        to={`/tutorado/infoTutoria/${tutoria.id}`}
-        className="ex-card-cta"
-      >
+      <Link to={`/tutorado/infoTutoria/${tutoria.id}`} className="ex-card-cta">
         Ver detalle e inscribirme →
       </Link>
     </article>
@@ -86,10 +81,7 @@ const TutoradoHome = () => {
     const q = query.trim().toLowerCase()
     if (!q) return tutorias
     return tutorias.filter((t) => {
-      return (
-        t.materia?.toLowerCase().includes(q) ||
-        t.nombreTutor?.toLowerCase().includes(q)
-      )
+      return t.materia?.toLowerCase().includes(q) || t.nombreTutor?.toLowerCase().includes(q)
     })
   }, [tutorias, query])
 
@@ -105,7 +97,9 @@ const TutoradoHome = () => {
           </div>
 
           <div className="ex-search">
-            <span className="ex-search-icon" aria-hidden="true">🔍</span>
+            <span className="ex-search-icon" aria-hidden="true">
+              🔍
+            </span>
             <input
               type="search"
               id="buscar-tutoria"

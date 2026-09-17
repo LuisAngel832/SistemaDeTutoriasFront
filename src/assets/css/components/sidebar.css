@@ -26,7 +26,9 @@
   background: linear-gradient(180deg, #2d5fa7 0%, #24497f 100%);
   box-shadow: 2px 0 16px rgba(15, 30, 60, 0.12);
   z-index: 100;
-  transition: width var(--sidebar-transition), transform 0.28s ease;
+  transition:
+    width var(--sidebar-transition),
+    transform 0.28s ease;
   overflow: hidden;
 }
 
@@ -99,7 +101,9 @@
   background-color: transparent;
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  transition: background-color 0.18s ease, color 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
 }
 
 .sidebar-collapse-btn:hover,
@@ -144,7 +148,9 @@
   font-weight: 500;
   text-decoration: none;
   white-space: nowrap;
-  transition: background-color 0.18s ease, color 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
 }
 
 .sidebar-link::before {
@@ -275,7 +281,10 @@
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
-  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.15s ease;
 }
 
 .sidebar-logout:hover {

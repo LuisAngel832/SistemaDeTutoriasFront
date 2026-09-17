@@ -10,28 +10,29 @@ robusto y profesional. Cada punto indica **que pasa hoy**, **por que importa** y
 
 ## Resumen por prioridad
 
-| # | Punto | Prioridad | Esfuerzo |
-| --- | --- | --- | --- |
-| 1 | Bugs detectados (rol admin, fecha UTC, deteccion de exito por texto) | Alta | Bajo |
-| 2 | Cliente HTTP centralizado (`api/`) | Alta | Medio |
-| 3 | Manejo de sesion: 401/token expirado, contexto de auth | Alta | Medio |
-| 4 | Eliminar duplicacion (formatters, constantes, `TutoriaCard`, info-grid) | Alta | Bajo |
-| 5 | Sistema de diseno en CSS (variables, componentes base) | Media | Medio |
-| 6 | Capa de datos con cache (TanStack Query) | Media | Medio |
-| 7 | Formularios y validacion | Media | Medio |
-| 8 | Estructura de carpetas y convenciones de nombres | Media | Bajo |
-| 9 | Router: rutas anidadas, lazy loading, 404 | Media | Bajo |
-| 10 | Testing (Vitest + Testing Library + MSW) | Media | Medio |
-| 11 | Calidad automatizada (Prettier, Husky, CI) | Media | Bajo |
-| 12 | Accesibilidad | Media | Bajo |
-| 13 | TypeScript | Baja | Alto |
-| 14 | Configuracion, despliegue y documentacion | Baja | Bajo |
+| #   | Punto                                                                   | Prioridad | Esfuerzo |
+| --- | ----------------------------------------------------------------------- | --------- | -------- |
+| 1   | Bugs detectados (rol admin, fecha UTC, deteccion de exito por texto)    | Alta      | Bajo     |
+| 2   | Cliente HTTP centralizado (`api/`)                                      | Alta      | Medio    |
+| 3   | Manejo de sesion: 401/token expirado, contexto de auth                  | Alta      | Medio    |
+| 4   | Eliminar duplicacion (formatters, constantes, `TutoriaCard`, info-grid) | Alta      | Bajo     |
+| 5   | Sistema de diseno en CSS (variables, componentes base)                  | Media     | Medio    |
+| 6   | Capa de datos con cache (TanStack Query)                                | Media     | Medio    |
+| 7   | Formularios y validacion                                                | Media     | Medio    |
+| 8   | Estructura de carpetas y convenciones de nombres                        | Media     | Bajo     |
+| 9   | Router: rutas anidadas, lazy loading, 404                               | Media     | Bajo     |
+| 10  | Testing (Vitest + Testing Library + MSW)                                | Media     | Medio    |
+| 11  | Calidad automatizada (Prettier, Husky, CI)                              | Media     | Bajo     |
+| 12  | Accesibilidad                                                           | Media     | Bajo     |
+| 13  | TypeScript                                                              | Baja      | Alto     |
+| 14  | Configuracion, despliegue y documentacion                               | Baja      | Bajo     |
 
 ---
 
 ## 1. Bugs detectados (arreglar primero)
 
 ### 1.1 El rol `admin` queda en un loop hacia `/login`
+
 [useAutentificacion.jsx:84](src/hooks/useAutentificacion.jsx#L84) navega a `/tutor/home`
 cuando el rol es `admin`, pero [AppRouter.jsx:37](src/Routes/AppRouter.jsx#L37) solo
 permite `['tutor']`. `PrivateRoute` lo manda a `/login` aun teniendo token valido.
@@ -41,6 +42,7 @@ propio panel. Centralizar el mapa `rol -> ruta inicial` en una sola constante
 (hoy esta repetido en `AppRouter` y en `useAutentificacion`).
 
 ### 1.2 `min` de la fecha calculado en UTC
+
 `new Date().toISOString().split('T')[0]` en
 [FormCrearTutoria.jsx:23](src/pages/Tutor/CrearTutoria/FormCrearTutoria.jsx#L23) y
 [TutoriaDetalle.jsx:188](src/pages/Tutor/TutoriaDetalle/TutoriaDetalle.jsx#L188)
@@ -57,6 +59,7 @@ export const hoyLocalISO = () => {
 ```
 
 ### 1.3 Deteccion de exito buscando texto en el mensaje
+
 [Tutorado/TutoriaDetalle.jsx:93](src/pages/Tutorado/TutoriaDetalle.jsx#L93) decide si
 la inscripcion fue exitosa buscando `"no fue posible"` o `"error"` en el mensaje. Si el
 backend responde "No hay cupo", se muestra como **exito**.
@@ -65,6 +68,7 @@ backend responde "No hay cupo", se muestra como **exito**.
 hace `useTutoriaDetalleTutor`. Unificar el contrato de retorno en todos los hooks.
 
 ### 1.4 Al editar una tutoria el horario se pierde
+
 Al pulsar "Editar tutoria" se ejecuta `setIdHorario('')`
 ([TutoriaDetalle.jsx:435](src/pages/Tutor/TutoriaDetalle/TutoriaDetalle.jsx#L435)) y el
 efecto que precarga el formulario no incluye el horario. El usuario siempre debe
@@ -77,6 +81,7 @@ volver a elegirlo o el guardado falla con "Completa todos los campos". Ademas,
 con `!valor` antes de convertir a numero.
 
 ### 1.5 Otros detalles
+
 - `response.json()` sin `.catch` en [useCrearTutoria.jsx:76](src/hooks/useCrearTutoria.jsx#L76)
   y [useTutoriasExplorar.jsx:28](src/hooks/useTutoriasExplorar.jsx#L28): si el backend
   responde sin cuerpo (ej. 204 o 500 HTML) se muestra "Error al conectar con el servidor".
@@ -162,6 +167,7 @@ export const tutoriasApi = {
 hooks quedan en 10-20 lineas; los servicios se pueden mockear en tests.
 
 ### Normalizadores de datos
+
 Los "adaptadores" de shapes inconsistentes del backend estan dispersos:
 `h.idHorario ?? h.id ?? h.idHorarios ?? h.horarioId` (dos veces), `normalizar` en
 [MisTutorias.jsx](src/pages/Tutorado/MisTutorias.jsx), `findInscripcion` con 4 candidatos
@@ -174,6 +180,7 @@ Idealmente, abrir issues en el backend para estabilizar los DTOs y borrar estos 
 ## 3. Sesion y autenticacion
 
 **Problemas actuales:**
+
 - Token, rol, matricula y nombre se leen de `localStorage` directamente en al menos 6
   archivos (30 accesos). No hay una unica fuente de verdad.
 - **No se maneja el token expirado.** Si el JWT caduca, cada pantalla muestra su error
@@ -184,6 +191,7 @@ Idealmente, abrir issues en el backend para estabilizar los DTOs y borrar estos 
 - `logout` borra `correo`, que nunca se guarda.
 
 **Propuesta:**
+
 1. `AuthContext` + `useAuth()` que exponga `{ user, token, rol, login, logout, isAuthenticated }`.
    Reemplaza `utils/sesion.js` y el evento custom `sesion-actualizada`.
 2. Un modulo `storage.js` con claves en constantes (`STORAGE_KEYS.TOKEN`, etc.).
@@ -199,19 +207,19 @@ Idealmente, abrir issues en el backend para estabilizar los DTOs y borrar estos 
 
 ## 4. Duplicacion de codigo
 
-| Duplicado | Copias | Destino sugerido |
-| --- | --- | --- |
-| `formatFecha` / `formatHora` | 5 | `src/utils/formatters.js` |
-| `ESTADO_CLASS` + logica de estado | 4 | `src/constants/tutoria.js` + `<EstadoBadge>` |
-| Tarjeta de tutoria (`TutoriaCard`, `Card`) | 3 | `<TutoriaCard variant>` |
-| Grid de info con iconos (fecha/horario/edificio/aula) | 2 | `<TutoriaInfoGrid>` |
-| Input de temas (`TemasInput` vs `TemaQuickInput`) | 2 | Un solo `<TemasInput>` con prop `compact` |
-| Opciones de edificio (1-2) y aula (1-16) hardcodeadas | 2 | `src/constants/espacios.js` (idealmente del backend) |
-| Lista de horarios `dia · hh:mm - hh:mm` | 3 | `formatHorario(h)` |
-| Bloque de confirmacion (texto + Volver/Si) | 3 | `<ConfirmInline>` o `<ConfirmDialog>` |
-| Skeletons de carga, estados vacio y error | 6+ | `<Skeleton>`, `<EmptyState>`, `<Alert>` |
-| Paginas Login y Registro (panel de marca) | 2 | `<AuthLayout>` |
-| `MAX_CARACTERES_TEMA = 60` | 2 | `constants/tutoria.js` |
+| Duplicado                                             | Copias | Destino sugerido                                     |
+| ----------------------------------------------------- | ------ | ---------------------------------------------------- |
+| `formatFecha` / `formatHora`                          | 5      | `src/utils/formatters.js`                            |
+| `ESTADO_CLASS` + logica de estado                     | 4      | `src/constants/tutoria.js` + `<EstadoBadge>`         |
+| Tarjeta de tutoria (`TutoriaCard`, `Card`)            | 3      | `<TutoriaCard variant>`                              |
+| Grid de info con iconos (fecha/horario/edificio/aula) | 2      | `<TutoriaInfoGrid>`                                  |
+| Input de temas (`TemasInput` vs `TemaQuickInput`)     | 2      | Un solo `<TemasInput>` con prop `compact`            |
+| Opciones de edificio (1-2) y aula (1-16) hardcodeadas | 2      | `src/constants/espacios.js` (idealmente del backend) |
+| Lista de horarios `dia · hh:mm - hh:mm`               | 3      | `formatHorario(h)`                                   |
+| Bloque de confirmacion (texto + Volver/Si)            | 3      | `<ConfirmInline>` o `<ConfirmDialog>`                |
+| Skeletons de carga, estados vacio y error             | 6+     | `<Skeleton>`, `<EmptyState>`, `<Alert>`              |
+| Paginas Login y Registro (panel de marca)             | 2      | `<AuthLayout>`                                       |
+| `MAX_CARACTERES_TEMA = 60`                            | 2      | `constants/tutoria.js`                               |
 
 [TutoriaDetalle.jsx del tutor](src/pages/Tutor/TutoriaDetalle/TutoriaDetalle.jsx) tiene
 586 lineas; tras extraer `TutoriaInfoGrid`, `TemasEditor`, `EditarTutoriaForm`,
@@ -232,6 +240,7 @@ Como las clases son globales, cualquier nombre repetido entre paginas (`btn-acep
 `btn-secundario`, `form-label`) puede pisar estilos de otra vista.
 
 **Propuesta (incremental):**
+
 1. `src/styles/tokens.css` con variables:
    ```css
    :root {
@@ -244,7 +253,9 @@ Como las clases son globales, cualquier nombre repetido entre paginas (`btn-acep
      --color-danger-bg: #fbe5e7;
      --radius-md: 12px;
      --shadow-card: 0 1px 2px rgb(16 24 40 / 6%);
-     --space-2: 0.5rem; --space-4: 1rem; --space-6: 1.5rem;
+     --space-2: 0.5rem;
+     --space-4: 1rem;
+     --space-6: 1.5rem;
    }
    ```
 2. `src/styles/animations.css` con 3-4 keyframes compartidos.
@@ -311,6 +322,7 @@ resultado por notificaciones tipo toast (`sonner` o un `ToastProvider` propio).
 ## 8. Estructura de carpetas y convenciones
 
 **Inconsistencias actuales:**
+
 - Carpetas: `Routes/` (mayuscula) vs `hooks/`, `utils/`; `LogIn/` vs `Registro/`.
 - Paginas: algunas en carpeta propia (`Tutor/CrearTutoria/`), otras sueltas
   (`Tutor/Home.jsx`, `Tutorado/TutoriaDetalle.jsx`).

@@ -87,9 +87,7 @@ const Sidebar = ({
               end={item.end}
               onClick={onCloseMobile}
               title={collapsed ? item.label : undefined}
-              className={({ isActive }) =>
-                `sidebar-link${isActive ? ' active' : ''}`
-              }
+              className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
             >
               <span className="sidebar-link-icon">
                 <Icon />
@@ -110,9 +108,7 @@ const Sidebar = ({
               {nombreVisible}
             </span>
             {matricula ? (
-              <span className="sidebar-user-matricula">
-                Matricula: {matricula}
-              </span>
+              <span className="sidebar-user-matricula">Matricula: {matricula}</span>
             ) : null}
             {rol ? <span className="sidebar-user-role">{rol}</span> : null}
           </span>

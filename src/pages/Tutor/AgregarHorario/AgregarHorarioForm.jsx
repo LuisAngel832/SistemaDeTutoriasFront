@@ -14,8 +14,7 @@ const DIAS = [
 const toSeconds = (time) => (time ? `${time}:00` : '')
 
 const AgregarHorarioForm = () => {
-  const { horarios, isLoading, error: errorLista, crearHorario, eliminarHorario } =
-    useHorarios()
+  const { horarios, isLoading, error: errorLista, crearHorario, eliminarHorario } = useHorarios()
 
   const [dia, setDia] = useState('')
   const [horaInicio, setHoraInicio] = useState('')
@@ -83,7 +82,9 @@ const AgregarHorarioForm = () => {
       <div className="content-horario">
         <div className="horario-header">
           <h2>
-            <span className="horario-icon" aria-hidden="true">🕐</span>
+            <span className="horario-icon" aria-hidden="true">
+              🕐
+            </span>
             Crear Horario
           </h2>
           <p className="horario-subtitle">
@@ -100,11 +101,7 @@ const AgregarHorarioForm = () => {
             <label className="form-label" id="label-dia-semana">
               Dia de la semana en que estaras disponible
             </label>
-            <div
-              className="dia-chips"
-              role="radiogroup"
-              aria-labelledby="label-dia-semana"
-            >
+            <div className="dia-chips" role="radiogroup" aria-labelledby="label-dia-semana">
               {DIAS.map((d) => (
                 <button
                   key={d.key}

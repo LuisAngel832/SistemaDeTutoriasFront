@@ -35,14 +35,12 @@ const TutoriaCard = ({ tutoria }) => {
       <article className="tutoria-card">
         <div className="tutoria-card-top">
           <div>
-            <h3 className="tutoria-experiencia">{tutoria.materia || 'Experiencia Educativa sin nombre'}</h3>
-            {tutoria.nombreTutor ? (
-              <p className="tutoria-tutor">{tutoria.nombreTutor}</p>
-            ) : null}
+            <h3 className="tutoria-experiencia">
+              {tutoria.materia || 'Experiencia Educativa sin nombre'}
+            </h3>
+            {tutoria.nombreTutor ? <p className="tutoria-tutor">{tutoria.nombreTutor}</p> : null}
           </div>
-          <span className={`tutoria-estado ${estadoClass}`}>
-            {tutoria.estado || 'SIN ESTADO'}
-          </span>
+          <span className={`tutoria-estado ${estadoClass}`}>{tutoria.estado || 'SIN ESTADO'}</span>
         </div>
 
         <div className="tutoria-info">
@@ -92,9 +90,7 @@ const TutorHome = () => {
         <div className="tutor-home-header">
           <div>
             <h1>Mis Tutorias</h1>
-            <p className="tutor-home-subtitle">
-              Tutorias que has creado y su estado actual.
-            </p>
+            <p className="tutor-home-subtitle">Tutorias que has creado y su estado actual.</p>
           </div>
           <Link to="/tutor/crear" className="btn-primary-link">
             + Crear Tutoria

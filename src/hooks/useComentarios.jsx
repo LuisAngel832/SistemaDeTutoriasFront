@@ -25,10 +25,10 @@ const useComentarios = (idTutoria) => {
       setError('')
 
       try {
-        const { response, data } = await fetchJson(
-          `${BASE_URL}/comentarios/tutoria/${idTutoria}`,
-          { method: 'GET', headers: getAuthHeaders() },
-        )
+        const { response, data } = await fetchJson(`${BASE_URL}/comentarios/tutoria/${idTutoria}`, {
+          method: 'GET',
+          headers: getAuthHeaders(),
+        })
 
         if (!response.ok) {
           setError(data?.message || 'No se pudieron cargar los comentarios')
@@ -74,10 +74,10 @@ const useComentarios = (idTutoria) => {
   const eliminar = async (idComentario) => {
     if (!idComentario) return { ok: false, message: 'Comentario invalido' }
     try {
-      const { response, data } = await fetchJson(
-        `${BASE_URL}/comentarios/${idComentario}`,
-        { method: 'DELETE', headers: getAuthHeaders() },
-      )
+      const { response, data } = await fetchJson(`${BASE_URL}/comentarios/${idComentario}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      })
       if (!response.ok) {
         return { ok: false, message: data?.message || 'No se pudo eliminar el comentario' }
       }

@@ -190,11 +190,7 @@ const TutoriaDetalleTutor = () => {
   return (
     <AppLayout className="tdt-page">
       <main className="tdt-main">
-        <button
-          type="button"
-          className="tdt-back"
-          onClick={() => navigate('/tutor/home')}
-        >
+        <button type="button" className="tdt-back" onClick={() => navigate('/tutor/home')}>
           ← Mis tutorias
         </button>
 
@@ -226,8 +222,7 @@ const TutoriaDetalleTutor = () => {
                     </h1>
                     {tutoria.nombreTutor ? (
                       <p className="tdt-tutor">
-                        <span className="tdt-tutor-label">Imparte</span>{' '}
-                        {tutoria.nombreTutor}
+                        <span className="tdt-tutor-label">Imparte</span> {tutoria.nombreTutor}
                       </p>
                     ) : null}
                   </div>
@@ -240,7 +235,9 @@ const TutoriaDetalleTutor = () => {
                   <>
                     <div className="tdt-info-grid">
                       <div className="tdt-info-item">
-                        <span className="tdt-info-icon" aria-hidden="true">📅</span>
+                        <span className="tdt-info-icon" aria-hidden="true">
+                          📅
+                        </span>
                         <div>
                           <span className="tdt-info-label">Fecha</span>
                           <span className="tdt-info-value">{formatFecha(tutoria.fecha)}</span>
@@ -248,7 +245,9 @@ const TutoriaDetalleTutor = () => {
                       </div>
 
                       <div className="tdt-info-item">
-                        <span className="tdt-info-icon" aria-hidden="true">🕐</span>
+                        <span className="tdt-info-icon" aria-hidden="true">
+                          🕐
+                        </span>
                         <div>
                           <span className="tdt-info-label">Horario</span>
                           <span className="tdt-info-value">
@@ -258,7 +257,9 @@ const TutoriaDetalleTutor = () => {
                       </div>
 
                       <div className="tdt-info-item">
-                        <span className="tdt-info-icon" aria-hidden="true">🏛️</span>
+                        <span className="tdt-info-icon" aria-hidden="true">
+                          🏛️
+                        </span>
                         <div>
                           <span className="tdt-info-label">Edificio</span>
                           <span className="tdt-info-value">{tutoria.edificio ?? '—'}</span>
@@ -266,7 +267,9 @@ const TutoriaDetalleTutor = () => {
                       </div>
 
                       <div className="tdt-info-item">
-                        <span className="tdt-info-icon" aria-hidden="true">🚪</span>
+                        <span className="tdt-info-icon" aria-hidden="true">
+                          🚪
+                        </span>
                         <div>
                           <span className="tdt-info-label">Aula</span>
                           <span className="tdt-info-value">{tutoria.aula ?? '—'}</span>
@@ -282,10 +285,7 @@ const TutoriaDetalleTutor = () => {
                           <div className="tdt-temas tdt-temas-editables">
                             {tutoria.temas?.length ? (
                               tutoria.temas.map((tema, index) => (
-                                <span
-                                  key={tema.idTema ?? index}
-                                  className="tdt-tema-chip editable"
-                                >
+                                <span key={tema.idTema ?? index} className="tdt-tema-chip editable">
                                   <span className="tdt-tema-chip-text">
                                     {tema.tema || tema.nombre || String(tema)}
                                   </span>
@@ -310,10 +310,7 @@ const TutoriaDetalleTutor = () => {
                           </div>
 
                           <div className="tdt-tema-add-wrap">
-                            <TemaQuickInput
-                              onAdd={handleAgregarTema}
-                              disabled={isSubmitting}
-                            />
+                            <TemaQuickInput onAdd={handleAgregarTema} disabled={isSubmitting} />
                           </div>
                         </>
                       ) : tutoria.temas?.length ? (
@@ -450,9 +447,7 @@ const TutoriaDetalleTutor = () => {
 
                     {confirmComplete ? (
                       <div className="tdt-confirm success">
-                        <p className="tdt-confirm-text">
-                          ¿Marcar esta tutoria como completada?
-                        </p>
+                        <p className="tdt-confirm-text">¿Marcar esta tutoria como completada?</p>
                         <div className="tdt-confirm-actions">
                           <button
                             type="button"
@@ -486,7 +481,8 @@ const TutoriaDetalleTutor = () => {
                     {confirmCancel ? (
                       <div className="tdt-confirm">
                         <p className="tdt-confirm-text">
-                          ¿Seguro que quieres cancelar esta tutoria? Los inscritos seran notificados.
+                          ¿Seguro que quieres cancelar esta tutoria? Los inscritos seran
+                          notificados.
                         </p>
                         <div className="tdt-confirm-actions">
                           <button
@@ -522,8 +518,8 @@ const TutoriaDetalleTutor = () => {
                   <div className="tdt-side-card">
                     <h3 className="tdt-side-title">Estado</h3>
                     <p className="tdt-side-desc">
-                      Esta tutoria esta {tutoria.estado?.toLowerCase() || 'finalizada'}.
-                      Ya no se pueden hacer cambios.
+                      Esta tutoria esta {tutoria.estado?.toLowerCase() || 'finalizada'}. Ya no se
+                      pueden hacer cambios.
                     </p>
                   </div>
                 )}
@@ -545,15 +541,11 @@ const TutoriaDetalleTutor = () => {
                             {(p.nombre || '?').slice(0, 1).toUpperCase()}
                           </div>
                           <div className="tdt-inscrito-info">
-                            <span className="tdt-inscrito-nombre">
-                              {p.nombre || 'Sin nombre'}
-                            </span>
+                            <span className="tdt-inscrito-nombre">{p.nombre || 'Sin nombre'}</span>
                             <span className="tdt-inscrito-mat">{p.matricula || '—'}</span>
                           </div>
                           {mostrarAsistencia ? (
-                            <span
-                              className={`tdt-asistio ${p.asistio ? 'si' : 'no'}`}
-                            >
+                            <span className={`tdt-asistio ${p.asistio ? 'si' : 'no'}`}>
                               {p.asistio ? 'Asistio' : 'No asistio'}
                             </span>
                           ) : (
@@ -568,9 +560,7 @@ const TutoriaDetalleTutor = () => {
             </div>
 
             <section className="tdt-comentarios-section">
-              <h2 className="tdt-comentarios-title">
-                Comentarios de los tutorados
-              </h2>
+              <h2 className="tdt-comentarios-title">Comentarios de los tutorados</h2>
               <p className="tdt-comentarios-sub">
                 Sugerencias y observaciones previas a la sesion.
               </p>

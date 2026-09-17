@@ -28,9 +28,7 @@ const STORAGE_KEY = 'sidebarCollapsed'
 
 const AppLayout = ({ children, className = '' }) => {
   const location = useLocation()
-  const [collapsed, setCollapsed] = useState(
-    () => localStorage.getItem(STORAGE_KEY) === 'true',
-  )
+  const [collapsed, setCollapsed] = useState(() => localStorage.getItem(STORAGE_KEY) === 'true')
   const [mobileOpen, setMobileOpen] = useState(false)
   const [sesion, setSesion] = useState(getSesion)
 
@@ -38,9 +36,7 @@ const AppLayout = ({ children, className = '' }) => {
   const menu = MENU_POR_ROL[rol] ?? MENU_POR_ROL.tutorado
 
   const activo = menu.items.find((item) =>
-    item.end
-      ? location.pathname === item.to
-      : location.pathname.startsWith(item.to),
+    item.end ? location.pathname === item.to : location.pathname.startsWith(item.to),
   )
 
   // El nombre puede completarse despues del login (ver utils/sesion).
@@ -88,11 +84,7 @@ const AppLayout = ({ children, className = '' }) => {
       />
 
       {mobileOpen ? (
-        <div
-          className="sidebar-overlay"
-          onClick={() => setMobileOpen(false)}
-          aria-hidden="true"
-        />
+        <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} aria-hidden="true" />
       ) : null}
 
       <div className={`app-content${className ? ` ${className}` : ''}`}>
@@ -109,9 +101,7 @@ const AppLayout = ({ children, className = '' }) => {
             <span />
             <span />
           </button>
-          <span className="topbar-title">
-            {activo?.label ?? 'Sistema de Tutorias'}
-          </span>
+          <span className="topbar-title">{activo?.label ?? 'Sistema de Tutorias'}</span>
         </header>
 
         {children}

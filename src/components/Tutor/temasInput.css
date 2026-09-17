@@ -25,7 +25,9 @@
   color: #1c2a44;
   background-color: #ffffff;
   font-family: inherit;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .temas-input-field:hover:not(:focus):not(:disabled) {
@@ -55,7 +57,9 @@
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  transition: background-color 0.18s ease, transform 0.12s ease;
+  transition:
+    background-color 0.18s ease,
+    transform 0.12s ease;
 }
 
 .temas-input-add:hover:not(:disabled) {

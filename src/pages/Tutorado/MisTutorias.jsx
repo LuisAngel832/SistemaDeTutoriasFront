@@ -53,9 +53,7 @@ const Card = ({ item }) => {
     return (
       <article className="mt-card missing">
         <p className="mt-missing-title">Inscripcion sin detalles</p>
-        <p className="mt-missing-desc">
-          El backend aun no expone la informacion de esta tutoria.
-        </p>
+        <p className="mt-missing-desc">El backend aun no expone la informacion de esta tutoria.</p>
       </article>
     )
   }
@@ -64,14 +62,12 @@ const Card = ({ item }) => {
     <article className="mt-card">
       <div className="mt-card-top">
         <div className="mt-titles">
-          <h3 className="mt-experiencia">{item.experiencia || 'Experiencia Educativa sin nombre'}</h3>
-          {item.nombreTutor ? (
-            <p className="mt-tutor">Imparte {item.nombreTutor}</p>
-          ) : null}
+          <h3 className="mt-experiencia">
+            {item.experiencia || 'Experiencia Educativa sin nombre'}
+          </h3>
+          {item.nombreTutor ? <p className="mt-tutor">Imparte {item.nombreTutor}</p> : null}
         </div>
-        {item.estado ? (
-          <span className={`mt-estado ${estadoClass}`}>{item.estado}</span>
-        ) : null}
+        {item.estado ? <span className={`mt-estado ${estadoClass}`}>{item.estado}</span> : null}
       </div>
 
       <div className="mt-info">
@@ -113,9 +109,7 @@ const MisTutorias = () => {
       <main className="mt-main">
         <div className="mt-header">
           <h1>Mis Tutorias</h1>
-          <p className="mt-subtitle">
-            Las tutorias en las que estas inscrito.
-          </p>
+          <p className="mt-subtitle">Las tutorias en las que estas inscrito.</p>
         </div>
 
         {error ? <div className="mt-error">{error}</div> : null}
@@ -125,8 +119,7 @@ const MisTutorias = () => {
             <strong>Funcionalidad parcialmente disponible.</strong>
             <span>
               El backend devuelve {normalizadas.length} inscripcion
-              {normalizadas.length === 1 ? '' : 'es'} pero sin los datos de la tutoria.
-              Ver{' '}
+              {normalizadas.length === 1 ? '' : 'es'} pero sin los datos de la tutoria. Ver{' '}
               <a
                 href="https://github.com/Shtven/TutoriasBackend/issues/8"
                 target="_blank"

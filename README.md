@@ -23,11 +23,13 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 ## Funcionalidades
 
 ### Autenticacion
+
 - Registro de usuarios con rol Tutor o Tutorado (matricula como identificador).
 - Inicio de sesion con JWT y redireccion automatica al panel correspondiente.
 - Toggle de mostrar/ocultar contrasena, validacion de longitud minima.
 
 ### Panel del Tutor
+
 - Listado de tutorias propias con estado, fecha, horario, lugar y temas.
 - Creacion de tutorias: seleccion de Experiencia Educativa (cargada del back), horario, fecha,
   edificio, aula y **temas tentativos** (chips dinamicos).
@@ -41,6 +43,7 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
   - Vista de comentarios y sugerencias de los tutorados.
 
 ### Panel del Tutorado
+
 - Explorar tutorias disponibles con buscador por Experiencia Educativa o tutor.
 - Detalle de tutoria con inscripcion y cancelacion (la cancelacion respeta la
   regla del backend: hasta 15 min antes de inicio).
@@ -48,6 +51,7 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 - Listado de inscripciones propias.
 
 ### Interfaz
+
 - Diseno responsive con breakpoints para escritorio, tablet y movil.
 - Header con menu hamburguesa y drawer lateral en pantallas pequenas.
 - Tema visual unificado (paleta azul/verde) con animaciones sutiles.
@@ -55,14 +59,14 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 
 ## Stack
 
-| Capa | Tecnologia |
-| --- | --- |
-| Build & dev server | [Vite](https://vitejs.dev/) 8 |
-| UI | [React](https://react.dev/) 19 |
-| Routing | [react-router-dom](https://reactrouter.com/) 7 |
-| Lint | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh` |
-| Lenguaje | JavaScript (JSX) |
-| Estilos | CSS plano por componente |
+| Capa               | Tecnologia                                                                |
+| ------------------ | ------------------------------------------------------------------------- |
+| Build & dev server | [Vite](https://vitejs.dev/) 8                                             |
+| UI                 | [React](https://react.dev/) 19                                            |
+| Routing            | [react-router-dom](https://reactrouter.com/) 7                            |
+| Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh` |
+| Lenguaje           | JavaScript (JSX)                                                          |
+| Estilos            | CSS plano por componente                                                  |
 
 ## Requisitos
 
@@ -93,22 +97,22 @@ cp .env.example .env
 El archivo `.env` se crea a partir de `.env.example` y define las variables que
 usa Vite en build time.
 
-| Variable | Default | Descripcion |
-| --- | --- | --- |
-| `VITE_API_URL` | (vacio) | URL absoluta del backend. **Dejar vacio para usar el proxy de Vite** (recomendado en desarrollo). Si la defines, la app la usa como prefijo en todas las llamadas a la API. |
-| `VITE_BACKEND_URL` | `http://localhost:8080` | URL a la que Vite proxea las peticiones en desarrollo. Solo aplica si `VITE_API_URL` queda vacio. |
+| Variable           | Default                 | Descripcion                                                                                                                                                                 |
+| ------------------ | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_API_URL`     | (vacio)                 | URL absoluta del backend. **Dejar vacio para usar el proxy de Vite** (recomendado en desarrollo). Si la defines, la app la usa como prefijo en todas las llamadas a la API. |
+| `VITE_BACKEND_URL` | `http://localhost:8080` | URL a la que Vite proxea las peticiones en desarrollo. Solo aplica si `VITE_API_URL` queda vacio.                                                                           |
 
 Variables sensibles (tokens, secretos) no se almacenan en este repo. El `.env`
 local esta listado en `.gitignore`.
 
 ## Scripts disponibles
 
-| Comando | Descripcion |
-| --- | --- |
-| `npm run dev` | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
-| `npm run build` | Compila a produccion en la carpeta `dist/`. |
-| `npm run preview` | Sirve el `dist/` localmente para probar el build. |
-| `npm run lint` | Ejecuta ESLint sobre todo el codigo. |
+| Comando           | Descripcion                                                                                              |
+| ----------------- | -------------------------------------------------------------------------------------------------------- |
+| `npm run dev`     | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
+| `npm run build`   | Compila a produccion en la carpeta `dist/`.                                                              |
+| `npm run preview` | Sirve el `dist/` localmente para probar el build.                                                        |
+| `npm run lint`    | Ejecuta ESLint sobre todo el codigo.                                                                     |
 
 ## Proxy de desarrollo y CORS
 
@@ -134,19 +138,19 @@ backend desplegado.
 El front se despliega como **Static Site** en Render usando el blueprint
 [`render.yaml`](render.yaml):
 
-| Parametro | Valor |
-| --- | --- |
-| Build command | `npm ci && npm run build` |
-| Publish directory | `dist` |
-| Rewrite (SPA) | `/*` -> `/index.html` |
-| `VITE_API_URL` | `https://tutoriasbe.onrender.com` |
+| Parametro         | Valor                             |
+| ----------------- | --------------------------------- |
+| Build command     | `npm ci && npm run build`         |
+| Publish directory | `dist`                            |
+| Rewrite (SPA)     | `/*` -> `/index.html`             |
+| `VITE_API_URL`    | `https://tutoriasbe.onrender.com` |
 
 Pasos:
 
 1. En Render: **New + > Blueprint** y selecciona este repositorio. Render lee
    `render.yaml` y crea el servicio con la configuracion anterior.
    - Alternativa manual: **New + > Static Site**, build `npm ci && npm run build`,
-     publish `dist`, agrega la env var `VITE_API_URL` y la regla de *rewrite*.
+     publish `dist`, agrega la env var `VITE_API_URL` y la regla de _rewrite_.
 2. La URL de produccion del backend se toma de [`.env.production`](.env.production)
    (versionado, sin secretos) y/o de la env var `VITE_API_URL` de Render. Se
    incrusta en el bundle durante el build.
@@ -199,16 +203,16 @@ src/
 
 ## Rutas principales
 
-| Ruta | Rol | Pantalla |
-| --- | --- | --- |
-| `/login` | publico | Inicio de sesion |
-| `/registro` | publico | Registro |
-| `/tutor/home` | TUTOR | Mis tutorias |
-| `/tutor/crear` | TUTOR | Crear tutoria |
-| `/tutor/agregar-horario` | TUTOR | Gestionar horarios |
-| `/tutor/tutoria/:id` | TUTOR | Detalle de tutoria (editar, cancelar, ver inscritos) |
-| `/tutorado/home` | TUTORADO | Explorar tutorias |
-| `/tutorado/tutorias` | TUTORADO | Mis inscripciones |
+| Ruta                        | Rol      | Pantalla                                             |
+| --------------------------- | -------- | ---------------------------------------------------- |
+| `/login`                    | publico  | Inicio de sesion                                     |
+| `/registro`                 | publico  | Registro                                             |
+| `/tutor/home`               | TUTOR    | Mis tutorias                                         |
+| `/tutor/crear`              | TUTOR    | Crear tutoria                                        |
+| `/tutor/agregar-horario`    | TUTOR    | Gestionar horarios                                   |
+| `/tutor/tutoria/:id`        | TUTOR    | Detalle de tutoria (editar, cancelar, ver inscritos) |
+| `/tutorado/home`            | TUTORADO | Explorar tutorias                                    |
+| `/tutorado/tutorias`        | TUTORADO | Mis inscripciones                                    |
 | `/tutorado/infoTutoria/:id` | TUTORADO | Detalle de tutoria (inscribirse, cancelar, comentar) |
 
 `PrivateRoute` redirige a `/login` si no hay token o el rol no corresponde.

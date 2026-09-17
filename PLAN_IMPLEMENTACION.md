@@ -291,13 +291,13 @@ llega a `/login` con el aviso.
       `<AppLayout>` (el `className` por pagina pasa al contenedor raiz de cada pagina).
 - [ ] Nuevas URLs y redirecciones desde las antiguas:
 
-  | Antes | Despues |
-  | --- | --- |
-  | `/tutor/crear` | `/tutor/tutorias/nueva` |
-  | `/tutor/agregar-horario` | `/tutor/horarios` |
-  | `/tutor/tutoria/:id` | `/tutor/tutorias/:id` |
-  | `/tutorado/infoTutoria/:id` | `/tutorado/tutorias/:id` |
-  | `/tutorado/tutorias` | `/tutorado/inscripciones` |
+  | Antes                       | Despues                   |
+  | --------------------------- | ------------------------- |
+  | `/tutor/crear`              | `/tutor/tutorias/nueva`   |
+  | `/tutor/agregar-horario`    | `/tutor/horarios`         |
+  | `/tutor/tutoria/:id`        | `/tutor/tutorias/:id`     |
+  | `/tutorado/infoTutoria/:id` | `/tutorado/tutorias/:id`  |
+  | `/tutorado/tutorias`        | `/tutorado/inscripciones` |
 
 - [ ] `lazy` por ruta y `HydrateFallback`/`Suspense` con un loader de pagina.
 - [ ] `NotFoundPage` para `*` y `errorElement` con una pagina de error amigable
@@ -473,6 +473,7 @@ checklist manual en verde.
 Sin fecha fija; tomar segun prioridades del equipo.
 
 ### TypeScript gradual
+
 - [ ] `tsconfig.json` con `allowJs`, `checkJs: false`, `strict: true` para archivos `.ts`.
 - [ ] Script `"typecheck": "tsc --noEmit"` en CI.
 - [ ] Tipar `src/api/` primero (`Tutoria`, `Horario`, `Inscripcion`, `Comentario`,
@@ -481,12 +482,14 @@ Sin fecha fija; tomar segun prioridades del equipo.
       y por ultimo paginas.
 
 ### Pruebas end-to-end
+
 - [ ] Playwright con backend mockeado por MSW o un backend de pruebas.
 - [ ] Flujos: login por rol + expiracion de sesion; tutor crea horario y tutoria; tutorado
       explora, se inscribe, comenta y cancela.
 - [ ] Ejecutar en CI en PRs hacia `main`.
 
 ### Despliegue y seguridad
+
 - [ ] Dejar `VITE_API_URL` en una sola fuente (`render.yaml` **o** `.env.production`).
 - [ ] Validar variables de entorno en build (fallar si falta `VITE_API_URL` en produccion).
 - [ ] Headers en `render.yaml`: `Content-Security-Policy`, `X-Frame-Options: DENY`,
@@ -499,32 +502,32 @@ Sin fecha fija; tomar segun prioridades del equipo.
 
 ## Dependencias con el backend
 
-| Necesidad | Afecta a | Bloquea |
-| --- | --- | --- |
-| Incluir `idHorario` en el DTO de detalle de tutoria | PR 1.3 (editar tutoria) | No (hay workaround) |
-| Confirmar si se notifica a inscritos al cancelar | PR 1.3 (texto) | No |
-| JWT con claim `exp` | PR 2.4 (expiracion) | Parcial: sin `exp` solo se detecta por 401 |
-| Responder `401` (no `403`) con token invalido/expirado | PR 2.4 | Parcial |
-| Estabilizar DTOs (ids unicos, `tema` sin variantes) — issue #8 | PR 2.2 (mappers) | No, pero permite borrar fallbacks |
-| Endpoint de edificios/aulas | PR 1.2 (`espacios.js`) | No |
-| CORS para el dominio del frontend en Render | Despliegue | Si, en produccion |
-| Prefijo comun `/api` | Proxy de Vite | No |
-| OpenAPI (springdoc) | Fase 5 (tipos) | No |
-| Cookie `httpOnly` para sesion | Fase 5 | No |
+| Necesidad                                                      | Afecta a                | Bloquea                                    |
+| -------------------------------------------------------------- | ----------------------- | ------------------------------------------ |
+| Incluir `idHorario` en el DTO de detalle de tutoria            | PR 1.3 (editar tutoria) | No (hay workaround)                        |
+| Confirmar si se notifica a inscritos al cancelar               | PR 1.3 (texto)          | No                                         |
+| JWT con claim `exp`                                            | PR 2.4 (expiracion)     | Parcial: sin `exp` solo se detecta por 401 |
+| Responder `401` (no `403`) con token invalido/expirado         | PR 2.4                  | Parcial                                    |
+| Estabilizar DTOs (ids unicos, `tema` sin variantes) — issue #8 | PR 2.2 (mappers)        | No, pero permite borrar fallbacks          |
+| Endpoint de edificios/aulas                                    | PR 1.2 (`espacios.js`)  | No                                         |
+| CORS para el dominio del frontend en Render                    | Despliegue              | Si, en produccion                          |
+| Prefijo comun `/api`                                           | Proxy de Vite           | No                                         |
+| OpenAPI (springdoc)                                            | Fase 5 (tipos)          | No                                         |
+| Cookie `httpOnly` para sesion                                  | Fase 5                  | No                                         |
 
 ---
 
 ## Riesgos y mitigacion
 
-| Riesgo | Mitigacion |
-| --- | --- |
-| Regresiones visuales al introducir tokens y componentes | Capturas del Sprint 0, PRs por carpeta/pagina, revision visual en cada PR |
-| Conflictos de merge por el formateo masivo | Hacer PR 1.1 primero y pedir que las ramas abiertas hagan rebase inmediatamente |
-| PRs gigantes dificiles de revisar | Division por dominio (2.3, 3.4, 4.1), PRs mecanicos separados de los de logica |
-| Romper enlaces guardados al cambiar URLs | Redirecciones desde las rutas antiguas (PR 2.5) |
-| Cambios del backend durante el refactor | Toda la adaptacion de datos concentrada en `api/mappers.js` |
-| Sin pruebas antes del Sprint 2 | Checklist manual obligatorio en cada PR del Sprint 1 |
-| Aumento del bundle por nuevas librerias | Lazy loading por ruta (PR 2.5); revisar tamano del build en cada PR de dependencias |
+| Riesgo                                                  | Mitigacion                                                                          |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Regresiones visuales al introducir tokens y componentes | Capturas del Sprint 0, PRs por carpeta/pagina, revision visual en cada PR           |
+| Conflictos de merge por el formateo masivo              | Hacer PR 1.1 primero y pedir que las ramas abiertas hagan rebase inmediatamente     |
+| PRs gigantes dificiles de revisar                       | Division por dominio (2.3, 3.4, 4.1), PRs mecanicos separados de los de logica      |
+| Romper enlaces guardados al cambiar URLs                | Redirecciones desde las rutas antiguas (PR 2.5)                                     |
+| Cambios del backend durante el refactor                 | Toda la adaptacion de datos concentrada en `api/mappers.js`                         |
+| Sin pruebas antes del Sprint 2                          | Checklist manual obligatorio en cada PR del Sprint 1                                |
+| Aumento del bundle por nuevas librerias                 | Lazy loading por ruta (PR 2.5); revisar tamano del build en cada PR de dependencias |
 
 ---
 
@@ -533,24 +536,28 @@ Sin fecha fija; tomar segun prioridades del equipo.
 Ejecutar en escritorio y en movil (≤ 480 px) sobre las pantallas afectadas por el PR.
 
 **Autenticacion**
+
 - [ ] Registro como tutorado y como tutor (errores de validacion y del backend).
 - [ ] Login correcto por rol, login con credenciales invalidas, mostrar/ocultar contrasena.
 - [ ] Recargar una ruta privada con sesion activa; acceder a una ruta de otro rol.
 - [ ] Cerrar sesion.
 
 **Tutor**
+
 - [ ] Crear horario valido, rechazar hora fin ≤ inicio, eliminar horario.
 - [ ] Crear tutoria (con y sin temas); "Limpiar"; estado sin horarios / sin experiencias.
 - [ ] Ver lista de tutorias (vacia, con datos, error).
 - [ ] Detalle: editar, agregar/quitar tema, completar, cancelar, ver inscritos y comentarios.
 
 **Tutorado**
+
 - [ ] Explorar y buscar por Experiencia Educativa y por tutor; sin resultados.
 - [ ] Inscribirse, comentar, eliminar comentario propio, cancelar inscripcion
       (y bloqueo a menos de 15 min).
 - [ ] Ver "Mis tutorias"/inscripciones.
 
 **Layout**
+
 - [ ] Sidebar: colapsar/expandir (persistente), menu movil, cerrar con Escape y overlay.
 
 ---
@@ -559,12 +566,12 @@ Ejecutar en escritorio y en movil (≤ 480 px) sobre las pantallas afectadas por
 
 Estimaciones para una persona dedicada; ajustar segun disponibilidad del equipo.
 
-| Etapa | PRs | Esfuerzo | Entregable |
-| --- | --- | --- | --- |
-| Sprint 0 — Preparacion | — | 0.5 dias | `v0.1.0` (baseline) |
-| Sprint 1 — Estabilizar | 4 | 4–5 dias | `v0.2.0` |
-| Sprint 2 — Base tecnica | 7 | 6–8 dias | `v0.3.0` |
-| Sprint 3 — UI consistente | 7 | 8–10 dias | `v0.4.0` |
-| Sprint 4 — Escalar | 5–6 | 8–10 dias | `v1.0.0` |
-| Fase 5 — Despues | variable | 8–12 dias | — |
-| **Total hasta `v1.0.0`** | **~24** | **~27–34 dias** | |
+| Etapa                     | PRs      | Esfuerzo        | Entregable          |
+| ------------------------- | -------- | --------------- | ------------------- |
+| Sprint 0 — Preparacion    | —        | 0.5 dias        | `v0.1.0` (baseline) |
+| Sprint 1 — Estabilizar    | 4        | 4–5 dias        | `v0.2.0`            |
+| Sprint 2 — Base tecnica   | 7        | 6–8 dias        | `v0.3.0`            |
+| Sprint 3 — UI consistente | 7        | 8–10 dias       | `v0.4.0`            |
+| Sprint 4 — Escalar        | 5–6      | 8–10 dias       | `v1.0.0`            |
+| Fase 5 — Despues          | variable | 8–12 dias       | —                   |
+| **Total hasta `v1.0.0`**  | **~24**  | **~27–34 dias** |                     |

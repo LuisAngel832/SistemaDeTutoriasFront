@@ -54,15 +54,8 @@ const formatTiempoRestante = (minutos) => {
 const TutoriaDetalle = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const {
-    tutoria,
-    inscripcion,
-    isLoading,
-    error,
-    isSubmitting,
-    inscribirse,
-    cancelarInscripcion,
-  } = useTutoriaDetalleTutorado(id)
+  const { tutoria, inscripcion, isLoading, error, isSubmitting, inscribirse, cancelarInscripcion } =
+    useTutoriaDetalleTutorado(id)
 
   const [feedback, setFeedback] = useState(null)
   const [confirmCancel, setConfirmCancel] = useState(false)
@@ -90,8 +83,8 @@ const TutoriaDetalle = () => {
   const handleInscribirse = async () => {
     setFeedback(null)
     const message = await inscribirse()
-    const success = !message.toLowerCase().includes('no fue posible') &&
-      !message.toLowerCase().includes('error')
+    const success =
+      !message.toLowerCase().includes('no fue posible') && !message.toLowerCase().includes('error')
     setFeedback({ type: success ? 'success' : 'error', text: message })
   }
 
@@ -99,8 +92,8 @@ const TutoriaDetalle = () => {
     setFeedback(null)
     setConfirmCancel(false)
     const message = await cancelarInscripcion()
-    const success = !message.toLowerCase().includes('no fue posible') &&
-      !message.toLowerCase().includes('error')
+    const success =
+      !message.toLowerCase().includes('no fue posible') && !message.toLowerCase().includes('error')
     setFeedback({ type: success ? 'success' : 'error', text: message })
   }
 
@@ -111,12 +104,7 @@ const TutoriaDetalle = () => {
   return (
     <AppLayout className="td-page">
       <main className="td-main">
-        <button
-          type="button"
-          className="td-back"
-          onClick={() => navigate(-1)}
-          aria-label="Volver"
-        >
+        <button type="button" className="td-back" onClick={() => navigate(-1)} aria-label="Volver">
           ← Volver
         </button>
 
@@ -138,22 +126,23 @@ const TutoriaDetalle = () => {
             <article className="td-hero">
               <div className="td-hero-header">
                 <div className="td-hero-titles">
-                  <h1 className="td-experiencia">{tutoria.materia || 'Experiencia Educativa sin nombre'}</h1>
+                  <h1 className="td-experiencia">
+                    {tutoria.materia || 'Experiencia Educativa sin nombre'}
+                  </h1>
                   {tutoria.nombreTutor ? (
                     <p className="td-tutor">
-                      <span className="td-tutor-label">Imparte</span>{' '}
-                      {tutoria.nombreTutor}
+                      <span className="td-tutor-label">Imparte</span> {tutoria.nombreTutor}
                     </p>
                   ) : null}
                 </div>
-                <span className={`td-estado ${estadoClass}`}>
-                  {tutoria.estado || 'SIN ESTADO'}
-                </span>
+                <span className={`td-estado ${estadoClass}`}>{tutoria.estado || 'SIN ESTADO'}</span>
               </div>
 
               <div className="td-info-grid">
                 <div className="td-info-item">
-                  <span className="td-info-icon" aria-hidden="true">📅</span>
+                  <span className="td-info-icon" aria-hidden="true">
+                    📅
+                  </span>
                   <div>
                     <span className="td-info-label">Fecha</span>
                     <span className="td-info-value">{formatFecha(tutoria.fecha)}</span>
@@ -161,7 +150,9 @@ const TutoriaDetalle = () => {
                 </div>
 
                 <div className="td-info-item">
-                  <span className="td-info-icon" aria-hidden="true">🕐</span>
+                  <span className="td-info-icon" aria-hidden="true">
+                    🕐
+                  </span>
                   <div>
                     <span className="td-info-label">Horario</span>
                     <span className="td-info-value">
@@ -171,7 +162,9 @@ const TutoriaDetalle = () => {
                 </div>
 
                 <div className="td-info-item">
-                  <span className="td-info-icon" aria-hidden="true">🏛️</span>
+                  <span className="td-info-icon" aria-hidden="true">
+                    🏛️
+                  </span>
                   <div>
                     <span className="td-info-label">Edificio</span>
                     <span className="td-info-value">{tutoria.edificio ?? '—'}</span>
@@ -179,7 +172,9 @@ const TutoriaDetalle = () => {
                 </div>
 
                 <div className="td-info-item">
-                  <span className="td-info-icon" aria-hidden="true">🚪</span>
+                  <span className="td-info-icon" aria-hidden="true">
+                    🚪
+                  </span>
                   <div>
                     <span className="td-info-label">Aula</span>
                     <span className="td-info-value">{tutoria.aula ?? '—'}</span>
@@ -223,9 +218,7 @@ const TutoriaDetalle = () => {
                 </h3>
 
                 {feedback ? (
-                  <div className={`td-feedback ${feedback.type}`}>
-                    {feedback.text}
-                  </div>
+                  <div className={`td-feedback ${feedback.type}`}>{feedback.text}</div>
                 ) : null}
 
                 {tutoradoInscrito ? (
@@ -248,7 +241,8 @@ const TutoriaDetalle = () => {
                       </p>
                     ) : tooLateParaCancelar ? (
                       <p className="td-side-note warn">
-                        Solo puedes cancelar con mas de {MIN_MINUTOS_CANCELACION} minutos de anticipacion.
+                        Solo puedes cancelar con mas de {MIN_MINUTOS_CANCELACION} minutos de
+                        anticipacion.
                       </p>
                     ) : confirmCancel ? (
                       <div className="td-confirm">

@@ -81,8 +81,8 @@ const FormCrearTutoria = ({
         </div>
         {sinHorarios ? (
           <p className="empty-horarios">
-            Primero <Link to="/tutor/agregar-horario">crea un horario</Link> para
-            poder crear una tutoria.
+            Primero <Link to="/tutor/agregar-horario">crea un horario</Link> para poder crear una
+            tutoria.
           </p>
         ) : null}
       </div>
@@ -150,12 +150,7 @@ const FormCrearTutoria = ({
         <label htmlFor="tema-nuevo" className="crear-tutoria-label">
           Temas a tratar durante la tutoria (opcional)
         </label>
-        <TemasInput
-          inputId="tema-nuevo"
-          temas={temas}
-          onAdd={agregarTema}
-          onRemove={quitarTema}
-        />
+        <TemasInput inputId="tema-nuevo" temas={temas} onAdd={agregarTema} onRemove={quitarTema} />
       </div>
     </form>
   )

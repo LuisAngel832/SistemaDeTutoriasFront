@@ -40,24 +40,28 @@ const LogIn = () => {
           </div>
 
           <div className="auth-brand-body">
-            <h1 className="auth-brand-title">
-              Bienvenido de vuelta
-            </h1>
+            <h1 className="auth-brand-title">Bienvenido de vuelta</h1>
             <p className="auth-brand-subtitle">
               Gestiona tus tutorias, horarios e inscripciones desde un solo lugar.
             </p>
 
             <ul className="auth-brand-features">
               <li>
-                <span className="auth-brand-check" aria-hidden="true">✓</span>
+                <span className="auth-brand-check" aria-hidden="true">
+                  ✓
+                </span>
                 Programa sesiones de manera sencilla
               </li>
               <li>
-                <span className="auth-brand-check" aria-hidden="true">✓</span>
+                <span className="auth-brand-check" aria-hidden="true">
+                  ✓
+                </span>
                 Da seguimiento a tus tutorados
               </li>
               <li>
-                <span className="auth-brand-check" aria-hidden="true">✓</span>
+                <span className="auth-brand-check" aria-hidden="true">
+                  ✓
+                </span>
                 Mantente al dia con tus horarios
               </li>
             </ul>
@@ -69,9 +73,7 @@ const LogIn = () => {
         <section className="auth-form-panel">
           <header className="auth-form-header">
             <h2 className="auth-form-title">Iniciar sesion</h2>
-            <p className="auth-form-subtitle">
-              Ingresa con tu matricula para continuar.
-            </p>
+            <p className="auth-form-subtitle">Ingresa con tu matricula para continuar.</p>
           </header>
 
           {error ? <div className="auth-feedback error">{error}</div> : null}
@@ -123,11 +125,7 @@ const LogIn = () => {
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="auth-submit"
-              disabled={isSubmitting}
-            >
+            <button type="submit" className="auth-submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <span className="auth-spinner" aria-hidden="true" />

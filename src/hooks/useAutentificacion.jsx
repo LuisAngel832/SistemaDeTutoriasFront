@@ -42,10 +42,7 @@ const useAutentificacion = () => {
     setError('')
 
     try {
-      const response = await fetch(
-        `${BASE_URL}/auth/signin`,
-        buildJsonConfig({ matricula, pwd }),
-      )
+      const response = await fetch(`${BASE_URL}/auth/signin`, buildJsonConfig({ matricula, pwd }))
 
       const body = await parseResponse(response)
 
@@ -61,10 +58,7 @@ const useAutentificacion = () => {
       }
 
       const rolNormalizado = normalizeRol(rol)
-      const nombreCompleto = [nombre, apellidoP, apellidoM]
-        .filter(Boolean)
-        .join(' ')
-        .trim()
+      const nombreCompleto = [nombre, apellidoP, apellidoM].filter(Boolean).join(' ').trim()
 
       localStorage.setItem('token', token)
       localStorage.setItem('rol', rolNormalizado)
@@ -95,10 +89,7 @@ const useAutentificacion = () => {
     setError('')
 
     try {
-      const response = await fetch(
-        `${BASE_URL}/auth/signup`,
-        buildJsonConfig(usuario),
-      )
+      const response = await fetch(`${BASE_URL}/auth/signup`, buildJsonConfig(usuario))
 
       const body = await parseResponse(response)
 

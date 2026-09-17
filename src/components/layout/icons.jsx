@@ -54,13 +54,7 @@ export const IconLogout = () => (
 )
 
 export const IconCollapse = ({ collapsed }) => (
-  <svg {...baseProps}>
-    {collapsed ? (
-      <path d="m9 6 6 6-6 6" />
-    ) : (
-      <path d="m15 6-6 6 6 6" />
-    )}
-  </svg>
+  <svg {...baseProps}>{collapsed ? <path d="m9 6 6 6-6 6" /> : <path d="m15 6-6 6 6 6" />}</svg>
 )
 
 export const IconClose = () => (

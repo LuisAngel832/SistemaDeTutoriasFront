@@ -52,12 +52,12 @@ const CrearTutoria = () => {
         <div className="crear-tutoria-content">
           <div className="crear-tutoria-header">
             <h2>
-              <span className="crear-tutoria-icon" aria-hidden="true">+</span>
+              <span className="crear-tutoria-icon" aria-hidden="true">
+                +
+              </span>
               Crear Tutoria
             </h2>
-            <p className="crear-tutoria-subtitle">
-              Programa una nueva sesion para tus tutorados.
-            </p>
+            <p className="crear-tutoria-subtitle">Programa una nueva sesion para tus tutorados.</p>
           </div>
 
           <FormCrearTutoria

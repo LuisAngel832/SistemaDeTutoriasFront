@@ -1,7 +1,11 @@
 .tdt-page {
   min-height: 100vh;
   background-color: #f5f7fb;
-  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Montserrat',
+    system-ui,
+    -apple-system,
+    sans-serif;
   color: #1c2a44;
 }
 
@@ -37,7 +41,10 @@
   cursor: pointer;
   margin-bottom: 1.25rem;
   font-family: inherit;
-  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .tdt-back:hover {
@@ -177,7 +184,9 @@
   background-color: #f9fafc;
   border: 1px solid #eef1f6;
   border-radius: 10px;
-  transition: border-color 0.18s ease, background-color 0.18s ease;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
 }
 
 .tdt-info-item:hover {
@@ -339,7 +348,9 @@
   font-family: inherit;
   color: #1c2a44;
   background-color: #ffffff;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .tdt-tema-add-input:focus {
@@ -363,7 +374,9 @@
   font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.18s ease, transform 0.12s ease;
+  transition:
+    background-color 0.18s ease,
+    transform 0.12s ease;
 }
 
 .tdt-tema-add-btn:hover:not(:disabled) {
@@ -426,7 +439,9 @@
   color: #1c2a44;
   background-color: #ffffff;
   font-family: inherit;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .tdt-input:focus {
@@ -488,8 +503,12 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease,
-    color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .tdt-btn-primary {
@@ -632,7 +651,9 @@
   background-color: #f9fafc;
   border: 1px solid #eef1f6;
   border-radius: 10px;
-  transition: background-color 0.18s ease, border-color 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .tdt-inscrito:hover {

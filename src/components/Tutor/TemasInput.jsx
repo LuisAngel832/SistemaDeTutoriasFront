@@ -39,15 +39,9 @@ const TemasInput = ({
           id={inputId}
           type="text"
           className="temas-input-field"
-          placeholder={
-            lleno
-              ? `Maximo ${max} temas`
-              : 'Escribe un tema y presiona Enter'
-          }
+          placeholder={lleno ? `Maximo ${max} temas` : 'Escribe un tema y presiona Enter'}
           value={draft}
-          onChange={(event) =>
-            setDraft(event.target.value.slice(0, maxCaracteres))
-          }
+          onChange={(event) => setDraft(event.target.value.slice(0, maxCaracteres))}
           onKeyDown={handleKeyDown}
           disabled={disabled || lleno}
           maxLength={maxCaracteres}
@@ -84,9 +78,7 @@ const TemasInput = ({
       ) : null}
 
       <div className="temas-input-meta" id={`${inputId}-ayuda`}>
-        <span className="temas-input-hint">
-          Los tutorados veran estos temas en la sesion.
-        </span>
+        <span className="temas-input-hint">Los tutorados veran estos temas en la sesion.</span>
         <span className="temas-input-counters">
           <span className={`temas-input-count${enLimite ? ' limite' : ''}`}>
             {draft.length}/{maxCaracteres} caracteres

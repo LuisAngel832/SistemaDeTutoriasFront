@@ -41,15 +41,7 @@ const Registro = () => {
   const handleRegistro = async (event) => {
     event.preventDefault()
 
-    if (
-      !nombre ||
-      !apellidoP ||
-      !apellidoM ||
-      !matricula ||
-      !correo ||
-      !password ||
-      !rol
-    ) {
+    if (!nombre || !apellidoP || !apellidoM || !matricula || !correo || !password || !rol) {
       setError('Todos los campos son obligatorios')
       return
     }
@@ -92,21 +84,27 @@ const Registro = () => {
           <div className="auth-brand-body">
             <h1 className="auth-brand-title">Crea tu cuenta</h1>
             <p className="auth-brand-subtitle">
-              Registrate como tutor o tutorado y comienza a aprovechar las
-              tutorias de tu universidad.
+              Registrate como tutor o tutorado y comienza a aprovechar las tutorias de tu
+              universidad.
             </p>
 
             <ul className="auth-brand-features">
               <li>
-                <span className="auth-brand-check" aria-hidden="true">✓</span>
+                <span className="auth-brand-check" aria-hidden="true">
+                  ✓
+                </span>
                 Acceso inmediato a tutorias activas
               </li>
               <li>
-                <span className="auth-brand-check" aria-hidden="true">✓</span>
+                <span className="auth-brand-check" aria-hidden="true">
+                  ✓
+                </span>
                 Inscripcion y cancelacion en un click
               </li>
               <li>
-                <span className="auth-brand-check" aria-hidden="true">✓</span>
+                <span className="auth-brand-check" aria-hidden="true">
+                  ✓
+                </span>
                 Tu historial siempre disponible
               </li>
             </ul>
@@ -118,9 +116,7 @@ const Registro = () => {
         <section className="auth-form-panel registro-panel">
           <header className="auth-form-header">
             <h2 className="auth-form-title">Registro</h2>
-            <p className="auth-form-subtitle">
-              Completa tus datos para crear la cuenta.
-            </p>
+            <p className="auth-form-subtitle">Completa tus datos para crear la cuenta.</p>
           </header>
 
           {error ? <div className="auth-feedback error">{error}</div> : null}
@@ -130,11 +126,7 @@ const Registro = () => {
               <label className="auth-label" id="label-tipo-cuenta">
                 Tipo de cuenta que quieres crear
               </label>
-              <div
-                className="rol-chips"
-                role="radiogroup"
-                aria-labelledby="label-tipo-cuenta"
-              >
+              <div className="rol-chips" role="radiogroup" aria-labelledby="label-tipo-cuenta">
                 {ROLES.map((r) => (
                   <button
                     key={r.key}

@@ -69,9 +69,7 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
         </form>
       ) : null}
 
-      {feedback ? (
-        <div className={`cmt-feedback ${feedback.type}`}>{feedback.text}</div>
-      ) : null}
+      {feedback ? <div className={`cmt-feedback ${feedback.type}`}>{feedback.text}</div> : null}
 
       {error ? <div className="cmt-feedback error">{error}</div> : null}
 
@@ -87,9 +85,7 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
         <ul className="cmt-lista">
           {comentarios.map((c) => {
             const esMio = c.matricula && c.matricula === matricula
-            const inicial = (c.nombre || c.matricula || '?')
-              .slice(0, 1)
-              .toUpperCase()
+            const inicial = (c.nombre || c.matricula || '?').slice(0, 1).toUpperCase()
 
             return (
               <li key={c.idComentario} className="cmt-item">

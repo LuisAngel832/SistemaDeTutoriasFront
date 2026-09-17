@@ -1,12 +1,6 @@
 import './ventanaEmerjente.css'
 
-const VentanaEmerjente = ({
-  text,
-  textBtn1,
-  textBtn2,
-  handleClickBtn1,
-  handleClickBtn2,
-}) => {
+const VentanaEmerjente = ({ text, textBtn1, textBtn2, handleClickBtn1, handleClickBtn2 }) => {
   return (
     <div className="overlay-modal">
       <div className="ventana-emergente">
