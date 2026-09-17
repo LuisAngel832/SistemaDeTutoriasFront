@@ -1,0 +1,170 @@
+.temas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  /* Evita que el contenido empuje el ancho de la tarjeta. */
+  min-width: 0;
+  max-width: 100%;
+}
+
+.fila {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.campo {
+  flex: 1;
+  min-width: 0;
+  height: 42px;
+  padding: 0 0.85rem;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-sm);
+  background-color: var(--color-superficie);
+  color: var(--color-texto);
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.campo::placeholder {
+  color: var(--color-texto-placeholder);
+}
+
+.campo:hover:not(:focus):not(:disabled) {
+  border-color: var(--color-borde-fuerte);
+}
+
+.campo:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: var(--anillo-foco);
+}
+
+.campo:disabled {
+  background-color: var(--color-fondo-suave);
+  cursor: not-allowed;
+}
+
+.agregar {
+  flex-shrink: 0;
+  height: 42px;
+  padding: 0 1rem;
+  border: 1px solid var(--color-primario);
+  border-radius: var(--radio-sm);
+  background-color: var(--color-primario);
+  color: var(--color-texto-inverso);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    transform 0.12s ease;
+}
+
+.agregar:hover:not(:disabled) {
+  background-color: var(--color-primario-oscuro);
+}
+
+.agregar:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.agregar:focus-visible {
+  outline: var(--contorno-foco);
+  outline-offset: 2px;
+}
+
+.agregar:disabled {
+  border-color: var(--color-borde-fuerte);
+  background-color: var(--color-borde-fuerte);
+  cursor: not-allowed;
+}
+
+.lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vacio {
+  margin: 0;
+  color: var(--color-texto-tenue);
+  font-size: 0.85rem;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  min-width: 0;
+}
+
+.ayuda {
+  color: var(--color-texto-tenue);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.contadores {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 0.6rem;
+}
+
+.contador {
+  color: var(--color-texto-tenue);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.limite {
+  color: var(--color-limite);
+  font-weight: 600;
+}
+
+/* Version compacta (detalle de tutoria) */
+.compacto .fila {
+  width: 400px;
+  max-width: 100%;
+}
+
+.compacto .campo {
+  height: 36px;
+  padding: 0 0.75rem;
+  font-size: 0.88rem;
+}
+
+.compacto .agregar {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .temas:not(.compacto) .fila {
+    flex-wrap: wrap;
+  }
+
+  .temas:not(.compacto) .campo,
+  .temas:not(.compacto) .agregar {
+    flex: 1 1 100%;
+  }
+
+  .meta {
+    justify-content: flex-start;
+  }
+}

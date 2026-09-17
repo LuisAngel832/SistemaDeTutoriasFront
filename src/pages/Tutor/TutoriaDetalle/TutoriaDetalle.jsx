@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import Comentarios from '../../../components/Comentarios'
+import Comentarios from '../../../features/comentarios/Comentarios'
 import useHorarios from '../../../hooks/useHorarios'
 import useTutoriaDetalleTutor from '../../../hooks/useTutoriaDetalleTutor'
 import { ROUTES } from '../../../constants/routes'

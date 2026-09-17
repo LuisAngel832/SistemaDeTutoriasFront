@@ -191,18 +191,19 @@ src/
     RaizApp.jsx            # Raiz: sesion, titulo del documento y barra de navegacion
   assets/css/components/   # CSS compartido (sidebar)
   components/
-    Comentarios.jsx        # Comentarios de una tutoria (RF15)
     layout/
       AppLayout.jsx        # Estructura de las paginas privadas (sidebar + contenido)
       Sidebar.jsx          # Navegacion lateral por rol
-      icons.jsx            # Iconos SVG de la navegacion
+    ui/                    # Componentes base: Button, Card, FormField, Modal, Alert... (CSS Modules)
     Tutor/
       TemasInput.jsx       # Input de chips para temas (RF14)
       VentanaEmerjente.jsx # Modal de resultado
   constants/               # Rutas, roles, estados de tutoria, espacios y dias de la semana
   api/                     # Cliente HTTP, servicios por recurso y mappers de DTOs
   features/
-    auth/                  # AuthProvider, useAuth, guards de rutas, storage y lectura del JWT
+    auth/                  # AuthProvider, useAuth, guards, AuthLayout, storage y JWT
+    comentarios/           # Comentarios de una tutoria (RF15)
+    tutorias/components/   # TutoriaCard, TutoriaInfoGrid, TemasInput, InscritosList, acciones
   hooks/
     useAhora.js            # Hora actual que se refresca periodicamente
     useRecurso.js          # Carga de datos con cancelacion (base de los demas hooks)

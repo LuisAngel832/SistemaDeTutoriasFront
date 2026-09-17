@@ -1,0 +1,85 @@
+.encabezado {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+}
+
+.titulo {
+  margin: 0;
+  color: var(--color-texto);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.conteo {
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radio-pill);
+  background-color: var(--color-primario-suave);
+  color: var(--color-primario-texto);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inscrito {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--color-divisor);
+  border-radius: var(--radio-md);
+  background-color: var(--color-fondo-suave);
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.inscrito:hover {
+  border-color: var(--color-borde);
+  background-color: var(--color-superficie);
+}
+
+.avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-primario-oscuro) 100%);
+  color: var(--color-texto-inverso);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.datos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.nombre {
+  overflow: hidden;
+  color: var(--color-texto);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.matricula {
+  color: var(--color-texto-tenue);
+  font-size: 0.78rem;
+}
