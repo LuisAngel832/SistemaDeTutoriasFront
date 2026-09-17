@@ -16,10 +16,15 @@ export const Modal = ({ open, onClose, title, description, actions, className, c
     if (!open && dialogo.open) dialogo.close()
   }, [open])
 
+  // Escape: el estado lo controla quien usa el modal. Se atiende en keydown ademas del evento
+  // nativo "cancel", que no todos los navegadores disparan igual.
   const cancelar = (evento) => {
-    // Escape: se deja el control del estado a quien usa el modal.
     evento.preventDefault()
     onClose?.()
+  }
+
+  const alPresionarTecla = (evento) => {
+    if (evento.key === 'Escape') cancelar(evento)
   }
 
   const clicEnFondo = (evento) => {
@@ -28,13 +33,14 @@ export const Modal = ({ open, onClose, title, description, actions, className, c
 
   return (
     // El clic en el fondo es un atajo de mouse; con teclado se cierra con Escape o los botones.
-    // eslint-disable-next-line jsx-a11y-x/click-events-have-key-events, jsx-a11y-x/no-noninteractive-element-interactions
+    // eslint-disable-next-line jsx-a11y-x/no-noninteractive-element-interactions
     <dialog
       ref={ref}
       className={clases(styles.modal, className)}
       aria-labelledby={title ? idTitulo : undefined}
       aria-describedby={description ? idDescripcion : undefined}
       onCancel={cancelar}
+      onKeyDown={alPresionarTecla}
       onClick={clicEnFondo}
     >
       <div className={styles.contenido}>

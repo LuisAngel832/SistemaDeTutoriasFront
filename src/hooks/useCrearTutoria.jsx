@@ -4,109 +4,84 @@ import { materiasApi } from '../api/materias'
 import { tutoriasApi } from '../api/tutorias'
 import { useRecurso } from './useRecurso'
 
+const VALORES_INICIALES = { nrc: '', idHorario: '', fecha: '', edificio: '', aula: '' }
+
 const useCrearTutoria = () => {
-  const [nrcExperiencia, setNrcExperiencia] = useState('')
-  const [horario, setHorario] = useState('')
-  const [fecha, setFecha] = useState('')
-  const [edificio, setEdificio] = useState('')
-  const [aula, setAula] = useState('')
+  const [valores, setValores] = useState(VALORES_INICIALES)
   const [temas, setTemas] = useState([])
-  const [mensaje, setMensaje] = useState('')
-  const [showModal, setShowModal] = useState(false)
+  // { ok, message } del ultimo intento de crear la tutoria.
+  const [resultado, setResultado] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Si fallan, el formulario muestra los selects vacios con su mensaje de ayuda.
-  const { datos: horariosDisponibles } = useRecurso(horariosApi.listar, [])
-  const { datos: experienciasDisponibles } = useRecurso(materiasApi.listar, [])
+  // Si fallan, el formulario muestra los selects vacios con su aviso.
+  const { datos: horarios, isLoading: cargandoHorarios } = useRecurso(horariosApi.listar, [])
+  const { datos: materias, isLoading: cargandoMaterias } = useRecurso(materiasApi.listar, [])
+
+  const cambiar = (campo, valor) => {
+    setValores((actuales) => ({ ...actuales, [campo]: valor }))
+    setResultado((actual) => (actual?.ok === false ? null : actual))
+  }
 
   const agregarTema = (tema) => {
     const limpio = tema.trim()
     if (!limpio) return
-    setTemas((prev) =>
-      prev.some((t) => t.toLowerCase() === limpio.toLowerCase()) ? prev : [...prev, limpio],
+    setTemas((actuales) =>
+      actuales.some((t) => t.toLowerCase() === limpio.toLowerCase())
+        ? actuales
+        : [...actuales, limpio],
     )
   }
 
-  const quitarTema = (tema) => {
-    setTemas((prev) => prev.filter((t) => t !== tema))
-  }
+  const quitarTema = (tema) => setTemas((actuales) => actuales.filter((t) => t !== tema))
 
   const reset = () => {
-    setNrcExperiencia('')
-    setHorario('')
-    setFecha('')
-    setEdificio('')
-    setAula('')
+    setValores(VALORES_INICIALES)
     setTemas([])
+    setResultado(null)
   }
 
-  const handleSubmit = async () => {
-    if (!nrcExperiencia || !horario || !fecha || !edificio || !aula) {
-      setMensaje('Completa todos los campos')
-      setShowModal(true)
+  const crear = async () => {
+    if (Object.values(valores).some((valor) => !valor)) {
+      setResultado({ ok: false, message: 'Completa todos los campos obligatorios.' })
       return
-    }
-
-    const idHorarioNum = Number(horario)
-    const edificioNum = Number(edificio)
-    const aulaNum = Number(aula)
-    const nrcNum = Number(nrcExperiencia)
-
-    if (
-      !Number.isFinite(idHorarioNum) ||
-      !Number.isFinite(edificioNum) ||
-      !Number.isFinite(aulaNum) ||
-      !Number.isFinite(nrcNum)
-    ) {
-      setMensaje('Hay campos numericos invalidos. Revisa Horario, Edificio, Aula y NRC.')
-      setShowModal(true)
-      return
-    }
-
-    const payload = {
-      idHorario: idHorarioNum,
-      fecha,
-      edificio: edificioNum,
-      aula: aulaNum,
-      nrc: nrcNum,
-      temas,
     }
 
     setIsSubmitting(true)
-
     try {
-      await tutoriasApi.crear(payload)
-      setMensaje('Tutoria creada correctamente')
-      reset()
+      await tutoriasApi.crear({
+        idHorario: Number(valores.idHorario),
+        fecha: valores.fecha,
+        edificio: Number(valores.edificio),
+        aula: Number(valores.aula),
+        nrc: Number(valores.nrc),
+        temas,
+      })
+      setValores(VALORES_INICIALES)
+      setTemas([])
+      setResultado({
+        ok: true,
+        message: 'La tutoria quedo programada y ya es visible para los tutorados.',
+      })
     } catch (err) {
-      setMensaje(err.message)
+      setResultado({ ok: false, message: err.message })
     } finally {
-      setShowModal(true)
       setIsSubmitting(false)
     }
   }
 
   return {
-    nrcExperiencia,
-    setNrcExperiencia,
-    horario,
-    setHorario,
-    fecha,
-    setFecha,
-    edificio,
-    setEdificio,
-    aula,
-    setAula,
-    mensaje,
-    showModal,
-    setShowModal,
+    valores,
+    cambiar,
     temas,
     agregarTema,
     quitarTema,
-    handleSubmit,
     reset,
-    horariosDisponibles,
-    experienciasDisponibles,
+    crear,
+    resultado,
+    cerrarResultado: () => setResultado(null),
+    horarios,
+    materias,
+    cargandoListas: cargandoHorarios || cargandoMaterias,
     isSubmitting,
   }
 }

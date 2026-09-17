@@ -10,9 +10,12 @@ const ROL_POR_TONO = {
   info: 'status',
 }
 
-// tone: error | warning | success | info
-export const Alert = ({ tone = 'info', title, className, children }) => (
-  <div className={clases(styles.alerta, styles[tone], className)} role={ROL_POR_TONO[tone]}>
+// tone: error | warning | success | info. compact: para avisos dentro de formularios o tarjetas.
+export const Alert = ({ tone = 'info', title, compact = false, className, children }) => (
+  <div
+    className={clases(styles.alerta, styles[tone], compact && styles.compacta, className)}
+    role={ROL_POR_TONO[tone]}
+  >
     {title ? <strong className={styles.titulo}>{title}</strong> : null}
     {children}
   </div>

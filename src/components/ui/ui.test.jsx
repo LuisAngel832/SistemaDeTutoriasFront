@@ -186,11 +186,15 @@ describe('Modal y ConfirmDialog', () => {
     fireEvent(dialogo, new Event('cancel', { cancelable: true }))
     expect(onClose).toHaveBeenCalledTimes(1)
 
+    fireEvent.keyDown(screen.getByText('Contenido'), { key: 'Escape' })
+    expect(onClose).toHaveBeenCalledTimes(2)
+    onClose.mockClear()
+
     fireEvent.click(screen.getByText('Contenido'))
-    expect(onClose).toHaveBeenCalledTimes(1)
+    expect(onClose).not.toHaveBeenCalled()
 
     fireEvent.click(dialogo)
-    expect(onClose).toHaveBeenCalledTimes(2)
+    expect(onClose).toHaveBeenCalledTimes(1)
   })
 
   it('ConfirmDialog ejecuta la accion y no se cierra mientras carga', async () => {
