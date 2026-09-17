@@ -10,8 +10,8 @@
 
 .ventana-emergente {
   width: min(92%, 460px);
-  background: #ffffff;
-  border-radius: 12px;
+  background: var(--color-superficie);
+  border-radius: var(--radio-lg);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
@@ -31,13 +31,13 @@
 }
 .ventana-emergente button {
   border: none;
-  border-radius: 8px;
-  background-color: #28ad56;
-  color: #ffffff;
+  border-radius: var(--radio-sm);
+  background-color: var(--color-exito);
+  color: var(--color-texto-inverso);
   padding: 0.6rem 1rem;
   cursor: pointer;
 }
 
 .ventana-emergente button.secondary {
-  background-color: #2d5fa7;
+  background-color: var(--color-primario);
 }

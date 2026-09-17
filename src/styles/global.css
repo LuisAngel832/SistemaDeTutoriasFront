@@ -23,8 +23,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  color: #1c2a44;
-  background-color: #f5f7fb;
+  color: var(--color-texto);
+  background-color: var(--color-fondo);
 }
 
 img,

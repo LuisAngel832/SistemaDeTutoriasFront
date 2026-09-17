@@ -1,0 +1,79 @@
+/*
+ * Tokens de diseno: unica fuente de colores, sombras y radios.
+ * En el resto del CSS usa var(--token) en lugar de valores fijos.
+ *
+ * Breakpoints usados en las media queries (las variables CSS no funcionan dentro de @media):
+ *   movil <= 480px · tablet <= 768px · escritorio chico <= 1024px
+ */
+:root {
+  /* Marca (azul) */
+  --color-primario: #2d5fa7;
+  --color-primario-medio: #285697;
+  --color-primario-profundo: #24497f;
+  --color-primario-oscuro: #1f4581;
+  --color-primario-texto: #1f5aab;
+  --color-primario-suave: #e3f0ff;
+  --color-primario-tenue: #eef4fc;
+  --color-primario-borde: #b8cee9;
+
+  /* Acento (verde claro del logotipo) */
+  --color-acento: #4ade80;
+
+  /* Exito (acciones principales, estados positivos) */
+  --color-exito: #28ad56;
+  --color-exito-hover: #239a4b;
+  --color-exito-deshabilitado: #9ed3b1;
+  --color-exito-texto: #1e7a3f;
+  --color-exito-profundo: #14432a;
+  --color-exito-suave: #eaf5ef;
+  --color-exito-borde: #b6dec5;
+
+  /* Peligro (errores, cancelaciones) */
+  --color-peligro: #d93030;
+  --color-peligro-hover: #c12727;
+  --color-peligro-texto: #a4252f;
+  --color-peligro-suave: #fbe5e7;
+  --color-peligro-borde: #f5c2c7;
+  --color-peligro-borde-hover: #e69ba2;
+
+  /* Alerta (avisos) */
+  --color-alerta-texto: #8a6d3b;
+  --color-alerta-suave: #fff8e6;
+  --color-alerta-borde: #f5e0a3;
+  --color-limite: #c0562c;
+
+  /* Texto */
+  --color-texto: #1c2a44;
+  --color-texto-secundario: #485468;
+  --color-texto-suave: #5b6778;
+  /* Texto de apoyo: cumple contraste 4.5:1 sobre blanco y sobre --color-fondo. */
+  --color-texto-tenue: #687182;
+  --color-texto-placeholder: #9aa3b2;
+  --color-texto-inverso: #ffffff;
+
+  /* Superficies y bordes */
+  --color-superficie: #ffffff;
+  --color-fondo: #f5f7fb;
+  --color-fondo-suave: #f9fafc;
+  --color-fondo-hover: #f1f3f8;
+  --color-borde: #d4dae4;
+  --color-borde-suave: #e6eaf2;
+  --color-borde-hover: #c8d2e0;
+  --color-borde-fuerte: #b9c1cf;
+  --color-divisor: #eef1f6;
+
+  /* Sombras */
+  --sombra-tarjeta: 0 2px 10px rgba(15, 30, 60, 0.04);
+  --sombra-tarjeta-hover: 0 8px 22px rgba(15, 30, 60, 0.09);
+  --sombra-panel: 0 4px 24px rgba(15, 30, 60, 0.05);
+  --sombra-exito: 0 2px 6px rgba(40, 173, 86, 0.25);
+  --sombra-exito-hover: 0 4px 12px rgba(40, 173, 86, 0.35);
+  --anillo-foco: 0 0 0 3px rgba(45, 95, 167, 0.15);
+
+  /* Radios */
+  --radio-sm: 8px;
+  --radio-md: 10px;
+  --radio-lg: 12px;
+  --radio-xl: 14px;
+  --radio-pill: 999px;
+}

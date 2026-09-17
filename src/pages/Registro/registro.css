@@ -23,11 +23,11 @@
   align-items: flex-start;
   gap: 0.2rem;
   padding: 0.85rem 1rem;
-  border: 1px solid #d4dae4;
-  background-color: #ffffff;
-  border-radius: 10px;
+  border: 1px solid var(--color-borde);
+  background-color: var(--color-superficie);
+  border-radius: var(--radio-md);
   cursor: pointer;
-  color: #485468;
+  color: var(--color-texto-secundario);
   text-align: left;
   font-family: inherit;
   transition:
@@ -39,9 +39,9 @@
 }
 
 .rol-chip:hover {
-  border-color: #b9c1cf;
-  background-color: #f9fafc;
-  color: #1c2a44;
+  border-color: var(--color-borde-fuerte);
+  background-color: var(--color-fondo-suave);
+  color: var(--color-texto);
 }
 
 .rol-chip:active {
@@ -49,9 +49,9 @@
 }
 
 .rol-chip.active {
-  border-color: #2d5fa7;
-  background-color: #eef4fc;
-  color: #1c2a44;
+  border-color: var(--color-primario);
+  background-color: var(--color-primario-tenue);
+  color: var(--color-texto);
   box-shadow: 0 0 0 3px rgba(45, 95, 167, 0.12);
 }
 
@@ -67,7 +67,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 2px solid #b9c1cf;
+  border: 2px solid var(--color-borde-fuerte);
   background-color: transparent;
   display: inline-flex;
   align-items: center;
@@ -78,14 +78,14 @@
 }
 
 .rol-chip.active .rol-chip-radio {
-  border-color: #2d5fa7;
-  background-color: #2d5fa7;
-  box-shadow: inset 0 0 0 3px #ffffff;
+  border-color: var(--color-primario);
+  background-color: var(--color-primario);
+  box-shadow: inset 0 0 0 3px var(--color-superficie);
 }
 
 .rol-chip-desc {
   font-size: 0.78rem;
-  color: #5b6778;
+  color: var(--color-texto-suave);
 }
 
 /* Override del shell del registro: con form mas grande, mas espacio */
@@ -95,4 +95,19 @@
 
 .auth-form-panel.registro-panel {
   padding: 2.25rem 2.5rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .auth-form.registro-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rol-chips {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-form-panel.registro-panel {
+    padding: 1.5rem 1.25rem 2rem;
+  }
 }

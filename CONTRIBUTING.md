@@ -51,6 +51,8 @@ Tipos habituales: `feat`, `fix`, `refactor`, `style`, `test`, `docs`, `build`, `
 - **Reutiliza antes de crear:** formato de fechas/horas en `src/utils/formatters.js`,
   calculos de tiempo en `src/utils/fechas.js`, reglas de tutoria en `src/utils/tutoria.js`
   y valores fijos en `src/constants/`.
+- **Estilos:** nada de colores, sombras o radios fijos: usa las variables de
+  `src/styles/tokens.css` y las animaciones de `src/styles/animations.css`.
 - **Formato:** lo resuelve Prettier (`npm run format`); no discutas estilo en las revisiones.
 
 ## Checklist antes de abrir un PR

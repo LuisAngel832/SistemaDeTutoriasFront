@@ -18,12 +18,12 @@
   min-width: 0;
   box-sizing: border-box;
   height: 42px;
-  border-radius: 8px;
-  border: 1px solid #d4dae4;
+  border-radius: var(--radio-sm);
+  border: 1px solid var(--color-borde);
   padding: 0 0.85rem;
   font-size: 0.95rem;
-  color: #1c2a44;
-  background-color: #ffffff;
+  color: var(--color-texto);
+  background-color: var(--color-superficie);
   font-family: inherit;
   transition:
     border-color 0.2s ease,
@@ -31,17 +31,17 @@
 }
 
 .temas-input-field:hover:not(:focus):not(:disabled) {
-  border-color: #b9c1cf;
+  border-color: var(--color-borde-fuerte);
 }
 
 .temas-input-field:focus {
   outline: none;
-  border-color: #2d5fa7;
-  box-shadow: 0 0 0 3px rgba(45, 95, 167, 0.15);
+  border-color: var(--color-primario);
+  box-shadow: var(--anillo-foco);
 }
 
 .temas-input-field:disabled {
-  background-color: #f6f7fa;
+  background-color: var(--color-fondo-suave);
   cursor: not-allowed;
 }
 
@@ -49,10 +49,10 @@
   flex-shrink: 0;
   height: 42px;
   padding: 0 1rem;
-  border-radius: 8px;
-  border: 1px solid #2d5fa7;
-  background-color: #2d5fa7;
-  color: #ffffff;
+  border-radius: var(--radio-sm);
+  border: 1px solid var(--color-primario);
+  background-color: var(--color-primario);
+  color: var(--color-texto-inverso);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -63,7 +63,7 @@
 }
 
 .temas-input-add:hover:not(:disabled) {
-  background-color: #1f4581;
+  background-color: var(--color-primario-oscuro);
 }
 
 .temas-input-add:active:not(:disabled) {
@@ -71,8 +71,8 @@
 }
 
 .temas-input-add:disabled {
-  background-color: #b9c1cf;
-  border-color: #b9c1cf;
+  background-color: var(--color-borde-fuerte);
+  border-color: var(--color-borde-fuerte);
   cursor: not-allowed;
 }
 
@@ -88,14 +88,14 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background-color: #eef4fc;
-  color: #1f5aab;
+  background-color: var(--color-primario-tenue);
+  color: var(--color-primario-texto);
   font-size: 0.85rem;
   font-weight: 500;
   padding: 0.3rem 0.4rem 0.3rem 0.75rem;
   /* Radio suave (no pildora) porque un tema largo puede ocupar varias lineas. */
-  border-radius: 14px;
-  animation: chip-in 0.2s ease-out;
+  border-radius: var(--radio-xl);
+  animation: aparecer-escala 0.2s ease-out;
   max-width: 100%;
   min-width: 0;
 }
@@ -106,24 +106,13 @@
   word-break: break-word;
 }
 
-@keyframes chip-in {
-  from {
-    opacity: 0;
-    transform: scale(0.85);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 .temas-input-chip-x {
   flex-shrink: 0;
   width: 18px;
   height: 18px;
   border: none;
   background-color: transparent;
-  color: #1f5aab;
+  color: var(--color-primario-texto);
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
@@ -154,7 +143,7 @@
 
 .temas-input-hint {
   font-size: 0.78rem;
-  color: #8a93a3;
+  color: var(--color-texto-tenue);
   overflow-wrap: anywhere;
 }
 
@@ -166,13 +155,13 @@
 
 .temas-input-count {
   font-size: 0.75rem;
-  color: #8a93a3;
+  color: var(--color-texto-tenue);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .temas-input-count.limite {
-  color: #c0562c;
+  color: var(--color-limite);
   font-weight: 600;
 }
 

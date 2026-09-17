@@ -2,7 +2,6 @@ import VentanaEmerjente from '../../../components/Tutor/VentanaEmerjente'
 import useCrearTutoria from '../../../hooks/useCrearTutoria'
 import FormCrearTutoria from './FormCrearTutoria'
 import './crearTutoria.css'
-import './crearTutoriaR.css'
 
 const CrearTutoria = () => {
   const {

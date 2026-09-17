@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { ROUTES } from '../../constants/routes'
 import { useAuth } from '../../features/auth/AuthContext'
 import './login.css'
-import './Login_respon.css'
 
 const LogIn = () => {
   const { login, sesionExpirada } = useAuth()

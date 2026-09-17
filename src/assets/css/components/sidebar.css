@@ -1,7 +1,6 @@
 /* =========================================================
    Layout con navegacion lateral (sidebar)
-   Paleta alineada al resto del sistema:
-   azul #2d5fa7 / #24497f, acento #4ade80, fondo #f5f7fb
+   Colores, sombras y radios: ver src/styles/tokens.css
    ========================================================= */
 
 .app-shell {
@@ -23,7 +22,11 @@
   width: var(--sidebar-width);
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, #2d5fa7 0%, #24497f 100%);
+  background: linear-gradient(
+    180deg,
+    var(--color-primario) 0%,
+    var(--color-primario-profundo) 100%
+  );
   box-shadow: 2px 0 16px rgba(15, 30, 60, 0.12);
   z-index: 100;
   transition:
@@ -48,7 +51,7 @@
   gap: 0.6rem;
   flex: 1;
   min-width: 0;
-  color: #ffffff;
+  color: var(--color-texto-inverso);
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.2px;
@@ -64,21 +67,9 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: #4ade80;
+  background-color: var(--color-acento);
   flex-shrink: 0;
-  animation: sidebar-brand-pulse 2s ease-out infinite;
-}
-
-@keyframes sidebar-brand-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6);
-  }
-  70% {
-    box-shadow: 0 0 0 8px rgba(74, 222, 128, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
-  }
+  animation: pulso-acento 2s ease-out infinite;
 }
 
 .sidebar-brand-text {
@@ -97,7 +88,7 @@
   flex-shrink: 0;
   padding: 0;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radio-sm);
   background-color: transparent;
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
@@ -109,7 +100,7 @@
 .sidebar-collapse-btn:hover,
 .sidebar-close-btn:hover {
   background-color: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  color: var(--color-texto-inverso);
 }
 
 .sidebar-close-btn {
@@ -142,7 +133,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.7rem 0.75rem;
-  border-radius: 10px;
+  border-radius: var(--radio-md);
   color: rgba(255, 255, 255, 0.82);
   font-size: 0.95rem;
   font-weight: 500;
@@ -161,7 +152,7 @@
   width: 3px;
   height: 60%;
   border-radius: 0 3px 3px 0;
-  background-color: #4ade80;
+  background-color: var(--color-acento);
   transform: translateY(-50%) scaleY(0);
   transform-origin: center;
   transition: transform 0.22s ease;
@@ -169,12 +160,12 @@
 
 .sidebar-link:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  color: var(--color-texto-inverso);
 }
 
 .sidebar-link.active {
   background-color: rgba(255, 255, 255, 0.16);
-  color: #ffffff;
+  color: var(--color-texto-inverso);
   font-weight: 600;
 }
 
@@ -210,7 +201,7 @@
   align-items: flex-start;
   gap: 0.65rem;
   padding: 0.6rem 0.65rem;
-  border-radius: 10px;
+  border-radius: var(--radio-md);
   background-color: rgba(255, 255, 255, 0.1);
   min-width: 0;
 }
@@ -224,8 +215,8 @@
   margin-top: 2px;
   flex-shrink: 0;
   border-radius: 50%;
-  background-color: #4ade80;
-  color: #14432a;
+  background-color: var(--color-acento);
+  color: var(--color-exito-profundo);
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.3px;
@@ -239,7 +230,7 @@
 }
 
 .sidebar-user-name {
-  color: #ffffff;
+  color: var(--color-texto-inverso);
   font-size: 0.9rem;
   font-weight: 600;
   white-space: nowrap;
@@ -273,9 +264,9 @@
   width: 100%;
   padding: 0.65rem 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 10px;
+  border-radius: var(--radio-md);
   background-color: transparent;
-  color: #ffffff;
+  color: var(--color-texto-inverso);
   font-family: inherit;
   font-size: 0.9rem;
   font-weight: 500;
@@ -298,7 +289,7 @@
 
 .app-sidebar :focus-visible,
 .app-topbar :focus-visible {
-  outline: 2px solid #4ade80;
+  outline: 2px solid var(--color-acento);
   outline-offset: 2px;
 }
 
@@ -350,7 +341,7 @@
   gap: 0.75rem;
   min-height: 58px;
   padding: 0 1rem;
-  background: linear-gradient(180deg, #2d5fa7 0%, #285697 100%);
+  background: linear-gradient(180deg, var(--color-primario) 0%, var(--color-primario-medio) 100%);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
 }
 
@@ -364,7 +355,7 @@
   height: 40px;
   padding: 0;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radio-sm);
   background: none;
   cursor: pointer;
   transition: background-color 0.18s ease;
@@ -378,11 +369,11 @@
   width: 22px;
   height: 2px;
   border-radius: 2px;
-  background-color: #ffffff;
+  background-color: var(--color-superficie);
 }
 
 .topbar-title {
-  color: #ffffff;
+  color: var(--color-texto-inverso);
   font-size: 1rem;
   font-weight: 600;
   white-space: nowrap;
@@ -396,16 +387,7 @@
   inset: 0;
   z-index: 90;
   background-color: rgba(15, 30, 60, 0.45);
-  animation: sidebar-overlay-in 0.2s ease-out;
-}
-
-@keyframes sidebar-overlay-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  animation: aparecer-opacidad 0.2s ease-out;
 }
 
 /* ---------- Breakpoint mobile ---------- */

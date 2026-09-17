@@ -3,41 +3,30 @@
   padding: 2.5rem 1rem;
   display: flex;
   justify-content: center;
-  animation: ct-fade-in 0.35s ease-out;
-}
-
-@keyframes ct-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  animation: aparecer 0.35s ease-out;
 }
 
 .crear-tutoria-content {
   width: min(760px, 100%);
-  background-color: #ffffff;
-  border: 1px solid #e6eaf2;
-  border-radius: 14px;
+  background-color: var(--color-superficie);
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-xl);
   padding: 2rem;
-  box-shadow: 0 4px 24px rgba(15, 30, 60, 0.05);
+  box-shadow: var(--sombra-panel);
 }
 
 /* Header de la card */
 .crear-tutoria-header {
   margin-bottom: 1.75rem;
   padding-bottom: 1.25rem;
-  border-bottom: 1px solid #eef1f6;
+  border-bottom: 1px solid var(--color-divisor);
 }
 
 .crear-tutoria-content h2 {
   margin: 0 0 0.35rem;
   font-size: 1.6rem;
   font-weight: 600;
-  color: #1c2a44;
+  color: var(--color-texto);
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -49,15 +38,15 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background-color: #eaf5ef;
-  color: #2d8f4f;
-  border-radius: 8px;
+  background-color: var(--color-exito-suave);
+  color: var(--color-exito-texto);
+  border-radius: var(--radio-sm);
   font-size: 1.1rem;
 }
 
 .crear-tutoria-subtitle {
   margin: 0;
-  color: #5b6778;
+  color: var(--color-texto-suave);
   font-size: 0.92rem;
 }
 
@@ -85,7 +74,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #485468;
+  color: var(--color-texto-secundario);
   /* Las etiquetas descriptivas son largas: deben poder partirse. */
   overflow-wrap: anywhere;
 }
@@ -94,12 +83,12 @@
   width: 100%;
   box-sizing: border-box;
   height: 42px;
-  border-radius: 8px;
-  border: 1px solid #d4dae4;
+  border-radius: var(--radio-sm);
+  border: 1px solid var(--color-borde);
   padding: 0 0.85rem;
   font-size: 0.95rem;
-  color: #1c2a44;
-  background-color: #ffffff;
+  color: var(--color-texto);
+  background-color: var(--color-superficie);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -107,21 +96,21 @@
 }
 
 .crear-tutoria-input::placeholder {
-  color: #9aa3b2;
+  color: var(--color-texto-placeholder);
 }
 
 .crear-tutoria-input:hover:not(:focus) {
-  border-color: #b9c1cf;
+  border-color: var(--color-borde-fuerte);
 }
 
 .crear-tutoria-input:focus {
   outline: none;
-  border-color: #2d5fa7;
-  box-shadow: 0 0 0 3px rgba(45, 95, 167, 0.15);
+  border-color: var(--color-primario);
+  box-shadow: var(--anillo-foco);
 }
 
 .crear-tutoria-input:disabled {
-  background-color: #f6f7fa;
+  background-color: var(--color-fondo-suave);
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -138,15 +127,15 @@
   top: 50%;
   width: 8px;
   height: 8px;
-  border-right: 2px solid #5b6778;
-  border-bottom: 2px solid #5b6778;
+  border-right: 2px solid var(--color-texto-suave);
+  border-bottom: 2px solid var(--color-texto-suave);
   transform: translateY(-75%) rotate(45deg);
   pointer-events: none;
   transition: border-color 0.2s ease;
 }
 
 .select-wrapper:hover::after {
-  border-color: #1c2a44;
+  border-color: var(--color-texto);
 }
 
 .crear-tutoria-input.select {
@@ -161,16 +150,16 @@
 /* Mensaje cuando no hay horarios */
 .empty-horarios {
   font-size: 0.82rem;
-  color: #8a6d3b;
-  background-color: #fff8e6;
-  border: 1px solid #f5e0a3;
+  color: var(--color-alerta-texto);
+  background-color: var(--color-alerta-suave);
+  border: 1px solid var(--color-alerta-borde);
   border-radius: 6px;
   padding: 0.5rem 0.7rem;
   margin-top: 0.3rem;
 }
 
 .empty-horarios a {
-  color: #2d5fa7;
+  color: var(--color-primario);
   font-weight: 600;
   text-decoration: none;
 }
@@ -183,7 +172,7 @@
 .crear-actions {
   margin-top: 1.75rem;
   padding-top: 1.25rem;
-  border-top: 1px solid #eef1f6;
+  border-top: 1px solid var(--color-divisor);
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
@@ -191,9 +180,9 @@
 
 .btn-secundario {
   background-color: transparent;
-  color: #485468;
-  border: 1px solid #d4dae4;
-  border-radius: 8px;
+  color: var(--color-texto-secundario);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-sm);
   padding: 0.65rem 1.2rem;
   font-size: 0.95rem;
   font-weight: 500;
@@ -205,15 +194,15 @@
 }
 
 .btn-secundario:hover {
-  background-color: #f1f3f8;
-  color: #1c2a44;
+  background-color: var(--color-fondo-hover);
+  color: var(--color-texto);
 }
 
 .btn-aceptar {
   border: none;
-  border-radius: 8px;
-  background-color: #28ad56;
-  color: #ffffff;
+  border-radius: var(--radio-sm);
+  background-color: var(--color-exito);
+  color: var(--color-texto-inverso);
   padding: 0.65rem 1.5rem;
   font-size: 0.95rem;
   font-weight: 600;
@@ -225,12 +214,12 @@
     background-color 0.2s ease,
     transform 0.15s ease,
     box-shadow 0.2s ease;
-  box-shadow: 0 2px 6px rgba(40, 173, 86, 0.25);
+  box-shadow: var(--sombra-exito);
 }
 
 .btn-aceptar:hover:not(:disabled) {
-  background-color: #239a4b;
-  box-shadow: 0 4px 10px rgba(40, 173, 86, 0.35);
+  background-color: var(--color-exito-hover);
+  box-shadow: var(--sombra-exito-hover);
 }
 
 .btn-aceptar:active:not(:disabled) {
@@ -238,7 +227,7 @@
 }
 
 .btn-aceptar:disabled {
-  background-color: #9ed3b1;
+  background-color: var(--color-exito-deshabilitado);
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -248,15 +237,9 @@
   width: 14px;
   height: 14px;
   border: 2px solid rgba(255, 255, 255, 0.4);
-  border-top-color: #ffffff;
+  border-top-color: var(--color-texto-inverso);
   border-radius: 50%;
-  animation: btn-spin 0.7s linear infinite;
-}
-
-@keyframes btn-spin {
-  to {
-    transform: rotate(360deg);
-  }
+  animation: girar 0.7s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -267,5 +250,34 @@
   .btn-spinner {
     animation: none;
     transition: none;
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .crear-tutoria-form {
+    grid-template-columns: 1fr;
+  }
+
+  .main-crear-tutoria {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .crear-tutoria-content {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .crear-tutoria-content h2 {
+    font-size: 1.4rem;
+  }
+
+  .crear-actions {
+    flex-direction: column-reverse;
+  }
+
+  .crear-actions .btn-aceptar,
+  .crear-actions .btn-secundario {
+    width: 100%;
+    justify-content: center;
   }
 }

@@ -70,7 +70,7 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 | Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh` |
 | Formato            | Prettier 3 + lint-staged (pre-commit) y commitlint (commit-msg)           |
 | Lenguaje           | JavaScript (JSX)                                                          |
-| Estilos            | CSS plano por componente y tipografia Montserrat (Fontsource)             |
+| Estilos            | CSS por componente con tokens de diseno y tipografia Montserrat           |
 
 ## Requisitos
 
@@ -227,6 +227,10 @@ src/
       Home.jsx             # Explorar tutorias
       MisTutorias.jsx
       TutoriaDetalle.jsx
+  styles/
+    tokens.css             # Colores, sombras y radios (unica fuente de valores de diseno)
+    animations.css         # Animaciones compartidas y reduccion de movimiento
+    global.css             # Estilos base del documento
   utils/
     fechas.js              # Fechas en hora local y tiempo restante
     formatters.js          # Formato de fechas, horas, temas e iniciales
