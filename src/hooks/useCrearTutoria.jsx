@@ -1,11 +1,8 @@
-import { useEffect, useState } from 'react'
-
-const BASE_URL = import.meta.env.VITE_API_URL ?? ''
-
-const getAuthHeaders = () => ({
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${localStorage.getItem('token')}`,
-})
+import { useState } from 'react'
+import { horariosApi } from '../api/horarios'
+import { materiasApi } from '../api/materias'
+import { tutoriasApi } from '../api/tutorias'
+import { useRecurso } from './useRecurso'
 
 const useCrearTutoria = () => {
   const [nrcExperiencia, setNrcExperiencia] = useState('')
@@ -16,9 +13,11 @@ const useCrearTutoria = () => {
   const [temas, setTemas] = useState([])
   const [mensaje, setMensaje] = useState('')
   const [showModal, setShowModal] = useState(false)
-  const [horariosDisponibles, setHorariosDisponibles] = useState([])
-  const [experienciasDisponibles, setExperienciasDisponibles] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Si fallan, el formulario muestra los selects vacios con su mensaje de ayuda.
+  const { datos: horariosDisponibles } = useRecurso(horariosApi.listar, [])
+  const { datos: experienciasDisponibles } = useRecurso(materiasApi.listar, [])
 
   const agregarTema = (tema) => {
     const limpio = tema.trim()
@@ -76,75 +75,16 @@ const useCrearTutoria = () => {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch(`${BASE_URL}/tutoria`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      })
-
-      const responseBody = await response.json().catch(() => null)
-
-      if (!response.ok) {
-        setMensaje(responseBody?.message || 'No se pudo crear la tutoria')
-        setShowModal(true)
-        return
-      }
-
+      await tutoriasApi.crear(payload)
       setMensaje('Tutoria creada correctamente')
-      setShowModal(true)
       reset()
-    } catch {
-      setMensaje('Error al conectar con el servidor')
-      setShowModal(true)
+    } catch (err) {
+      setMensaje(err.message)
     } finally {
+      setShowModal(true)
       setIsSubmitting(false)
     }
   }
-
-  useEffect(() => {
-    const fetchHorarios = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/horario`, {
-          method: 'GET',
-          headers: getAuthHeaders(),
-        })
-
-        if (!response.ok) {
-          return
-        }
-
-        const data = await response.json().catch(() => null)
-        const lista = (data?.data || []).map((h) => ({
-          ...h,
-          idHorario: h.idHorario ?? h.id ?? h.idHorarios ?? h.horarioId,
-        }))
-        setHorariosDisponibles(lista)
-      } catch {
-        setHorariosDisponibles([])
-      }
-    }
-
-    const fetchExperiencias = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/materia`, {
-          method: 'GET',
-          headers: getAuthHeaders(),
-        })
-
-        if (!response.ok) {
-          return
-        }
-
-        const data = await response.json().catch(() => null)
-        setExperienciasDisponibles(data?.data || [])
-      } catch {
-        setExperienciasDisponibles([])
-      }
-    }
-
-    fetchHorarios()
-    fetchExperiencias()
-  }, [])
 
   return {
     nrcExperiencia,
