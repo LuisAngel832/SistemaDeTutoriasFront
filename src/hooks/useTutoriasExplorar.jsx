@@ -1,42 +1,8 @@
-import { useEffect, useState } from 'react'
-
-const BASE_URL = import.meta.env.VITE_API_URL ?? ''
-
-const getAuthHeaders = () => ({
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${localStorage.getItem('token')}`,
-})
+import { tutoriasApi } from '../api/tutorias'
+import { useRecurso } from './useRecurso'
 
 export const useTutoriasExplorar = () => {
-  const [tutorias, setTutorias] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
+  const { datos: tutorias, isLoading, error, recargar } = useRecurso(tutoriasApi.disponibles, [])
 
-  useEffect(() => {
-    const fetchTutorias = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/tutoria/disponibles`, {
-          method: 'GET',
-          headers: getAuthHeaders(),
-        })
-
-        const data = await response.json().catch(() => null)
-
-        if (!response.ok) {
-          setError(data?.message || 'No se pudieron cargar las tutorias')
-          return
-        }
-
-        setTutorias(data?.data || [])
-      } catch {
-        setError('Error al conectar con el servidor')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchTutorias()
-  }, [])
-
-  return { tutorias, isLoading, error }
+  return { tutorias, isLoading, error, refetch: recargar }
 }

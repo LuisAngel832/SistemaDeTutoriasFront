@@ -1,142 +1,72 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
+import { asistenciaApi } from '../api/asistencia'
+import { esCancelacion } from '../api/client'
+import { tutoriasApi } from '../api/tutorias'
+import { useRecurso } from './useRecurso'
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? ''
-
-const getAuthHeaders = () => ({
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${localStorage.getItem('token')}`,
-})
-
-const fetchJson = async (url, options = {}) => {
-  const response = await fetch(url, options)
-  const data = await response.json().catch(() => null)
-  return { response, data }
-}
-
-const findInscripcion = async (idTutoria) => {
-  const { response, data } = await fetchJson(`${BASE_URL}/asistencia/mis-inscripciones`, {
-    method: 'GET',
-    headers: getAuthHeaders(),
-  })
-  if (!response.ok) return null
-  const inscripciones = data?.data || []
-  const target = Number(idTutoria)
-
-  return (
-    inscripciones.find((item) => {
-      const candidatos = [
-        item.idTutoria,
-        item.tutoria?.idTutoria,
-        item.tutoria?.id,
-        item.idTutoriaInscrita,
-      ]
-        .filter((v) => v != null)
-        .map(Number)
-
-      return candidatos.includes(target)
-    }) || null
-  )
-}
+const DETALLE_INICIAL = { tutoria: null, inscripcion: null }
 
 export const useTutoriaDetalleTutorado = (id) => {
-  const [tutoria, setTutoria] = useState(null)
-  const [inscripcion, setInscripcion] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const fetchTutoria = useCallback(
-    async (showLoading = true) => {
-      if (showLoading) {
-        setIsLoading(true)
-      }
-      setError('')
-
-      try {
-        const { response, data } = await fetchJson(`${BASE_URL}/tutoria/${id}`, {
-          method: 'GET',
-          headers: getAuthHeaders(),
-        })
-
-        if (!response.ok) {
-          setError(data?.message || 'No se pudo cargar la tutoria')
-          return
-        }
-
-        setTutoria(data?.data || null)
-        const insc = await findInscripcion(id)
-        setInscripcion(insc)
-      } catch {
-        setError('Error al conectar con el servidor')
-      } finally {
-        setIsLoading(false)
-      }
+  // El backend no indica si el tutorado ya esta inscrito: se busca en sus inscripciones.
+  const cargarDetalle = useCallback(
+    async ({ signal }) => {
+      const [tutoria, inscripciones] = await Promise.all([
+        tutoriasApi.detalle(id, { signal }),
+        asistenciaApi.misInscripciones({ signal }).catch((error) => {
+          if (esCancelacion(error)) throw error
+          return []
+        }),
+      ])
+      const inscripcion =
+        inscripciones.find((item) => String(item.idTutoria) === String(id)) ?? null
+      return { tutoria, inscripcion }
     },
     [id],
   )
 
-  useEffect(() => {
-    fetchTutoria(true)
-  }, [fetchTutoria])
+  const { datos, isLoading, error, recargar, refrescar } = useRecurso(
+    cargarDetalle,
+    DETALLE_INICIAL,
+  )
 
-  const inscribirse = async () => {
+  const ejecutar = async (accion, mensajeExito) => {
     setIsSubmitting(true)
     try {
-      const { response, data } = await fetchJson(`${BASE_URL}/asistencia`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ idTutoria: Number(id) }),
-      })
-
-      if (!response.ok) {
-        return { ok: false, message: data?.message || 'No fue posible inscribirse' }
-      }
-
-      await fetchTutoria(false)
-      // El backend responde "Asistencia marcada.", que confunde al tutorado.
-      return { ok: true, message: 'Te inscribiste a la tutoria.' }
-    } catch {
-      return { ok: false, message: 'Error al conectar con el servidor' }
+      await accion()
+      await refrescar()
+      return { ok: true, message: mensajeExito }
+    } catch (err) {
+      return { ok: false, message: err.message }
     } finally {
       setIsSubmitting(false)
     }
   }
 
+  // El backend responde "Asistencia marcada.", que confunde al tutorado: se usa un texto propio.
+  const inscribirse = () =>
+    ejecutar(() => asistenciaApi.inscribirse(id), 'Te inscribiste a la tutoria.')
+
   const cancelarInscripcion = async () => {
-    setIsSubmitting(true)
-    try {
-      const insc = inscripcion || (await findInscripcion(id))
-      const idAsistencia = insc?.idAsistencia
-      if (!idAsistencia) {
-        return { ok: false, message: 'No tienes una inscripcion para cancelar' }
-      }
-
-      const { response, data } = await fetchJson(`${BASE_URL}/asistencia/${idAsistencia}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders(),
-      })
-
-      if (!response.ok) {
-        return { ok: false, message: data?.message || 'No fue posible cancelar la inscripcion' }
-      }
-
-      await fetchTutoria(false)
-      return { ok: true, message: 'Cancelaste tu inscripcion.' }
-    } catch {
-      return { ok: false, message: 'Error al conectar con el servidor' }
-    } finally {
-      setIsSubmitting(false)
+    const idAsistencia = datos.inscripcion?.idAsistencia
+    if (!idAsistencia) {
+      return { ok: false, message: 'No tienes una inscripcion para cancelar' }
     }
+    return ejecutar(
+      () => asistenciaApi.cancelarInscripcion(idAsistencia),
+      'Cancelaste tu inscripcion.',
+    )
   }
 
   return {
-    tutoria,
-    inscripcion,
+    tutoria: datos.tutoria,
+    inscripcion: datos.inscripcion,
     isLoading,
     error,
     isSubmitting,
     inscribirse,
     cancelarInscripcion,
-    recargar: () => fetchTutoria(true),
+    recargar,
   }
 }

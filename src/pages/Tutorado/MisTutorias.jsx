@@ -5,29 +5,9 @@ import { formatFecha, formatRangoHora, SIN_DATO } from '../../utils/formatters'
 import { getEstadoClass } from '../../utils/tutoria'
 import './misTutorias.css'
 
-// El endpoint /asistencia/mis-inscripciones puede devolver dos shapes segun el back:
-//   A) DTO viejo: { matricula, nombre, asistio }  -> faltan datos para renderizar
-//   B) DTO enriquecido: { idAsistencia, asistio, tutoria: {...} }
-// Esta funcion intenta sacar lo util de cualquiera de los dos.
-const normalizar = (item, index) => {
-  const tutoria = item.tutoria || item
-  return {
-    key: item.idAsistencia ?? tutoria.id ?? tutoria.idTutoria ?? `item-${index}`,
-    idTutoria: tutoria.id ?? tutoria.idTutoria,
-    experiencia: tutoria.materia,
-    fecha: tutoria.fecha,
-    horaInicio: tutoria.horaInicio ?? tutoria.horario?.horaInicio,
-    horaFin: tutoria.horaFin ?? tutoria.horario?.horaFin,
-    estado: tutoria.estado,
-    edificio: tutoria.edificio,
-    aula: tutoria.aula,
-    nombreTutor: tutoria.nombreTutor ?? tutoria.tutor ?? tutoria.horario?.tutor?.nombre,
-  }
-}
-
 const Card = ({ item }) => {
   const estadoClass = getEstadoClass(item.estado)
-  const sinDatos = !item.experiencia && !item.fecha
+  const sinDatos = !item.materia && !item.fecha
 
   if (sinDatos) {
     return (
@@ -42,9 +22,7 @@ const Card = ({ item }) => {
     <article className="mt-card">
       <div className="mt-card-top">
         <div className="mt-titles">
-          <h3 className="mt-experiencia">
-            {item.experiencia || 'Experiencia Educativa sin nombre'}
-          </h3>
+          <h3 className="mt-experiencia">{item.materia || 'Experiencia Educativa sin nombre'}</h3>
           {item.nombreTutor ? <p className="mt-tutor">Imparte {item.nombreTutor}</p> : null}
         </div>
         {item.estado ? <span className={`mt-estado ${estadoClass}`}>{item.estado}</span> : null}
@@ -79,8 +57,9 @@ const Card = ({ item }) => {
 const MisTutorias = () => {
   const { tutorias, isLoading, error } = useTutoriasTutorado()
 
-  const normalizadas = tutorias.map(normalizar)
-  const todasSinDatos = normalizadas.length > 0 && normalizadas.every((t) => !t.experiencia)
+  // Las inscripciones llegan normalizadas por mapInscripcion (ver src/api/mappers.js).
+  const normalizadas = tutorias
+  const todasSinDatos = normalizadas.length > 0 && normalizadas.every((t) => !t.materia)
 
   return (
     <AppLayout className="mt-page">
@@ -128,7 +107,7 @@ const MisTutorias = () => {
         ) : (
           <div className="mt-grid">
             {normalizadas.map((item) => (
-              <Card key={item.key} item={item} />
+              <Card key={item.idAsistencia ?? item.idTutoria} item={item} />
             ))}
           </div>
         )}
