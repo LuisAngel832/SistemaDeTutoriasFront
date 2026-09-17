@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import { ROLES } from '../../constants/roles'
-import { getSesion, suscribirSesion } from '../../utils/sesion'
+import { useAuth } from '../../features/auth/AuthContext'
 import '../../assets/css/components/sidebar.css'
 
 const MENU_POR_ROL = {
@@ -31,18 +31,13 @@ const AppLayout = ({ children, className = '' }) => {
   const location = useLocation()
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem(STORAGE_KEY) === 'true')
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [sesion, setSesion] = useState(getSesion)
-
-  const { nombre, matricula, rol } = sesion
+  const { nombre, matricula, rol } = useAuth()
   // El admin usa las pantallas del tutor, asi que comparte su menu.
   const menu = MENU_POR_ROL[rol === ROLES.ADMIN ? ROLES.TUTOR : rol] ?? MENU_POR_ROL.tutorado
 
   const activo = menu.items.find((item) =>
     item.end ? location.pathname === item.to : location.pathname.startsWith(item.to),
   )
-
-  // El nombre puede completarse despues del login (ver utils/sesion).
-  useEffect(() => suscribirSesion(() => setSesion(getSesion())), [])
 
   useEffect(() => {
     setMobileOpen(false)

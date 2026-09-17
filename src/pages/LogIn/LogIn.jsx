@@ -1,11 +1,13 @@
-import { Link } from 'react-router-dom'
 import { useState } from 'react'
-import useAutentificacion from '../../hooks/useAutentificacion'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../features/auth/AuthContext'
 import './login.css'
 import './Login_respon.css'
 
 const LogIn = () => {
-  const { login } = useAutentificacion()
+  const { login, sesionExpirada } = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const [matricula, setMatricula] = useState('')
   const [contrasena, setContrasena] = useState('')
@@ -26,9 +28,21 @@ const LogIn = () => {
     }
 
     setIsSubmitting(true)
-    await login(matricula, contrasena, setError)
-    setIsSubmitting(false)
+    const res = await login(matricula, contrasena)
+    if (!res.ok) {
+      setError(res.message)
+      setIsSubmitting(false)
+      return
+    }
+    // Vuelve a la pagina que se pidio antes de iniciar sesion, si la habia.
+    navigate(location.state?.from?.pathname ?? res.destino, { replace: true })
   }
+
+  const aviso = sesionExpirada
+    ? { tipo: 'warning', texto: 'Tu sesion expiro. Vuelve a iniciar sesion para continuar.' }
+    : location.state?.registrado
+      ? { tipo: 'success', texto: 'Cuenta creada. Ya puedes iniciar sesion.' }
+      : null
 
   return (
     <div className="auth-page">
@@ -76,7 +90,15 @@ const LogIn = () => {
             <p className="auth-form-subtitle">Ingresa con tu matricula para continuar.</p>
           </header>
 
-          {error ? <div className="auth-feedback error">{error}</div> : null}
+          {error ? (
+            <div className="auth-feedback error" role="alert">
+              {error}
+            </div>
+          ) : aviso ? (
+            <div className={`auth-feedback ${aviso.tipo}`} role="status">
+              {aviso.texto}
+            </div>
+          ) : null}
 
           <form className="auth-form" onSubmit={handleLogin}>
             <div className="auth-field">

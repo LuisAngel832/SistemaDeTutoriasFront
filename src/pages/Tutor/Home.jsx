@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AppLayout from '../../components/layout/AppLayout'
+import { useAuth } from '../../features/auth/AuthContext'
 import useMisTutorias from '../../hooks/useMisTutorias'
 import { formatFecha, formatRangoHora, formatTema, SIN_DATO } from '../../utils/formatters'
-import { guardarNombreUsuario } from '../../utils/sesion'
 import { getEstadoClass } from '../../utils/tutoria'
 import './home.css'
 
@@ -54,13 +54,15 @@ const TutoriaCard = ({ tutoria }) => {
 
 const TutorHome = () => {
   const { tutorias, isLoading, error } = useMisTutorias()
+  const { matricula, actualizarNombre } = useAuth()
 
   // El login no devuelve el nombre del tutor, pero si viene en sus tutorias:
   // lo guardamos para poder mostrarlo en la tarjeta del sidebar.
+  // (Un admin ve tutorias de otros tutores, asi que solo aplica si todas son del mismo.)
   useEffect(() => {
-    const conNombre = tutorias.find((tutoria) => tutoria.nombreTutor)
-    if (conNombre) guardarNombreUsuario(conNombre.nombreTutor)
-  }, [tutorias])
+    const nombres = new Set(tutorias.map((tutoria) => tutoria.nombreTutor).filter(Boolean))
+    if (matricula && nombres.size === 1) actualizarNombre([...nombres][0])
+  }, [tutorias, matricula, actualizarNombre])
 
   return (
     <AppLayout className="tutor-home-page">

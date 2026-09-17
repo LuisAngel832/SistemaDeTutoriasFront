@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useAuth } from '../features/auth/AuthContext'
 import useComentarios from '../hooks/useComentarios'
 import { getInicial } from '../utils/formatters'
 import './comentarios.css'
@@ -10,7 +11,7 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
   const [feedback, setFeedback] = useState(null)
   const [eliminandoId, setEliminandoId] = useState(null)
 
-  const matricula = localStorage.getItem('matricula')
+  const { matricula } = useAuth()
   const puedeEscribir = modo === 'tutorado'
 
   const handleEnviar = async (event) => {

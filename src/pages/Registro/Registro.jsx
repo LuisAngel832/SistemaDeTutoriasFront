@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import useAutentificacion from '../../hooks/useAutentificacion'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../features/auth/AuthContext'
 import '../LogIn/login.css'
 import './registro.css'
 import './Registro_respon.css'
@@ -21,7 +21,8 @@ const ROLES = [
 const ROL_IDS = { tutor: 2, tutorado: 3 }
 
 const Registro = () => {
-  const { registro } = useAutentificacion()
+  const { registro } = useAuth()
+  const navigate = useNavigate()
 
   const [nombre, setNombre] = useState('')
   const [apellidoP, setApellidoP] = useState('')
@@ -68,8 +69,13 @@ const Registro = () => {
     }
 
     setIsSubmitting(true)
-    await registro(usuario, setError)
-    setIsSubmitting(false)
+    const res = await registro(usuario)
+    if (!res.ok) {
+      setError(res.message)
+      setIsSubmitting(false)
+      return
+    }
+    navigate('/login', { state: { registrado: true } })
   }
 
   return (

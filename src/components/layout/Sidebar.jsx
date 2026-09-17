@@ -1,5 +1,5 @@
 import { Link, NavLink } from 'react-router-dom'
-import useAutentificacion from '../../hooks/useAutentificacion'
+import { useAuth } from '../../features/auth/AuthContext'
 import { getIniciales } from '../../utils/formatters'
 import {
   IconClose,
@@ -32,7 +32,7 @@ const Sidebar = ({
   mobileOpen,
   onCloseMobile,
 }) => {
-  const { logout } = useAutentificacion()
+  const { logout } = useAuth()
 
   const nombreVisible = nombre || 'Usuario'
   const resumenUsuario = [nombre, matricula, rol].filter(Boolean).join(' - ')

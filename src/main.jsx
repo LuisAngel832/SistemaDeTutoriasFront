@@ -4,15 +4,14 @@ import { BrowserRouter } from 'react-router-dom'
 import '@fontsource-variable/montserrat'
 import './index.css'
 import App from './App.jsx'
-import { configureApi } from './api/client'
-
-// Temporal: el token sigue en localStorage hasta que exista el contexto de autenticacion.
-configureApi({ getToken: () => localStorage.getItem('token') })
+import { AuthProvider } from './features/auth/AuthProvider'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 )

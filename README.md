@@ -200,9 +200,12 @@ src/
       TemasInput.jsx       # Input de chips para temas (RF14)
       VentanaEmerjente.jsx # Modal de resultado
   constants/               # Roles, estados de tutoria, espacios y dias de la semana
+  api/                     # Cliente HTTP, servicios por recurso y mappers de DTOs
+  features/
+    auth/                  # AuthProvider, useAuth, storage de la sesion y lectura del JWT
   hooks/
     useAhora.js            # Hora actual que se refresca periodicamente
-    useAutentificacion.jsx # Login, signup y logout
+    useRecurso.js          # Carga de datos con cancelacion (base de los demas hooks)
     useComentarios.jsx     # CRUD de comentarios sobre una tutoria
     useCrearTutoria.jsx    # Estado y submit de crear tutoria
     useHorarios.jsx        # CRUD de horarios del tutor
@@ -226,7 +229,6 @@ src/
   utils/
     fechas.js              # Fechas en hora local y tiempo restante
     formatters.js          # Formato de fechas, horas, temas e iniciales
-    sesion.js              # Datos de sesion guardados en localStorage
     tutoria.js             # Reglas de dominio (estado, horario de una tutoria)
 ```
 
@@ -244,12 +246,22 @@ src/
 | `/tutorado/tutorias`        | TUTORADO | Mis inscripciones                                    |
 | `/tutorado/infoTutoria/:id` | TUTORADO | Detalle de tutoria (inscribirse, cancelar, comentar) |
 
-`PrivateRoute` redirige a `/login` si no hay token o el rol no corresponde.
+`PrivateRoute` redirige a `/login` si no hay sesion (y vuelve a la ruta pedida despues del
+login) o a la pantalla inicial del usuario si su rol no corresponde.
 
 ## Integracion con el backend
 
 El backend espera autenticacion JWT en el header `Authorization: Bearer <token>`.
-El front lee el token de `localStorage` (clave `token`) despues del login.
+
+- **Cliente HTTP** ([`src/api/client.js`](src/api/client.js)): todas las llamadas pasan por
+  aqui. Agrega el token, aplica un timeout de 15 s, convierte los errores en `ApiError` con el
+  mensaje del backend y cancela peticiones al desmontar las pantallas.
+- **Servicios y mappers** (`src/api/*.js`): un servicio por recurso; `mappers.js` adapta los
+  DTOs del backend a la forma que usan las pantallas.
+- **Sesion** ([`src/features/auth`](src/features/auth)): `AuthProvider` guarda token, rol,
+  matricula y nombre (en `localStorage`, claves `token`, `rol`, `matricula` y `nombre`) y
+  los expone con `useAuth()`. La sesion se cierra y se avisa al usuario cuando el token vence
+  (segun su `exp`) o el backend responde `401`.
 
 Endpoints consumidos:
 

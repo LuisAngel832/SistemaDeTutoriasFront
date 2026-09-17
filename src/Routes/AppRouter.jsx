@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
 import { HOME_POR_ROL, ROLES } from '../constants/roles'
+import { useAuth } from '../features/auth/AuthContext'
 import LogIn from '../pages/LogIn/LogIn'
 import Registro from '../pages/Registro/Registro'
 import TutorHome from '../pages/Tutor/Home'
@@ -16,7 +17,7 @@ const ROLES_TUTOR = [ROLES.TUTOR, ROLES.ADMIN]
 const ROLES_TUTORADO = [ROLES.TUTORADO]
 
 const AppRouter = () => {
-  const userRole = localStorage.getItem('rol')
+  const { rol: userRole } = useAuth()
 
   return (
     <Routes>
