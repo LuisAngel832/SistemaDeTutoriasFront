@@ -82,19 +82,22 @@ flowchart LR
 **Esfuerzo estimado:** 0.5 dia.
 
 - [ ] Cerrar el PR de `refactor/vocabulario-experiencia-educativa` y sincronizar `develop`.
+      _Pendiente: requiere revisar y fusionar el PR en GitHub._
 - [ ] Resolver el archivo `PLAN_RECONSTRUCCION.md` que aparece como borrado en el working
+      _Pendiente: el borrado ya estaba en la copia local; lo decide el autor del archivo._
       tree (confirmar el borrado en un commit o restaurarlo).
 - [ ] Crear el tag `v0.1.0` sobre `main` como punto de referencia antes del refactor.
-- [ ] Tomar capturas de todas las pantallas (escritorio y movil) para comparar despues de los
+      _Pendiente: la decision de publicar versiones corresponde al equipo._
+- [x] Tomar capturas de todas las pantallas (escritorio y movil) para comparar despues de los
       cambios visuales del Sprint 3. Guardarlas fuera del repo o en `docs/capturas/`.
-- [ ] Acordar y documentar en el README las **decisiones de convencion**:
+- [x] Acordar y documentar en el README las **decisiones de convencion**:
   - Idioma del codigo: sugerido **nombres de dominio en espanol** (`tutoria`, `horario`,
     `inscripcion`) y **terminos tecnicos en ingles** (`isLoading`, `onSubmit`, `refetch`).
   - Textos visibles al usuario **con acentos y ortografia correcta**.
   - Exports: **named exports** para hooks, utils y componentes; `default` solo en paginas
     (necesario para `lazy`).
   - Extension: `.js` para archivos sin JSX, `.jsx` para componentes.
-- [ ] Levantar con el equipo de backend la lista de
+- [x] Levantar con el equipo de backend la lista de
       [dependencias con el backend](#dependencias-con-el-backend).
 
 ---
@@ -110,22 +113,22 @@ calidad basica.
 
 Va primero para que todos los PRs siguientes tengan diffs limpios.
 
-- [ ] Instalar `prettier` y `eslint-config-prettier`.
-- [ ] Crear `.prettierrc` con el estilo actual del codigo (sin punto y coma, comillas simples,
+- [x] Instalar `prettier` y `eslint-config-prettier`.
+- [x] Crear `.prettierrc` con el estilo actual del codigo (sin punto y coma, comillas simples,
       `trailingComma: 'all'`, `printWidth: 100`) y `.prettierignore` (`dist`, `coverage`).
-- [ ] Agregar `eslint-config-prettier` al final de `eslint.config.js`.
-- [ ] Scripts en `package.json`: `"format": "prettier --write ."`,
+- [x] Agregar `eslint-config-prettier` al final de `eslint.config.js`.
+- [x] Scripts en `package.json`: `"format": "prettier --write ."`,
       `"format:check": "prettier --check ."`.
-- [ ] Formatear todo el proyecto en **un commit aislado** y registrar su hash en
+- [x] Formatear todo el proyecto en **un commit aislado** y registrar su hash en
       `.git-blame-ignore-revs` para no ensuciar `git blame`.
-- [ ] Instalar `husky` + `lint-staged`: en `pre-commit` correr `eslint --fix` y `prettier --write`
+- [x] Instalar `husky` + `lint-staged`: en `pre-commit` correr `eslint --fix` y `prettier --write`
       sobre los archivos en stage.
-- [ ] Instalar `@commitlint/cli` + `@commitlint/config-conventional` con hook `commit-msg`.
-- [ ] Crear `.github/workflows/ci.yml`: en `pull_request` hacia `develop`/`main` ejecutar
+- [x] Instalar `@commitlint/cli` + `@commitlint/config-conventional` con hook `commit-msg`.
+- [x] Crear `.github/workflows/ci.yml`: en `pull_request` hacia `develop`/`main` ejecutar
       `npm ci`, `npm run lint`, `npm run format:check`, `npm run build` (Node 22).
-- [ ] Crear `.github/dependabot.yml` (npm semanal, agrupando minors/patches).
-- [ ] Crear `.github/pull_request_template.md` con el Definition of Done.
-- [ ] `package.json`: `"name": "sistema-tutorias-front"`, `"version": "0.1.0"`,
+- [x] Crear `.github/dependabot.yml` (npm semanal, agrupando minors/patches).
+- [x] Crear `.github/pull_request_template.md` con el Definition of Done.
+- [x] `package.json`: `"name": "sistema-tutorias-front"`, `"version": "0.1.0"`,
       `"engines": { "node": ">=20.19" }`; agregar `.nvmrc` con `22`.
 
 **Criterios de aceptacion:** el CI corre en el PR y queda en verde; un commit con mensaje
@@ -133,21 +136,21 @@ invalido es rechazado localmente.
 
 ### PR 1.2 — `refactor/utils-y-constantes`
 
-- [ ] `src/utils/formatters.js`:
+- [x] `src/utils/formatters.js`:
   - `formatFecha(fecha, { variant: 'corta' | 'larga' })` (reemplaza las 5 copias; `corta` usa
     `weekday/month: 'short'`, `larga` usa `'long'`).
   - `formatHora(hora)`, `formatRangoHora(inicio, fin)`.
   - `formatHorario(h)` → `"Lunes · 10:00 - 12:00"` (usado en 3 selects/listas).
   - `formatTema(tema)` → reemplaza `tema.tema || tema.nombre || String(tema)`.
   - `getIniciales(texto)` (hoy en `Sidebar.jsx` y variantes en `Comentarios` e inscritos).
-- [ ] `src/utils/fechas.js`: `hoyLocalISO()`, `minutosHasta(fecha, hora)`,
+- [x] `src/utils/fechas.js`: `hoyLocalISO()`, `minutosHasta(fecha, hora)`,
       `yaInicio(fecha, hora)`, `formatTiempoRestante(minutos)`.
-- [ ] `src/constants/tutoria.js`: `ESTADOS_TUTORIA`, `ESTADO_CLASS`, `MAX_CARACTERES_TEMA`,
+- [x] `src/constants/tutoria.js`: `ESTADOS_TUTORIA`, `ESTADO_CLASS`, `MAX_CARACTERES_TEMA`,
       `MAX_TEMAS`, `MIN_MINUTOS_CANCELACION`.
-- [ ] `src/constants/espacios.js`: `EDIFICIOS`, `AULAS`.
-- [ ] `src/constants/roles.js`: `ROLES`, `HOME_POR_ROL` (`tutor` y `admin` → `/tutor/home`,
+- [x] `src/constants/espacios.js`: `EDIFICIOS`, `AULAS`.
+- [x] `src/constants/roles.js`: `ROLES`, `HOME_POR_ROL` (`tutor` y `admin` → `/tutor/home`,
       `tutorado` → `/tutorado/home`).
-- [ ] Reemplazar las copias locales en: `pages/Tutor/Home.jsx`,
+- [x] Reemplazar las copias locales en: `pages/Tutor/Home.jsx`,
       `pages/Tutor/TutoriaDetalle/TutoriaDetalle.jsx`, `pages/Tutorado/Home.jsx`,
       `pages/Tutorado/MisTutorias.jsx`, `pages/Tutorado/TutoriaDetalle.jsx`,
       `pages/Tutor/CrearTutoria/FormCrearTutoria.jsx`,
@@ -161,23 +164,23 @@ pantalla cambia visualmente.
 
 Si el diff crece, dividir en un PR por bug.
 
-- [ ] **Rol admin:** `AppRouter` usa `HOME_POR_ROL` para `/`; las rutas de tutor permiten
+- [x] **Rol admin:** `AppRouter` usa `HOME_POR_ROL` para `/`; las rutas de tutor permiten
       `['tutor', 'admin']`; `useAutentificacion.login` navega con `HOME_POR_ROL[rol] ?? '/login'`.
-- [ ] **Fecha en UTC:** usar `hoyLocalISO()` en `FormCrearTutoria.jsx` y en la edicion de
+- [x] **Fecha en UTC:** usar `hoyLocalISO()` en `FormCrearTutoria.jsx` y en la edicion de
       `TutoriaDetalle.jsx` (tutor).
-- [ ] **Exito detectado por texto:** `useTutoriaDetalleTutorado` devuelve `{ ok, message }` en
+- [x] **Exito detectado por texto:** `useTutoriaDetalleTutorado` devuelve `{ ok, message }` en
       `inscribirse` y `cancelarInscripcion`; la pagina usa `res.ok`.
-- [ ] **Horario perdido al editar:** al pulsar "Editar tutoria", precargar `idHorario`,
+- [x] **Horario perdido al editar:** al pulsar "Editar tutoria", precargar `idHorario`,
       `edificio`, `aula` y `fecha` dentro del `onClick` y eliminar el `useEffect` (resuelve 1
       warning de lint). Si el DTO de tutoria no trae `idHorario`, buscar en `horarios` el que
       coincida en `horaInicio`/`horaFin` y levantar issue al backend para exponerlo.
-- [ ] **Validacion numerica:** validar `!valor` antes de `Number(valor)` en edicion y creacion.
-- [ ] **JSON vacio:** `response.json().catch(() => null)` en `useCrearTutoria.jsx` y
+- [x] **Validacion numerica:** validar `!valor` antes de `Number(valor)` en edicion y creacion.
+- [x] **JSON vacio:** `response.json().catch(() => null)` en `useCrearTutoria.jsx` y
       `useTutoriasExplorar.jsx`.
-- [ ] Eliminar el `console.log` de `useTutoriaDetalleTutorado.jsx`.
-- [ ] `useCrearTutoria` expone `reset()`; `CrearTutoria.handleLimpiar` lo usa.
-- [ ] `logout` deja de borrar la clave `correo` (nunca se guarda).
-- [ ] Confirmar con backend si se notifica a los inscritos al cancelar; si no, quitar la frase
+- [x] Eliminar el `console.log` de `useTutoriaDetalleTutorado.jsx`.
+- [x] `useCrearTutoria` expone `reset()`; `CrearTutoria.handleLimpiar` lo usa.
+- [x] `logout` deja de borrar la clave `correo` (nunca se guarda).
+- [x] Confirmar con backend si se notifica a los inscritos al cancelar; si no, quitar la frase
       "Los inscritos seran notificados".
 
 **Criterios de aceptacion:** un usuario `admin` entra al panel de tutor; a las 19:00 hora local
@@ -186,14 +189,15 @@ en rojo; editar una tutoria sin tocar el horario guarda correctamente.
 
 ### PR 1.4 — `chore/limpieza-y-docs`
 
-- [ ] Borrar archivos sin uso (verificado con grep): `src/App.css`, `src/assets/react.svg`,
+- [x] Borrar archivos sin uso (verificado con grep): `src/App.css`, `src/assets/react.svg`,
       `src/assets/vite.svg`, `src/assets/hero.png`, `public/icons.svg`.
-- [ ] Cargar la tipografia: `npm i @fontsource-variable/montserrat` e importarla en `main.jsx`.
+- [x] Cargar la tipografia: `npm i @fontsource-variable/montserrat` e importarla en `main.jsx`.
 - [ ] `index.html`: `meta description`, `og:title`, `og:description`, `apple-touch-icon`.
-- [ ] README: reemplazar la seccion de estructura (quitar `Header.jsx`/`HeaderTR.jsx`, agregar
+      _Pendiente: `apple-touch-icon` requiere un PNG de 180x180 que aun no existe._
+- [x] README: reemplazar la seccion de estructura (quitar `Header.jsx`/`HeaderTR.jsx`, agregar
       `layout/`, `utils/`, `constants/`), actualizar "Interfaz" (sidebar), documentar los
       scripts nuevos y las convenciones del Sprint 0.
-- [ ] Crear `CHANGELOG.md` (formato Keep a Changelog) y `CONTRIBUTING.md` (ramas, commits,
+- [x] Crear `CHANGELOG.md` (formato Keep a Changelog) y `CONTRIBUTING.md` (ramas, commits,
       Definition of Done, como correr el proyecto).
 
 **Cierre del Sprint 1:** merge `develop` → `main`, tag `v0.2.0`, redeploy en Render y
@@ -502,18 +506,21 @@ Sin fecha fija; tomar segun prioridades del equipo.
 
 ## Dependencias con el backend
 
-| Necesidad                                                      | Afecta a                | Bloquea                                    |
-| -------------------------------------------------------------- | ----------------------- | ------------------------------------------ |
-| Incluir `idHorario` en el DTO de detalle de tutoria            | PR 1.3 (editar tutoria) | No (hay workaround)                        |
-| Confirmar si se notifica a inscritos al cancelar               | PR 1.3 (texto)          | No                                         |
-| JWT con claim `exp`                                            | PR 2.4 (expiracion)     | Parcial: sin `exp` solo se detecta por 401 |
-| Responder `401` (no `403`) con token invalido/expirado         | PR 2.4                  | Parcial                                    |
-| Estabilizar DTOs (ids unicos, `tema` sin variantes) — issue #8 | PR 2.2 (mappers)        | No, pero permite borrar fallbacks          |
-| Endpoint de edificios/aulas                                    | PR 1.2 (`espacios.js`)  | No                                         |
-| CORS para el dominio del frontend en Render                    | Despliegue              | Si, en produccion                          |
-| Prefijo comun `/api`                                           | Proxy de Vite           | No                                         |
-| OpenAPI (springdoc)                                            | Fase 5 (tipos)          | No                                         |
-| Cookie `httpOnly` para sesion                                  | Fase 5                  | No                                         |
+Estado verificado en el codigo de [TutoriasBackend](https://github.com/Shtven/TutoriasBackend)
+(septiembre 2026):
+
+| Necesidad                                                      | Estado en el backend                                                    | Afecta a                | Bloquea                       |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------- | ----------------------------- |
+| Incluir `idHorario` en el DTO de detalle de tutoria            | No lo incluye (`TutoriaResponsive`)                                     | PR 1.3 (editar tutoria) | No: se deduce por dia y horas |
+| Confirmar si se notifica a inscritos al cancelar               | Si: `EmailService.enviarCorreoCancelacion`                              | PR 1.3 (texto)          | No, el texto se mantiene      |
+| JWT con claim `exp`                                            | Si (`JWTUtils` usa `setExpiration`)                                     | PR 2.4 (expiracion)     | No                            |
+| Responder `401` con token invalido/expirado                    | Si, con cuerpo de texto plano (no JSON)                                 | PR 2.4                  | No                            |
+| Estabilizar DTOs (ids unicos, `tema` sin variantes) — issue #8 | `MisInscripcionResponsive` ya trae los datos; el tutor viene en `tutor` | PR 2.2 (mappers)        | No                            |
+| Endpoint de edificios/aulas                                    | No existe                                                               | PR 1.2 (`espacios.js`)  | No                            |
+| CORS para el dominio del frontend en Render                    | Existe `CorsConfig` (revisar dominios)                                  | Despliegue              | Si, en produccion             |
+| Prefijo comun `/api`                                           | No                                                                      | Proxy de Vite           | No                            |
+| OpenAPI (springdoc)                                            | No                                                                      | Fase 5 (tipos)          | No                            |
+| Cookie `httpOnly` para sesion                                  | No                                                                      | Fase 5                  | No                            |
 
 ---
 
