@@ -62,3 +62,35 @@ export const IconClose = () => (
     <path d="M7 7l10 10M17 7 7 17" />
   </svg>
 )
+
+// Iconos de informacion de una tutoria (reemplazan emojis, que se ven distinto en cada sistema).
+export const IconCalendario = () => (
+  <svg {...baseProps}>
+    <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
+    <path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" />
+    <path d="M8 13h.01M12 13h.01M16 13h.01M8 16.5h.01M12 16.5h.01" />
+  </svg>
+)
+
+export const IconReloj = () => (
+  <svg {...baseProps}>
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M12 7.5V12l3 2" />
+  </svg>
+)
+
+export const IconEdificio = () => (
+  <svg {...baseProps}>
+    <path d="M4 20.5h16M5.5 20.5V9.5L12 4l6.5 5.5v11" />
+    <path d="M9 20.5v-5h6v5M9 11.5h.01M12 11.5h.01M15 11.5h.01" />
+  </svg>
+)
+
+export const IconPuerta = () => (
+  <svg {...baseProps}>
+    <path d="M6 20.5V4.8a1 1 0 0 1 .8-1l9-1.6a1 1 0 0 1 1.2 1v17.3" />
+    <path d="M4 20.5h16M13.5 12.5v.01" />
+  </svg>
+)
+
+export const IconBuscar = IconExplorar

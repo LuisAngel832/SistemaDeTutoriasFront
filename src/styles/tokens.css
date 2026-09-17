@@ -69,6 +69,7 @@
   --sombra-exito: 0 2px 6px rgba(40, 173, 86, 0.25);
   --sombra-exito-hover: 0 4px 12px rgba(40, 173, 86, 0.35);
   --anillo-foco: 0 0 0 3px rgba(45, 95, 167, 0.15);
+  --contorno-foco: 3px solid rgba(45, 95, 167, 0.35);
 
   /* Radios */
   --radio-sm: 8px;

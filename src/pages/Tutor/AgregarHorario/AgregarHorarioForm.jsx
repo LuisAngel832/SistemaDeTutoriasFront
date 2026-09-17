@@ -90,9 +90,9 @@ const AgregarHorarioForm = () => {
 
         <div className="horario-form">
           <div className="form-field full">
-            <label className="form-label" id="label-dia-semana">
+            <p className="form-label" id="label-dia-semana">
               Dia de la semana en que estaras disponible
-            </label>
+            </p>
             <div className="dia-chips" role="radiogroup" aria-labelledby="label-dia-semana">
               {DIAS.map((d) => (
                 <button

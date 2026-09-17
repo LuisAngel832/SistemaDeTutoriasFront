@@ -129,9 +129,9 @@ const Registro = () => {
 
           <form className="auth-form registro-grid" onSubmit={handleRegistro}>
             <div className="auth-field full">
-              <label className="auth-label" id="label-tipo-cuenta">
+              <p className="auth-label" id="label-tipo-cuenta">
                 Tipo de cuenta que quieres crear
-              </label>
+              </p>
               <div className="rol-chips" role="radiogroup" aria-labelledby="label-tipo-cuenta">
                 {ROLES.map((r) => (
                   <button

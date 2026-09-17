@@ -10,7 +10,7 @@ import {
   IconLogout,
   IconMisTutorias,
   IconTutorias,
-} from './icons'
+} from '../ui/icons'
 
 const iconsByName = {
   tutorias: IconTutorias,
