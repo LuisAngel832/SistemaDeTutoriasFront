@@ -1,29 +1,9 @@
 import { Link } from 'react-router-dom'
 import AppLayout from '../../components/layout/AppLayout'
 import { useTutoriasTutorado } from '../../hooks/useTutoriasTutorado'
+import { formatFecha, formatRangoHora, SIN_DATO } from '../../utils/formatters'
+import { getEstadoClass } from '../../utils/tutoria'
 import './misTutorias.css'
-
-const ESTADO_CLASS = {
-  PROGRAMADA: 'programada',
-  COMPLETADA: 'completada',
-  CANCELADA: 'cancelada',
-}
-
-const formatFecha = (fecha) => {
-  if (!fecha) return '—'
-  try {
-    return new Date(`${fecha}T00:00:00`).toLocaleDateString('es-MX', {
-      weekday: 'short',
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    })
-  } catch {
-    return fecha
-  }
-}
-
-const formatHora = (hora) => (hora ? hora.slice(0, 5) : '—')
 
 // El endpoint /asistencia/mis-inscripciones puede devolver dos shapes segun el back:
 //   A) DTO viejo: { matricula, nombre, asistio }  -> faltan datos para renderizar
@@ -46,7 +26,7 @@ const normalizar = (item, index) => {
 }
 
 const Card = ({ item }) => {
-  const estadoClass = ESTADO_CLASS[item.estado?.toUpperCase()] || 'otro'
+  const estadoClass = getEstadoClass(item.estado)
   const sinDatos = !item.experiencia && !item.fecha
 
   if (sinDatos) {
@@ -75,15 +55,13 @@ const Card = ({ item }) => {
         <span>{formatFecha(item.fecha)}</span>
 
         <span className="mt-label">Horario</span>
-        <span>
-          {formatHora(item.horaInicio)} – {formatHora(item.horaFin)}
-        </span>
+        <span>{formatRangoHora(item.horaInicio, item.horaFin)}</span>
 
         {item.edificio != null || item.aula != null ? (
           <>
             <span className="mt-label">Lugar</span>
             <span>
-              Edificio {item.edificio ?? '—'} · Aula {item.aula ?? '—'}
+              Edificio {item.edificio ?? SIN_DATO} · Aula {item.aula ?? SIN_DATO}
             </span>
           </>
         ) : null}

@@ -2,32 +2,12 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import AppLayout from '../../components/layout/AppLayout'
 import { useTutoriasExplorar } from '../../hooks/useTutoriasExplorar'
+import { formatFecha, formatRangoHora, formatTema, SIN_DATO } from '../../utils/formatters'
+import { getEstadoClass } from '../../utils/tutoria'
 import './homeTutorado.css'
 
-const ESTADO_CLASS = {
-  PROGRAMADA: 'programada',
-  COMPLETADA: 'completada',
-  CANCELADA: 'cancelada',
-}
-
-const formatFecha = (fecha) => {
-  if (!fecha) return '—'
-  try {
-    return new Date(`${fecha}T00:00:00`).toLocaleDateString('es-MX', {
-      weekday: 'short',
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    })
-  } catch {
-    return fecha
-  }
-}
-
-const formatHora = (hora) => (hora ? hora.slice(0, 5) : '—')
-
 const TutoriaCard = ({ tutoria }) => {
-  const estadoClass = ESTADO_CLASS[tutoria.estado?.toUpperCase()] || 'otro'
+  const estadoClass = getEstadoClass(tutoria.estado)
 
   return (
     <article className="ex-card">
@@ -46,13 +26,11 @@ const TutoriaCard = ({ tutoria }) => {
         <span>{formatFecha(tutoria.fecha)}</span>
 
         <span className="ex-info-label">Horario</span>
-        <span>
-          {formatHora(tutoria.horaInicio)} – {formatHora(tutoria.horaFin)}
-        </span>
+        <span>{formatRangoHora(tutoria.horaInicio, tutoria.horaFin)}</span>
 
         <span className="ex-info-label">Lugar</span>
         <span>
-          Edificio {tutoria.edificio ?? '—'} · Aula {tutoria.aula ?? '—'}
+          Edificio {tutoria.edificio ?? SIN_DATO} · Aula {tutoria.aula ?? SIN_DATO}
         </span>
       </div>
 
@@ -60,7 +38,7 @@ const TutoriaCard = ({ tutoria }) => {
         <div className="ex-temas">
           {tutoria.temas.map((tema, index) => (
             <span key={tema.idTema ?? index} className="ex-tema-chip">
-              {tema.tema || tema.nombre || String(tema)}
+              {formatTema(tema)}
             </span>
           ))}
         </div>

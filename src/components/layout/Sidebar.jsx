@@ -1,5 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
 import useAutentificacion from '../../hooks/useAutentificacion'
+import { getIniciales } from '../../utils/formatters'
 import {
   IconClose,
   IconCollapse,
@@ -17,13 +18,6 @@ const iconsByName = {
   horario: IconHorario,
   explorar: IconExplorar,
   misTutorias: IconMisTutorias,
-}
-
-const getIniciales = (texto) => {
-  const partes = texto.trim().split(/\s+/).filter(Boolean)
-  if (partes.length === 0) return '?'
-  if (partes.length === 1) return partes[0].slice(0, 2).toUpperCase()
-  return `${partes[0][0]}${partes[1][0]}`.toUpperCase()
 }
 
 const Sidebar = ({

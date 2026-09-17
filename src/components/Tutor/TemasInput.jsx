@@ -1,16 +1,14 @@
 import { useState } from 'react'
+import { MAX_CARACTERES_TEMA, MAX_TEMAS } from '../../constants/tutoria'
 import './temasInput.css'
-
-// Limite por tema: evita textos tan largos que desborden la tarjeta del formulario.
-const MAX_CARACTERES = 60
 
 const TemasInput = ({
   temas,
   onAdd,
   onRemove,
   disabled = false,
-  max = 10,
-  maxCaracteres = MAX_CARACTERES,
+  max = MAX_TEMAS,
+  maxCaracteres = MAX_CARACTERES_TEMA,
   inputId = 'tema-nuevo',
 }) => {
   const [draft, setDraft] = useState('')

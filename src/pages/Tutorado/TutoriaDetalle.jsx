@@ -1,55 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import AppLayout from '../../components/layout/AppLayout'
 import Comentarios from '../../components/Comentarios'
+import { MIN_MINUTOS_CANCELACION } from '../../constants/tutoria'
 import { useTutoriaDetalleTutorado } from '../../hooks/useTutoriaDetalleTutorado'
+import { formatTiempoRestante, minutosHasta } from '../../utils/fechas'
+import { formatFecha, formatRangoHora, formatTema, SIN_DATO } from '../../utils/formatters'
+import { esProgramada, getEstadoClass } from '../../utils/tutoria'
 import './tutoriaDetalle.css'
-
-const ESTADO_CLASS = {
-  PROGRAMADA: 'programada',
-  COMPLETADA: 'completada',
-  CANCELADA: 'cancelada',
-}
-
-const formatFecha = (fecha) => {
-  if (!fecha) return '—'
-  try {
-    return new Date(`${fecha}T00:00:00`).toLocaleDateString('es-MX', {
-      weekday: 'long',
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-    })
-  } catch {
-    return fecha
-  }
-}
-
-const formatHora = (hora) => (hora ? hora.slice(0, 5) : '—')
-
-const MIN_MINUTOS_CANCELACION = 15
-
-const calcularMinutosRestantes = (fecha, horaInicio) => {
-  if (!fecha || !horaInicio) return null
-  try {
-    const inicio = new Date(`${fecha}T${horaInicio}`)
-    if (Number.isNaN(inicio.getTime())) return null
-    return Math.floor((inicio.getTime() - Date.now()) / 60000)
-  } catch {
-    return null
-  }
-}
-
-const formatTiempoRestante = (minutos) => {
-  if (minutos == null) return ''
-  if (minutos < 0) return 'la tutoria ya inicio'
-  if (minutos < 60) return `comienza en ${minutos} min`
-  const horas = Math.floor(minutos / 60)
-  const resto = minutos % 60
-  if (horas < 24) return `comienza en ${horas}h ${resto}m`
-  const dias = Math.floor(horas / 24)
-  return `comienza en ${dias} dia${dias === 1 ? '' : 's'}`
-}
 
 const TutoriaDetalle = () => {
   const { id } = useParams()
@@ -69,16 +27,12 @@ const TutoriaDetalle = () => {
 
   const tutoradoInscrito = Boolean(inscripcion)
 
-  const minutosRestantes = useMemo(
-    () => calcularMinutosRestantes(tutoria?.fecha, tutoria?.horaInicio),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [tutoria?.fecha, tutoria?.horaInicio, now],
-  )
+  const minutosRestantes = minutosHasta(tutoria?.fecha, tutoria?.horaInicio, now)
 
-  const yaInicio = minutosRestantes != null && minutosRestantes <= 0
+  const yaComenzo = minutosRestantes != null && minutosRestantes <= 0
   const tooLateParaCancelar =
     minutosRestantes != null && minutosRestantes <= MIN_MINUTOS_CANCELACION
-  const tooLateParaInscribir = yaInicio
+  const tooLateParaInscribir = yaComenzo
 
   const handleInscribirse = async () => {
     setFeedback(null)
@@ -97,8 +51,8 @@ const TutoriaDetalle = () => {
     setFeedback({ type: success ? 'success' : 'error', text: message })
   }
 
-  const estadoClass = ESTADO_CLASS[tutoria?.estado?.toUpperCase()] || 'otro'
-  const noInscribiblePorEstado = tutoria?.estado?.toUpperCase() !== 'PROGRAMADA'
+  const estadoClass = getEstadoClass(tutoria?.estado)
+  const noInscribiblePorEstado = !esProgramada(tutoria)
   const noInscribible = noInscribiblePorEstado || tooLateParaInscribir
 
   return (
@@ -145,7 +99,9 @@ const TutoriaDetalle = () => {
                   </span>
                   <div>
                     <span className="td-info-label">Fecha</span>
-                    <span className="td-info-value">{formatFecha(tutoria.fecha)}</span>
+                    <span className="td-info-value">
+                      {formatFecha(tutoria.fecha, { variant: 'larga' })}
+                    </span>
                   </div>
                 </div>
 
@@ -156,7 +112,7 @@ const TutoriaDetalle = () => {
                   <div>
                     <span className="td-info-label">Horario</span>
                     <span className="td-info-value">
-                      {formatHora(tutoria.horaInicio)} – {formatHora(tutoria.horaFin)}
+                      {formatRangoHora(tutoria.horaInicio, tutoria.horaFin)}
                     </span>
                   </div>
                 </div>
@@ -167,7 +123,7 @@ const TutoriaDetalle = () => {
                   </span>
                   <div>
                     <span className="td-info-label">Edificio</span>
-                    <span className="td-info-value">{tutoria.edificio ?? '—'}</span>
+                    <span className="td-info-value">{tutoria.edificio ?? SIN_DATO}</span>
                   </div>
                 </div>
 
@@ -177,7 +133,7 @@ const TutoriaDetalle = () => {
                   </span>
                   <div>
                     <span className="td-info-label">Aula</span>
-                    <span className="td-info-value">{tutoria.aula ?? '—'}</span>
+                    <span className="td-info-value">{tutoria.aula ?? SIN_DATO}</span>
                   </div>
                 </div>
               </div>
@@ -188,7 +144,7 @@ const TutoriaDetalle = () => {
                   <div className="td-temas">
                     {tutoria.temas.map((tema, index) => (
                       <span key={tema.idTema ?? index} className="td-tema-chip">
-                        {tema.tema || tema.nombre || String(tema)}
+                        {formatTema(tema)}
                       </span>
                     ))}
                   </div>
@@ -235,7 +191,7 @@ const TutoriaDetalle = () => {
                       </div>
                     </div>
 
-                    {yaInicio ? (
+                    {yaComenzo ? (
                       <p className="td-side-note">
                         La tutoria ya comenzo. Ya no es posible cancelar.
                       </p>

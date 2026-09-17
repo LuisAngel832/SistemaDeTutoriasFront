@@ -4,31 +4,18 @@ import AppLayout from '../../../components/layout/AppLayout'
 import Comentarios from '../../../components/Comentarios'
 import useHorarios from '../../../hooks/useHorarios'
 import useTutoriaDetalleTutor from '../../../hooks/useTutoriaDetalleTutor'
+import { AULAS, EDIFICIOS } from '../../../constants/espacios'
+import { MAX_CARACTERES_TEMA } from '../../../constants/tutoria'
+import {
+  formatFecha,
+  formatHorario,
+  formatRangoHora,
+  formatTema,
+  getInicial,
+  SIN_DATO,
+} from '../../../utils/formatters'
+import { esProgramada, getEstadoClass, yaTuvoLugar } from '../../../utils/tutoria'
 import './tutoriaDetalleTutor.css'
-
-const ESTADO_CLASS = {
-  PROGRAMADA: 'programada',
-  COMPLETADA: 'completada',
-  CANCELADA: 'cancelada',
-}
-
-const formatFecha = (fecha) => {
-  if (!fecha) return '—'
-  try {
-    return new Date(`${fecha}T00:00:00`).toLocaleDateString('es-MX', {
-      weekday: 'long',
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-    })
-  } catch {
-    return fecha
-  }
-}
-
-const formatHora = (hora) => (hora ? hora.slice(0, 5) : '—')
-
-const MAX_CARACTERES_TEMA = 60
 
 const TemaQuickInput = ({ onAdd, disabled }) => {
   const [draft, setDraft] = useState('')
@@ -74,20 +61,6 @@ const TemaQuickInput = ({ onAdd, disabled }) => {
   )
 }
 
-// La tutoria ya ocurrio si ya paso la hora de inicio o esta marcada como completada/cancelada.
-const yaTuvoLugar = (tutoria) => {
-  if (!tutoria) return false
-  const estado = tutoria.estado?.toUpperCase()
-  if (estado === 'COMPLETADA' || estado === 'CANCELADA') return true
-  if (!tutoria.fecha || !tutoria.horaInicio) return false
-  try {
-    const inicio = new Date(`${tutoria.fecha}T${tutoria.horaInicio}`)
-    return !Number.isNaN(inicio.getTime()) && inicio.getTime() <= Date.now()
-  } catch {
-    return false
-  }
-}
-
 const TutoriaDetalleTutor = () => {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -125,9 +98,8 @@ const TutoriaDetalleTutor = () => {
     }
   }, [tutoria, editMode])
 
-  const estadoUpper = tutoria?.estado?.toUpperCase()
-  const estadoClass = ESTADO_CLASS[estadoUpper] || 'otro'
-  const esCancelable = estadoUpper === 'PROGRAMADA'
+  const estadoClass = getEstadoClass(tutoria?.estado)
+  const esCancelable = esProgramada(tutoria)
   const mostrarAsistencia = yaTuvoLugar(tutoria)
 
   const handleGuardar = async () => {
@@ -240,7 +212,9 @@ const TutoriaDetalleTutor = () => {
                         </span>
                         <div>
                           <span className="tdt-info-label">Fecha</span>
-                          <span className="tdt-info-value">{formatFecha(tutoria.fecha)}</span>
+                          <span className="tdt-info-value">
+                            {formatFecha(tutoria.fecha, { variant: 'larga' })}
+                          </span>
                         </div>
                       </div>
 
@@ -251,7 +225,7 @@ const TutoriaDetalleTutor = () => {
                         <div>
                           <span className="tdt-info-label">Horario</span>
                           <span className="tdt-info-value">
-                            {formatHora(tutoria.horaInicio)} – {formatHora(tutoria.horaFin)}
+                            {formatRangoHora(tutoria.horaInicio, tutoria.horaFin)}
                           </span>
                         </div>
                       </div>
@@ -262,7 +236,7 @@ const TutoriaDetalleTutor = () => {
                         </span>
                         <div>
                           <span className="tdt-info-label">Edificio</span>
-                          <span className="tdt-info-value">{tutoria.edificio ?? '—'}</span>
+                          <span className="tdt-info-value">{tutoria.edificio ?? SIN_DATO}</span>
                         </div>
                       </div>
 
@@ -272,7 +246,7 @@ const TutoriaDetalleTutor = () => {
                         </span>
                         <div>
                           <span className="tdt-info-label">Aula</span>
-                          <span className="tdt-info-value">{tutoria.aula ?? '—'}</span>
+                          <span className="tdt-info-value">{tutoria.aula ?? SIN_DATO}</span>
                         </div>
                       </div>
                     </div>
@@ -286,9 +260,7 @@ const TutoriaDetalleTutor = () => {
                             {tutoria.temas?.length ? (
                               tutoria.temas.map((tema, index) => (
                                 <span key={tema.idTema ?? index} className="tdt-tema-chip editable">
-                                  <span className="tdt-tema-chip-text">
-                                    {tema.tema || tema.nombre || String(tema)}
-                                  </span>
+                                  <span className="tdt-tema-chip-text">{formatTema(tema)}</span>
                                   {tema.idTema ? (
                                     <button
                                       type="button"
@@ -317,9 +289,7 @@ const TutoriaDetalleTutor = () => {
                         <div className="tdt-temas">
                           {tutoria.temas.map((tema, index) => (
                             <span key={tema.idTema ?? index} className="tdt-tema-chip">
-                              <span className="tdt-tema-chip-text">
-                                {tema.tema || tema.nombre || String(tema)}
-                              </span>
+                              <span className="tdt-tema-chip-text">{formatTema(tema)}</span>
                             </span>
                           ))}
                         </div>
@@ -346,7 +316,7 @@ const TutoriaDetalleTutor = () => {
                           <option value="">Selecciona un horario</option>
                           {horarios.map((h) => (
                             <option key={h.idHorario} value={h.idHorario}>
-                              {h.dia} · {h.horaInicio?.slice(0, 5)} - {h.horaFin?.slice(0, 5)}
+                              {formatHorario(h)}
                             </option>
                           ))}
                         </select>
@@ -377,8 +347,11 @@ const TutoriaDetalleTutor = () => {
                           onChange={(e) => setEdificio(e.target.value)}
                         >
                           <option value="">Selecciona</option>
-                          <option value="1">Edificio 1</option>
-                          <option value="2">Edificio 2</option>
+                          {EDIFICIOS.map((n) => (
+                            <option key={n} value={n}>
+                              Edificio {n}
+                            </option>
+                          ))}
                         </select>
                       </div>
 
@@ -393,7 +366,7 @@ const TutoriaDetalleTutor = () => {
                           onChange={(e) => setAula(e.target.value)}
                         >
                           <option value="">Selecciona</option>
-                          {Array.from({ length: 16 }, (_, i) => i + 1).map((n) => (
+                          {AULAS.map((n) => (
                             <option key={n} value={n}>
                               Aula {n}
                             </option>
@@ -538,11 +511,11 @@ const TutoriaDetalleTutor = () => {
                       {inscritos.map((p, i) => (
                         <li key={p.matricula ?? i} className="tdt-inscrito">
                           <div className="tdt-inscrito-avatar" aria-hidden="true">
-                            {(p.nombre || '?').slice(0, 1).toUpperCase()}
+                            {getInicial(p.nombre)}
                           </div>
                           <div className="tdt-inscrito-info">
                             <span className="tdt-inscrito-nombre">{p.nombre || 'Sin nombre'}</span>
-                            <span className="tdt-inscrito-mat">{p.matricula || '—'}</span>
+                            <span className="tdt-inscrito-mat">{p.matricula || SIN_DATO}</span>
                           </div>
                           {mostrarAsistencia ? (
                             <span className={`tdt-asistio ${p.asistio ? 'si' : 'no'}`}>

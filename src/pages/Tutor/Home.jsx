@@ -2,33 +2,13 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AppLayout from '../../components/layout/AppLayout'
 import useMisTutorias from '../../hooks/useMisTutorias'
+import { formatFecha, formatRangoHora, formatTema, SIN_DATO } from '../../utils/formatters'
 import { guardarNombreUsuario } from '../../utils/sesion'
+import { getEstadoClass } from '../../utils/tutoria'
 import './home.css'
 
-const ESTADO_CLASS = {
-  PROGRAMADA: 'programada',
-  COMPLETADA: 'completada',
-  CANCELADA: 'cancelada',
-}
-
-const formatFecha = (fecha) => {
-  if (!fecha) return '—'
-  try {
-    return new Date(`${fecha}T00:00:00`).toLocaleDateString('es-MX', {
-      weekday: 'short',
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    })
-  } catch {
-    return fecha
-  }
-}
-
-const formatHora = (hora) => (hora ? hora.slice(0, 5) : '—')
-
 const TutoriaCard = ({ tutoria }) => {
-  const estadoClass = ESTADO_CLASS[tutoria.estado?.toUpperCase()] || 'otro'
+  const estadoClass = getEstadoClass(tutoria.estado)
 
   return (
     <Link to={`/tutor/tutoria/${tutoria.id}`} className="tutoria-card-link">
@@ -48,13 +28,11 @@ const TutoriaCard = ({ tutoria }) => {
           <span>{formatFecha(tutoria.fecha)}</span>
 
           <span className="tutoria-info-label">Horario:</span>
-          <span>
-            {formatHora(tutoria.horaInicio)} – {formatHora(tutoria.horaFin)}
-          </span>
+          <span>{formatRangoHora(tutoria.horaInicio, tutoria.horaFin)}</span>
 
           <span className="tutoria-info-label">Lugar:</span>
           <span>
-            Edificio {tutoria.edificio ?? '—'} · Aula {tutoria.aula ?? '—'}
+            Edificio {tutoria.edificio ?? SIN_DATO} · Aula {tutoria.aula ?? SIN_DATO}
           </span>
         </div>
 
@@ -62,7 +40,7 @@ const TutoriaCard = ({ tutoria }) => {
           <div className="tutoria-temas">
             {tutoria.temas.map((tema, index) => (
               <span key={tema.idTema ?? index} className="tutoria-tema-chip">
-                {tema.tema || tema.nombre || String(tema)}
+                {formatTema(tema)}
               </span>
             ))}
           </div>

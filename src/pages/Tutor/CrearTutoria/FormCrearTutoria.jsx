@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import TemasInput from '../../../components/Tutor/TemasInput'
+import { AULAS, EDIFICIOS } from '../../../constants/espacios'
+import { formatHorario } from '../../../utils/formatters'
 
 const FormCrearTutoria = ({
   nrcExperiencia,
@@ -74,7 +76,7 @@ const FormCrearTutoria = ({
             </option>
             {horariosDisponibles.map((h) => (
               <option key={h.idHorario} value={h.idHorario}>
-                {h.dia} · {h.horaInicio?.slice(0, 5)} - {h.horaFin?.slice(0, 5)}
+                {formatHorario(h)}
               </option>
             ))}
           </select>
@@ -115,8 +117,11 @@ const FormCrearTutoria = ({
             required
           >
             <option value="">Selecciona el edificio</option>
-            <option value="1">Edificio 1</option>
-            <option value="2">Edificio 2</option>
+            {EDIFICIOS.map((numero) => (
+              <option key={numero} value={numero}>
+                Edificio {numero}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -134,14 +139,11 @@ const FormCrearTutoria = ({
             required
           >
             <option value="">Selecciona el aula</option>
-            {Array.from({ length: 16 }, (_, index) => {
-              const number = index + 1
-              return (
-                <option key={number} value={number}>
-                  Aula {number}
-                </option>
-              )
-            })}
+            {AULAS.map((numero) => (
+              <option key={numero} value={numero}>
+                Aula {numero}
+              </option>
+            ))}
           </select>
         </div>
       </div>

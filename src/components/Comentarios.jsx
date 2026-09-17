@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import useComentarios from '../hooks/useComentarios'
+import { getInicial } from '../utils/formatters'
 import './comentarios.css'
 
 const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
@@ -85,7 +86,7 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
         <ul className="cmt-lista">
           {comentarios.map((c) => {
             const esMio = c.matricula && c.matricula === matricula
-            const inicial = (c.nombre || c.matricula || '?').slice(0, 1).toUpperCase()
+            const inicial = getInicial(c.nombre || c.matricula)
 
             return (
               <li key={c.idComentario} className="cmt-item">

@@ -1,15 +1,7 @@
 import { useState } from 'react'
+import { DIAS_SEMANA as DIAS } from '../../../constants/horarios'
 import useHorarios from '../../../hooks/useHorarios'
-
-const DIAS = [
-  { key: 'LUNES', short: 'LUN', label: 'Lunes' },
-  { key: 'MARTES', short: 'MAR', label: 'Martes' },
-  { key: 'MIERCOLES', short: 'MIE', label: 'Miercoles' },
-  { key: 'JUEVES', short: 'JUE', label: 'Jueves' },
-  { key: 'VIERNES', short: 'VIE', label: 'Viernes' },
-  { key: 'SABADO', short: 'SAB', label: 'Sabado' },
-  { key: 'DOMINGO', short: 'DOM', label: 'Domingo' },
-]
+import { formatRangoHora } from '../../../utils/formatters'
 
 const toSeconds = (time) => (time ? `${time}:00` : '')
 
@@ -198,7 +190,7 @@ const AgregarHorarioForm = () => {
                   <div className="horario-item-info">
                     <span className="horario-item-dia">{h.dia}</span>
                     <span className="horario-item-hora">
-                      {h.horaInicio?.slice(0, 5)} – {h.horaFin?.slice(0, 5)}
+                      {formatRangoHora(h.horaInicio, h.horaFin)}
                     </span>
                   </div>
                   <button
