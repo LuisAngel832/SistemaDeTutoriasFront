@@ -213,32 +213,32 @@ checklist manual completo en produccion.
 
 ### PR 2.1 — `test/setup-vitest`
 
-- [ ] Instalar `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`,
+- [x] Instalar `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`,
       `@testing-library/user-event`, `@vitest/coverage-v8`, `msw`.
-- [ ] Configurar `test` en `vite.config.js` (`environment: 'jsdom'`, `setupFiles`,
+- [x] Configurar `test` en `vite.config.js` (`environment: 'jsdom'`, `setupFiles`,
       `css: false`) y crear `src/test/setup.js`.
-- [ ] Helper `src/test/render.jsx` que envuelve con `MemoryRouter` (y despues con los
+- [x] Helper `src/test/render.jsx` que envuelve con `MemoryRouter` (y despues con los
       providers de auth y query).
-- [ ] Scripts: `"test": "vitest"`, `"test:run": "vitest run"`,
+- [x] Scripts: `"test": "vitest"`, `"test:run": "vitest run"`,
       `"test:coverage": "vitest run --coverage"`.
-- [ ] Pruebas de `utils/formatters.js` y `utils/fechas.js` usando `vi.useFakeTimers()` y
+- [x] Pruebas de `utils/formatters.js` y `utils/fechas.js` usando `vi.useFakeTimers()` y
       `TZ=America/Mexico_City` para cubrir el caso de la fecha UTC.
-- [ ] Agregar `npm run test:run` al CI.
+- [x] Agregar `npm run test:run` al CI.
 
 **Criterios de aceptacion:** cobertura de `utils/` ≥ 90 %; CI ejecuta las pruebas.
 
 ### PR 2.2 — `refactor/api-client`
 
-- [ ] `src/api/client.js`: `request()`, `api.get/post/put/patch/delete`, clase `ApiError`
+- [x] `src/api/client.js`: `request()`, `api.get/post/put/patch/delete`, clase `ApiError`
       (`message`, `status`, `data`), manejo de red caida, cuerpo vacio y `success: false`.
-- [ ] Inyeccion de dependencias para evitar acoplar el cliente a la sesion:
+- [x] Inyeccion de dependencias para evitar acoplar el cliente a la sesion:
       `configureApi({ getToken, onUnauthorized })`.
-- [ ] Timeout con `AbortController` (15 s) y soporte de `signal` externo.
-- [ ] Servicios por recurso: `src/api/auth.js`, `tutorias.js`, `horarios.js`, `materias.js`,
+- [x] Timeout con `AbortController` (15 s) y soporte de `signal` externo.
+- [x] Servicios por recurso: `src/api/auth.js`, `tutorias.js`, `horarios.js`, `materias.js`,
       `temas.js`, `asistencia.js`, `comentarios.js`.
-- [ ] `src/api/mappers.js`: `mapHorario`, `mapTutoria`, `mapInscripcion`, `mapTema`,
+- [x] `src/api/mappers.js`: `mapHorario`, `mapTutoria`, `mapInscripcion`, `mapTema`,
       `mapComentario` con todos los fallbacks de ids que hoy estan dispersos.
-- [ ] Pruebas con MSW: respuesta ok, 400 con `message`, 401 dispara `onUnauthorized`, 500 sin
+- [x] Pruebas con MSW: respuesta ok, 400 con `message`, 401 dispara `onUnauthorized`, 500 sin
       cuerpo, red caida, timeout. Pruebas unitarias de cada mapper.
 
 **Criterios de aceptacion:** el cliente y los mappers tienen pruebas; todavia no se modifica
@@ -248,52 +248,56 @@ ningun hook (PR sin cambios visibles).
 
 Cada hook conserva su API publica; las paginas no cambian.
 
-- [ ] **2.3a Horarios y creacion:** `useHorarios`, `useCrearTutoria` (usa `horariosApi`,
+- [x] **2.3a Horarios y creacion:** `useHorarios`, `useCrearTutoria` (usa `horariosApi`,
       `materiasApi`, `tutoriasApi`).
-- [ ] **2.3b Tutor:** `useMisTutorias`, `useTutoriaDetalleTutor`.
-- [ ] **2.3c Tutorado y comentarios:** `useTutoriasExplorar`, `useTutoriasTutorado`,
+- [x] **2.3b Tutor:** `useMisTutorias`, `useTutoriaDetalleTutor`.
+- [x] **2.3c Tutorado y comentarios:** `useTutoriasExplorar`, `useTutoriasTutorado`,
       `useTutoriaDetalleTutorado`, `useComentarios`. `MisTutorias.jsx` usa `mapInscripcion`
       en lugar de su `normalizar` local.
-- [ ] Contrato uniforme en todas las mutaciones: `Promise<{ ok, message, data? }>`.
-- [ ] Cancelar peticiones al desmontar o al cambiar `:id` con `AbortController`.
+- [x] Contrato uniforme en todas las mutaciones: `Promise<{ ok, message, data? }>`.
+- [x] Cancelar peticiones al desmontar o al cambiar `:id` con `AbortController`.
 
 **Criterios de aceptacion:** `grep -rn "BASE_URL\|getAuthHeaders" src/hooks` sin resultados;
 checklist manual completo sin regresiones.
 
+> Implementado con un helper interno `useRecurso` (carga, cancelacion, `recargar` y `refrescar` sin parpadeo) que se reemplaza por TanStack Query en el PR 4.1.
+
 ### PR 2.4 — `feat/auth-context`
 
-- [ ] `src/features/auth/storage.js`: `STORAGE_KEYS` y funciones `leerSesion`,
+- [x] `src/features/auth/storage.js`: `STORAGE_KEYS` y funciones `leerSesion`,
       `guardarSesion`, `limpiarSesion`.
-- [ ] `src/features/auth/jwt.js`: `decodificarToken`, `tokenExpirado(token, margenSeg = 30)`.
-- [ ] `src/features/auth/AuthContext.jsx`: `AuthProvider` con estado
+- [x] `src/features/auth/jwt.js`: `decodificarToken`, `tokenExpirado(token, margenSeg = 30)`.
+- [x] `src/features/auth/AuthContext.jsx`: `AuthProvider` con estado
       `{ token, rol, matricula, nombre }`, `isAuthenticated`, `login`, `registro`, `logout`,
       `actualizarNombre`. Escucha el evento `storage` para sincronizar pestanas.
-- [ ] `useAuth()` reemplaza a `useAutentificacion`; `login`/`registro` devuelven
+- [x] `useAuth()` reemplaza a `useAutentificacion`; `login`/`registro` devuelven
       `{ ok, message }` en vez de recibir `setError`.
-- [ ] Al montar el provider, llamar `configureApi({ getToken, onUnauthorized })`;
+- [x] Al montar el provider, llamar `configureApi({ getToken, onUnauthorized })`;
       `onUnauthorized` limpia sesion y navega a `/login` con `state: { expired: true }`.
-- [ ] Al cargar la app, si el token esta expirado, cerrar sesion antes de renderizar rutas.
-- [ ] `LogIn` muestra "Tu sesion expiro, vuelve a iniciar sesion" cuando aplica y redirige a
+- [x] Al cargar la app, si el token esta expirado, cerrar sesion antes de renderizar rutas.
+- [x] `LogIn` muestra "Tu sesion expiro, vuelve a iniciar sesion" cuando aplica y redirige a
       `location.state.from` tras un login exitoso.
-- [ ] Eliminar `src/utils/sesion.js` y todos los `localStorage.getItem('token'|'rol'|...)`
+- [x] Eliminar `src/utils/sesion.js` y todos los `localStorage.getItem('token'|'rol'|...)`
       fuera de `storage.js` (`AppRouter`, `PrivateRoute`, `Comentarios`, `AppLayout`,
       `Tutor/Home`).
-- [ ] Pruebas: login ok/error, token expirado al cargar, 401 en una peticion, redireccion a
+- [x] Pruebas: login ok/error, token expirado al cargar, 401 en una peticion, redireccion a
       `from`.
 
 **Criterios de aceptacion:** `grep -rn "localStorage" src` solo aparece en
 `features/auth/storage.js` y en la preferencia del sidebar; con un token vencido el usuario
 llega a `/login` con el aviso.
 
+> El contexto quedo dividido en `AuthContext.js` (contexto y `useAuth`) y `AuthProvider.jsx` por la regla de Fast Refresh. Al cerrar sesion no se navega: `RequireRole` redirige a `/login` y solo recuerda la pagina si el cierre no fue voluntario (evita competir con la carga diferida de la pagina de login).
+
 ### PR 2.5 — `refactor/router-anidado`
 
-- [ ] Migrar a `createBrowserRouter` + `RouterProvider` en `src/app/router.jsx`.
-- [ ] `src/constants/routes.js` con todas las rutas y helpers
+- [x] Migrar a `createBrowserRouter` + `RouterProvider` en `src/app/router.jsx`.
+- [x] `src/constants/routes.js` con todas las rutas y helpers
       (`ROUTES.tutor.detalle(id)`).
-- [ ] `RequireRole` con `<Outlet />` (reemplaza `PrivateRoute`).
-- [ ] `AppLayout` como layout route con `<Outlet />`; las paginas dejan de envolverse en
+- [x] `RequireRole` con `<Outlet />` (reemplaza `PrivateRoute`).
+- [x] `AppLayout` como layout route con `<Outlet />`; las paginas dejan de envolverse en
       `<AppLayout>` (el `className` por pagina pasa al contenedor raiz de cada pagina).
-- [ ] Nuevas URLs y redirecciones desde las antiguas:
+- [x] Nuevas URLs y redirecciones desde las antiguas:
 
   | Antes                       | Despues                   |
   | --------------------------- | ------------------------- |
@@ -303,15 +307,17 @@ llega a `/login` con el aviso.
   | `/tutorado/infoTutoria/:id` | `/tutorado/tutorias/:id`  |
   | `/tutorado/tutorias`        | `/tutorado/inscripciones` |
 
-- [ ] `lazy` por ruta y `HydrateFallback`/`Suspense` con un loader de pagina.
-- [ ] `NotFoundPage` para `*` y `errorElement` con una pagina de error amigable
+- [x] `lazy` por ruta y `HydrateFallback`/`Suspense` con un loader de pagina.
+- [x] `NotFoundPage` para `*` y `errorElement` con una pagina de error amigable
       (boton "Reintentar" y "Ir al inicio").
-- [ ] Hook `useDocumentTitle(titulo)` en cada pagina (`"Mis tutorias · Sistema de Tutorias"`).
-- [ ] Actualizar la tabla de rutas del README y el menu de `AppLayout`.
-- [ ] Pruebas: acceso por rol, redireccion de URLs antiguas, 404.
+- [x] Hook `useDocumentTitle(titulo)` en cada pagina (`"Mis tutorias · Sistema de Tutorias"`).
+- [x] Actualizar la tabla de rutas del README y el menu de `AppLayout`.
+- [x] Pruebas: acceso por rol, redireccion de URLs antiguas, 404.
 
 **Criterios de aceptacion:** `npm run build` genera un chunk por pagina; recargar cualquier URL
 en Render funciona; las URLs antiguas redirigen.
+
+> El titulo del documento se define una sola vez con `handle.titulo` en cada ruta (tambien lo usa la barra superior movil) en lugar de un hook por pagina. Al separar las paginas en chunks aparecio una dependencia oculta de CSS (Registro usaba `Login_respon.css` sin importarlo); se corrigio y se detecto con la comparacion de capturas.
 
 **Cierre del Sprint 2:** tag `v0.3.0` y redeploy.
 

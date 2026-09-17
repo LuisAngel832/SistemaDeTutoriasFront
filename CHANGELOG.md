@@ -9,10 +9,22 @@ proyecto sigue [Versionado Semantico](https://semver.org/lang/es/).
 
 ### Agregado
 
+- Pruebas automatizadas con Vitest, Testing Library y MSW (se ejecutan en el CI).
+- Cliente HTTP unico con timeout, cancelacion y mensajes de error uniformes.
+- Contexto de autenticacion: la sesion se cierra al vencer el token o ante un 401 y el login
+  avisa que la sesion expiro; despues de iniciar sesion se vuelve a la pagina pedida.
+- Paginas 404 y de error, titulo de pestana por pagina y barra de carga entre paginas.
+- Carga diferida de cada pagina.
 - Prettier, Husky (lint-staged y commitlint), workflow de CI en GitHub Actions y Dependabot.
 - Modulos compartidos `utils/` (formatters, fechas, reglas de tutoria) y `constants/`.
 - Tipografia Montserrat cargada con Fontsource y metadatos para buscadores y redes sociales.
 - `CONTRIBUTING.md`, `CHANGELOG.md` y plantilla de pull request.
+
+### Cambiado
+
+- URLs nuevas: `/tutor/tutorias/nueva`, `/tutor/horarios`, `/tutor/tutorias/:id`,
+  `/tutorado/inscripciones` y `/tutorado/tutorias/:id`. Las anteriores redirigen a estas.
+- Los listados ya no muestran el estado de carga despues de crear o eliminar un elemento.
 
 ### Corregido
 
