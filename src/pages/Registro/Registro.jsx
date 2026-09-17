@@ -1,308 +1,188 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Alert, Button, FormField, Input, PasswordInput, RadioGroup } from '../../components/ui'
 import { ROUTES } from '../../constants/routes'
 import { useAuth } from '../../features/auth/AuthContext'
-import '../LogIn/login.css'
-import './registro.css'
+import { AuthLayout } from '../../features/auth/components/AuthLayout'
+import { clases } from '../../utils/clases'
+import styles from './Registro.module.css'
 
-const ROLES = [
-  {
-    key: 'tutorado',
-    label: 'Tutorado',
-    desc: 'Quiero inscribirme a tutorias',
-  },
-  {
-    key: 'tutor',
-    label: 'Tutor',
-    desc: 'Quiero impartir tutorias',
-  },
+const OPCIONES_ROL = [
+  { value: 'tutorado', label: 'Tutorado', description: 'Quiero inscribirme a tutorias' },
+  { value: 'tutor', label: 'Tutor', description: 'Quiero impartir tutorias' },
 ]
 
+// Ids de rol que espera el backend en el registro.
 const ROL_IDS = { tutor: 2, tutorado: 3 }
+
+const CARACTERISTICAS = [
+  'Acceso inmediato a tutorias activas',
+  'Inscripcion y cancelacion en un click',
+  'Tu historial siempre disponible',
+]
+
+const MIN_CARACTERES_CONTRASENA = 8
+
+const CAMPOS_INICIALES = {
+  rol: 'tutorado',
+  nombre: '',
+  matricula: '',
+  apellidoP: '',
+  apellidoM: '',
+  correo: '',
+  pwd: '',
+}
 
 const Registro = () => {
   const { registro } = useAuth()
   const navigate = useNavigate()
 
-  const [nombre, setNombre] = useState('')
-  const [apellidoP, setApellidoP] = useState('')
-  const [apellidoM, setApellidoM] = useState('')
-  const [correo, setCorreo] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPwd, setShowPwd] = useState(false)
-  const [rol, setRol] = useState('tutorado')
-  const [matricula, setMatricula] = useState('')
+  const [campos, setCampos] = useState(CAMPOS_INICIALES)
   const [error, setError] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [enviando, setEnviando] = useState(false)
 
-  const clearError = () => {
-    if (error) setError('')
+  const actualizar = (campo, valor) => {
+    setCampos((actuales) => ({ ...actuales, [campo]: valor }))
+    setError('')
   }
 
-  const handleRegistro = async (event) => {
-    event.preventDefault()
+  const alCambiar = (campo) => (evento) => actualizar(campo, evento.target.value)
 
-    if (!nombre || !apellidoP || !apellidoM || !matricula || !correo || !password || !rol) {
+  const enviar = async (evento) => {
+    evento.preventDefault()
+
+    const faltanCampos = Object.values(campos).some((valor) => !String(valor).trim())
+    if (faltanCampos) {
       setError('Todos los campos son obligatorios')
       return
     }
 
-    if (password.length < 8) {
-      setError('La contrasena debe tener al menos 8 caracteres')
+    if (campos.pwd.length < MIN_CARACTERES_CONTRASENA) {
+      setError(`La contrasena debe tener al menos ${MIN_CARACTERES_CONTRASENA} caracteres`)
       return
     }
 
-    const rolId = ROL_IDS[rol]
-    if (!rolId) {
-      setError('Rol invalido')
-      return
-    }
-
-    const usuario = {
-      matricula,
-      nombre,
-      apellidoP,
-      apellidoM,
-      correo,
-      pwd: password,
-      rol: rolId,
-    }
-
-    setIsSubmitting(true)
-    const res = await registro(usuario)
+    setEnviando(true)
+    const res = await registro({ ...campos, rol: ROL_IDS[campos.rol] })
     if (!res.ok) {
       setError(res.message)
-      setIsSubmitting(false)
+      setEnviando(false)
       return
     }
     navigate(ROUTES.login, { state: { registrado: true } })
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-shell registro-shell">
-        <aside className="auth-brand">
-          <div className="auth-brand-top">
-            <span className="auth-brand-dot" aria-hidden="true" />
-            <span className="auth-brand-name">Sistema de Tutorias</span>
-          </div>
+    <AuthLayout
+      wide
+      brandTitle="Crea tu cuenta"
+      brandSubtitle="Registrate como tutor o tutorado y comienza a aprovechar las tutorias de tu universidad."
+      features={CARACTERISTICAS}
+      title="Registro"
+      subtitle="Completa tus datos para crear la cuenta."
+      footer={
+        <>
+          ¿Ya tienes cuenta?<Link to={ROUTES.login}>Iniciar sesion</Link>
+        </>
+      }
+    >
+      <form className={styles.formulario} onSubmit={enviar} noValidate>
+        {error ? (
+          <Alert tone="error" className={styles.completo}>
+            {error}
+          </Alert>
+        ) : null}
 
-          <div className="auth-brand-body">
-            <h1 className="auth-brand-title">Crea tu cuenta</h1>
-            <p className="auth-brand-subtitle">
-              Registrate como tutor o tutorado y comienza a aprovechar las tutorias de tu
-              universidad.
-            </p>
+        <RadioGroup
+          className={styles.completo}
+          name="rol"
+          legend="Tipo de cuenta que quieres crear"
+          options={OPCIONES_ROL}
+          value={campos.rol}
+          onChange={(valor) => actualizar('rol', valor)}
+        />
 
-            <ul className="auth-brand-features">
-              <li>
-                <span className="auth-brand-check" aria-hidden="true">
-                  ✓
-                </span>
-                Acceso inmediato a tutorias activas
-              </li>
-              <li>
-                <span className="auth-brand-check" aria-hidden="true">
-                  ✓
-                </span>
-                Inscripcion y cancelacion en un click
-              </li>
-              <li>
-                <span className="auth-brand-check" aria-hidden="true">
-                  ✓
-                </span>
-                Tu historial siempre disponible
-              </li>
-            </ul>
-          </div>
+        <FormField label="Nombre(s)" htmlFor="nombre">
+          <Input
+            id="nombre"
+            placeholder="Luis"
+            value={campos.nombre}
+            onChange={alCambiar('nombre')}
+            autoComplete="given-name"
+          />
+        </FormField>
 
-          <p className="auth-brand-foot">© 2026 Sistema de Tutorias</p>
-        </aside>
+        <FormField label="Matricula institucional" htmlFor="matricula">
+          <Input
+            id="matricula"
+            placeholder="Ej. 20230001"
+            value={campos.matricula}
+            onChange={alCambiar('matricula')}
+            autoComplete="username"
+            inputMode="numeric"
+          />
+        </FormField>
 
-        <section className="auth-form-panel registro-panel">
-          <header className="auth-form-header">
-            <h2 className="auth-form-title">Registro</h2>
-            <p className="auth-form-subtitle">Completa tus datos para crear la cuenta.</p>
-          </header>
+        <FormField label="Apellido paterno" htmlFor="apellidoP">
+          <Input
+            id="apellidoP"
+            placeholder="Perez"
+            value={campos.apellidoP}
+            onChange={alCambiar('apellidoP')}
+            autoComplete="family-name"
+          />
+        </FormField>
 
-          {error ? <div className="auth-feedback error">{error}</div> : null}
+        <FormField label="Apellido materno" htmlFor="apellidoM">
+          <Input
+            id="apellidoM"
+            placeholder="Lopez"
+            value={campos.apellidoM}
+            onChange={alCambiar('apellidoM')}
+          />
+        </FormField>
 
-          <form className="auth-form registro-grid" onSubmit={handleRegistro}>
-            <div className="auth-field full">
-              <p className="auth-label" id="label-tipo-cuenta">
-                Tipo de cuenta que quieres crear
-              </p>
-              <div className="rol-chips" role="radiogroup" aria-labelledby="label-tipo-cuenta">
-                {ROLES.map((r) => (
-                  <button
-                    key={r.key}
-                    type="button"
-                    role="radio"
-                    aria-checked={rol === r.key}
-                    className={`rol-chip${rol === r.key ? ' active' : ''}`}
-                    onClick={() => {
-                      setRol(r.key)
-                      clearError()
-                    }}
-                  >
-                    <span className="rol-chip-title">
-                      <span className="rol-chip-radio" aria-hidden="true" />
-                      {r.label}
-                    </span>
-                    <span className="rol-chip-desc">{r.desc}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+        <FormField
+          label="Correo electronico de contacto"
+          htmlFor="correo"
+          className={styles.completo}
+        >
+          <Input
+            id="correo"
+            type="email"
+            placeholder="luis@example.com"
+            value={campos.correo}
+            onChange={alCambiar('correo')}
+            autoComplete="email"
+          />
+        </FormField>
 
-            <div className="auth-field">
-              <label htmlFor="nombre" className="auth-label">
-                Nombre(s)
-              </label>
-              <input
-                id="nombre"
-                type="text"
-                className="auth-input"
-                placeholder="Luis"
-                value={nombre}
-                onChange={(event) => {
-                  setNombre(event.target.value)
-                  clearError()
-                }}
-                required
-              />
-            </div>
+        <FormField
+          label="Contrasena para tu cuenta"
+          htmlFor="pwd"
+          hint={`Debe tener al menos ${MIN_CARACTERES_CONTRASENA} caracteres.`}
+          className={styles.completo}
+        >
+          <PasswordInput
+            id="pwd"
+            placeholder={`Minimo ${MIN_CARACTERES_CONTRASENA} caracteres`}
+            value={campos.pwd}
+            onChange={alCambiar('pwd')}
+            autoComplete="new-password"
+          />
+        </FormField>
 
-            <div className="auth-field">
-              <label htmlFor="matricula" className="auth-label">
-                Matricula institucional
-              </label>
-              <input
-                id="matricula"
-                type="text"
-                className="auth-input"
-                placeholder="Ej. 20230001"
-                value={matricula}
-                onChange={(event) => {
-                  setMatricula(event.target.value)
-                  clearError()
-                }}
-                required
-              />
-            </div>
-
-            <div className="auth-field">
-              <label htmlFor="apellidoP" className="auth-label">
-                Apellido paterno
-              </label>
-              <input
-                id="apellidoP"
-                type="text"
-                className="auth-input"
-                placeholder="Perez"
-                value={apellidoP}
-                onChange={(event) => {
-                  setApellidoP(event.target.value)
-                  clearError()
-                }}
-                required
-              />
-            </div>
-
-            <div className="auth-field">
-              <label htmlFor="apellidoM" className="auth-label">
-                Apellido materno
-              </label>
-              <input
-                id="apellidoM"
-                type="text"
-                className="auth-input"
-                placeholder="Lopez"
-                value={apellidoM}
-                onChange={(event) => {
-                  setApellidoM(event.target.value)
-                  clearError()
-                }}
-                required
-              />
-            </div>
-
-            <div className="auth-field full">
-              <label htmlFor="correo" className="auth-label">
-                Correo electronico de contacto
-              </label>
-              <input
-                id="correo"
-                type="email"
-                className="auth-input"
-                placeholder="luis@example.com"
-                value={correo}
-                onChange={(event) => {
-                  setCorreo(event.target.value)
-                  clearError()
-                }}
-                required
-              />
-            </div>
-
-            <div className="auth-field full">
-              <label htmlFor="password" className="auth-label">
-                Contrasena para tu cuenta
-              </label>
-              <div className="auth-input-wrap">
-                <input
-                  id="password"
-                  type={showPwd ? 'text' : 'password'}
-                  className="auth-input with-toggle"
-                  placeholder="Minimo 8 caracteres"
-                  value={password}
-                  onChange={(event) => {
-                    setPassword(event.target.value)
-                    clearError()
-                  }}
-                  required
-                  minLength={8}
-                />
-                <button
-                  type="button"
-                  className="auth-toggle"
-                  onClick={() => setShowPwd((prev) => !prev)}
-                  aria-label={showPwd ? 'Ocultar contrasena' : 'Mostrar contrasena'}
-                >
-                  {showPwd ? 'OCULTAR' : 'MOSTRAR'}
-                </button>
-              </div>
-              <p className="auth-hint">Debe tener al menos 8 caracteres.</p>
-            </div>
-
-            <button
-              type="submit"
-              className="auth-submit"
-              disabled={isSubmitting}
-              style={{ gridColumn: '1 / -1' }}
-            >
-              {isSubmitting ? (
-                <>
-                  <span className="auth-spinner" aria-hidden="true" />
-                  Registrando...
-                </>
-              ) : (
-                'Crear cuenta'
-              )}
-            </button>
-          </form>
-
-          <div className="auth-divider">o</div>
-
-          <p className="auth-switch">
-            ¿Ya tienes cuenta?
-            <Link to={ROUTES.login} className="auth-switch-link">
-              Iniciar sesion
-            </Link>
-          </p>
-        </section>
-      </div>
-    </div>
+        <Button
+          type="submit"
+          size="lg"
+          fullWidth
+          loading={enviando}
+          className={clases(styles.completo, styles.enviar)}
+        >
+          {enviando ? 'Registrando...' : 'Crear cuenta'}
+        </Button>
+      </form>
+    </AuthLayout>
   )
 }
 
