@@ -487,6 +487,18 @@
   line-height: 1.55;
 }
 
+/* Nota bajo una accion deshabilitada (explica por que no esta disponible) */
+.tdt-action-hint {
+  margin: 0 0 0.85rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #5b6778;
+}
+
+.tdt-btn-cancel + .tdt-action-hint {
+  margin: 0.5rem 0 0;
+}
+
 /* Botones */
 .tdt-btn-primary,
 .tdt-btn-cancel,

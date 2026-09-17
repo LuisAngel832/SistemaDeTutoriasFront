@@ -465,7 +465,7 @@ const TutoriaDetalleTutor = () => {
                           Marcar como completada
                         </button>
                         {!puedeCompletar ? (
-                          <p className="tdt-side-desc">
+                          <p className="tdt-action-hint">
                             Podras marcarla como completada cuando inicie la sesion.
                           </p>
                         ) : null}
@@ -508,7 +508,7 @@ const TutoriaDetalleTutor = () => {
                           Cancelar tutoria
                         </button>
                         {!puedeCancelar ? (
-                          <p className="tdt-side-desc">
+                          <p className="tdt-action-hint">
                             Solo puedes cancelar con mas de {MIN_MINUTOS_CANCELACION} minutos de
                             anticipacion.
                           </p>
