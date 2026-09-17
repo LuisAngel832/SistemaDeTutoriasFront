@@ -24,19 +24,11 @@ const CrearTutoria = () => {
     agregarTema,
     quitarTema,
     handleSubmit,
+    reset,
     horariosDisponibles,
     experienciasDisponibles,
     isSubmitting,
   } = useCrearTutoria()
-
-  const handleLimpiar = () => {
-    setNrcExperiencia('')
-    setHorario('')
-    setFecha('')
-    setEdificio('')
-    setAula('')
-    ;[...temas].forEach((t) => quitarTema(t))
-  }
 
   return (
     <AppLayout className="crear-tutoria-page">
@@ -82,7 +74,7 @@ const CrearTutoria = () => {
             <button
               type="button"
               className="btn-secundario"
-              onClick={handleLimpiar}
+              onClick={reset}
               disabled={isSubmitting}
             >
               Limpiar

@@ -22,8 +22,6 @@ const findInscripcion = async (idTutoria) => {
   const inscripciones = data?.data || []
   const target = Number(idTutoria)
 
-  console.log('[detalle] buscando inscripcion para tutoria', target, 'en', inscripciones)
-
   return (
     inscripciones.find((item) => {
       const candidatos = [
@@ -91,13 +89,14 @@ export const useTutoriaDetalleTutorado = (id) => {
       })
 
       if (!response.ok) {
-        return data?.message || 'No fue posible inscribirse'
+        return { ok: false, message: data?.message || 'No fue posible inscribirse' }
       }
 
       await fetchTutoria(false)
-      return data?.message || 'Inscripcion realizada'
+      // El backend responde "Asistencia marcada.", que confunde al tutorado.
+      return { ok: true, message: 'Te inscribiste a la tutoria.' }
     } catch {
-      return 'Error al conectar con el servidor'
+      return { ok: false, message: 'Error al conectar con el servidor' }
     } finally {
       setIsSubmitting(false)
     }
@@ -109,7 +108,7 @@ export const useTutoriaDetalleTutorado = (id) => {
       const insc = inscripcion || (await findInscripcion(id))
       const idAsistencia = insc?.idAsistencia
       if (!idAsistencia) {
-        return 'No tienes una inscripcion para cancelar'
+        return { ok: false, message: 'No tienes una inscripcion para cancelar' }
       }
 
       const { response, data } = await fetchJson(`${BASE_URL}/asistencia/${idAsistencia}`, {
@@ -118,13 +117,13 @@ export const useTutoriaDetalleTutorado = (id) => {
       })
 
       if (!response.ok) {
-        return data?.message || 'No fue posible cancelar la inscripcion'
+        return { ok: false, message: data?.message || 'No fue posible cancelar la inscripcion' }
       }
 
       await fetchTutoria(false)
-      return data?.message || 'Inscripcion cancelada'
+      return { ok: true, message: 'Cancelaste tu inscripcion.' }
     } catch {
-      return 'Error al conectar con el servidor'
+      return { ok: false, message: 'Error al conectar con el servidor' }
     } finally {
       setIsSubmitting(false)
     }

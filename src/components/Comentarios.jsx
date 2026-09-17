@@ -85,7 +85,7 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
       ) : (
         <ul className="cmt-lista">
           {comentarios.map((c) => {
-            const esMio = c.matricula && c.matricula === matricula
+            const esMio = c.matricula != null && String(c.matricula) === matricula
             const inicial = getInicial(c.nombre || c.matricula)
 
             return (

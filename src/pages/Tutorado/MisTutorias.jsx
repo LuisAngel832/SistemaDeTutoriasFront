@@ -21,7 +21,7 @@ const normalizar = (item, index) => {
     estado: tutoria.estado,
     edificio: tutoria.edificio,
     aula: tutoria.aula,
-    nombreTutor: tutoria.nombreTutor ?? tutoria.horario?.tutor?.nombre,
+    nombreTutor: tutoria.nombreTutor ?? tutoria.tutor ?? tutoria.horario?.tutor?.nombre,
   }
 }
 

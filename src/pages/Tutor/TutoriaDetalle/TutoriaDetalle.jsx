@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import AppLayout from '../../../components/layout/AppLayout'
 import Comentarios from '../../../components/Comentarios'
 import useHorarios from '../../../hooks/useHorarios'
 import useTutoriaDetalleTutor from '../../../hooks/useTutoriaDetalleTutor'
 import { AULAS, EDIFICIOS } from '../../../constants/espacios'
-import { MAX_CARACTERES_TEMA } from '../../../constants/tutoria'
+import { MAX_CARACTERES_TEMA, MIN_MINUTOS_CANCELACION } from '../../../constants/tutoria'
+import { useAhora } from '../../../hooks/useAhora'
+import { hoyLocalISO, minutosHasta } from '../../../utils/fechas'
 import {
   formatFecha,
   formatHorario,
@@ -14,7 +16,12 @@ import {
   getInicial,
   SIN_DATO,
 } from '../../../utils/formatters'
-import { esProgramada, getEstadoClass, yaTuvoLugar } from '../../../utils/tutoria'
+import {
+  buscarHorarioDeTutoria,
+  esProgramada,
+  getEstadoClass,
+  yaTuvoLugar,
+} from '../../../utils/tutoria'
 import './tutoriaDetalleTutor.css'
 
 const TemaQuickInput = ({ onAdd, disabled }) => {
@@ -90,20 +97,35 @@ const TutoriaDetalleTutor = () => {
   const [aula, setAula] = useState('')
   const [fecha, setFecha] = useState('')
 
-  useEffect(() => {
-    if (tutoria && editMode) {
-      setEdificio(String(tutoria.edificio ?? ''))
-      setAula(String(tutoria.aula ?? ''))
-      setFecha(tutoria.fecha ?? '')
-    }
-  }, [tutoria, editMode])
-
+  const ahora = useAhora()
   const estadoClass = getEstadoClass(tutoria?.estado)
   const esCancelable = esProgramada(tutoria)
-  const mostrarAsistencia = yaTuvoLugar(tutoria)
+  const mostrarAsistencia = yaTuvoLugar(tutoria, ahora)
+
+  // Reglas del backend: solo se completa una tutoria que ya inicio y solo se cancela
+  // con mas de MIN_MINUTOS_CANCELACION minutos de anticipacion.
+  const minutosParaInicio = minutosHasta(tutoria?.fecha, tutoria?.horaInicio, ahora)
+  const puedeCompletar = minutosParaInicio != null && minutosParaInicio <= 0
+  const puedeCancelar = minutosParaInicio == null || minutosParaInicio > MIN_MINUTOS_CANCELACION
+
+  const abrirEdicion = () => {
+    const horarioActual = buscarHorarioDeTutoria(horarios, tutoria)
+    setIdHorario(horarioActual ? String(horarioActual.idHorario) : '')
+    setEdificio(String(tutoria.edificio ?? ''))
+    setAula(String(tutoria.aula ?? ''))
+    setFecha(tutoria.fecha ?? '')
+    setFeedback(null)
+    setEditMode(true)
+  }
 
   const handleGuardar = async () => {
     setFeedback(null)
+
+    // Se valida antes de convertir: Number('') es 0 y pasaria Number.isFinite.
+    if (!idHorario || !edificio || !aula || !fecha) {
+      setFeedback({ type: 'error', text: 'Completa todos los campos correctamente.' })
+      return
+    }
 
     const payload = {
       idHorario: Number(idHorario),
@@ -115,8 +137,7 @@ const TutoriaDetalleTutor = () => {
     if (
       !Number.isFinite(payload.idHorario) ||
       !Number.isFinite(payload.edificio) ||
-      !Number.isFinite(payload.aula) ||
-      !payload.fecha
+      !Number.isFinite(payload.aula)
     ) {
       setFeedback({ type: 'error', text: 'Completa todos los campos correctamente.' })
       return
@@ -157,7 +178,7 @@ const TutoriaDetalleTutor = () => {
     }
   }
 
-  const hoy = new Date().toISOString().split('T')[0]
+  const hoy = hoyLocalISO()
 
   return (
     <AppLayout className="tdt-page">
@@ -398,14 +419,7 @@ const TutoriaDetalleTutor = () => {
 
                 {!editMode && esCancelable ? (
                   <div className="tdt-hero-actions">
-                    <button
-                      type="button"
-                      className="tdt-btn-ghost"
-                      onClick={() => {
-                        setIdHorario('')
-                        setEditMode(true)
-                      }}
-                    >
+                    <button type="button" className="tdt-btn-ghost" onClick={abrirEdicion}>
                       Editar tutoria
                     </button>
                   </div>
@@ -441,14 +455,21 @@ const TutoriaDetalleTutor = () => {
                         </div>
                       </div>
                     ) : (
-                      <button
-                        type="button"
-                        className="tdt-btn-primary full"
-                        onClick={() => setConfirmComplete(true)}
-                        disabled={isSubmitting}
-                      >
-                        Marcar como completada
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          className="tdt-btn-primary full"
+                          onClick={() => setConfirmComplete(true)}
+                          disabled={isSubmitting || !puedeCompletar}
+                        >
+                          Marcar como completada
+                        </button>
+                        {!puedeCompletar ? (
+                          <p className="tdt-side-desc">
+                            Podras marcarla como completada cuando inicie la sesion.
+                          </p>
+                        ) : null}
+                      </>
                     )}
 
                     {confirmCancel ? (
@@ -477,14 +498,22 @@ const TutoriaDetalleTutor = () => {
                         </div>
                       </div>
                     ) : (
-                      <button
-                        type="button"
-                        className="tdt-btn-cancel full"
-                        onClick={() => setConfirmCancel(true)}
-                        disabled={isSubmitting}
-                      >
-                        Cancelar tutoria
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          className="tdt-btn-cancel full"
+                          onClick={() => setConfirmCancel(true)}
+                          disabled={isSubmitting || !puedeCancelar}
+                        >
+                          Cancelar tutoria
+                        </button>
+                        {!puedeCancelar ? (
+                          <p className="tdt-side-desc">
+                            Solo puedes cancelar con mas de {MIN_MINUTOS_CANCELACION} minutos de
+                            anticipacion.
+                          </p>
+                        ) : null}
+                      </>
                     )}
                   </div>
                 ) : (

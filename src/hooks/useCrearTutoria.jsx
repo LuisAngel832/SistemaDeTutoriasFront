@@ -32,6 +32,15 @@ const useCrearTutoria = () => {
     setTemas((prev) => prev.filter((t) => t !== tema))
   }
 
+  const reset = () => {
+    setNrcExperiencia('')
+    setHorario('')
+    setFecha('')
+    setEdificio('')
+    setAula('')
+    setTemas([])
+  }
+
   const handleSubmit = async () => {
     if (!nrcExperiencia || !horario || !fecha || !edificio || !aula) {
       setMensaje('Completa todos los campos')
@@ -73,7 +82,7 @@ const useCrearTutoria = () => {
         body: JSON.stringify(payload),
       })
 
-      const responseBody = await response.json()
+      const responseBody = await response.json().catch(() => null)
 
       if (!response.ok) {
         setMensaje(responseBody?.message || 'No se pudo crear la tutoria')
@@ -83,12 +92,7 @@ const useCrearTutoria = () => {
 
       setMensaje('Tutoria creada correctamente')
       setShowModal(true)
-      setNrcExperiencia('')
-      setHorario('')
-      setFecha('')
-      setEdificio('')
-      setAula('')
-      setTemas([])
+      reset()
     } catch {
       setMensaje('Error al conectar con el servidor')
       setShowModal(true)
@@ -109,7 +113,7 @@ const useCrearTutoria = () => {
           return
         }
 
-        const data = await response.json()
+        const data = await response.json().catch(() => null)
         const lista = (data?.data || []).map((h) => ({
           ...h,
           idHorario: h.idHorario ?? h.id ?? h.idHorarios ?? h.horarioId,
@@ -131,7 +135,7 @@ const useCrearTutoria = () => {
           return
         }
 
-        const data = await response.json()
+        const data = await response.json().catch(() => null)
         setExperienciasDisponibles(data?.data || [])
       } catch {
         setExperienciasDisponibles([])
@@ -160,6 +164,7 @@ const useCrearTutoria = () => {
     agregarTema,
     quitarTema,
     handleSubmit,
+    reset,
     horariosDisponibles,
     experienciasDisponibles,
     isSubmitting,

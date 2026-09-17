@@ -20,12 +20,13 @@ export const useTutoriasExplorar = () => {
           headers: getAuthHeaders(),
         })
 
+        const data = await response.json().catch(() => null)
+
         if (!response.ok) {
-          setError('No se pudieron cargar las tutorias')
+          setError(data?.message || 'No se pudieron cargar las tutorias')
           return
         }
 
-        const data = await response.json()
         setTutorias(data?.data || [])
       } catch {
         setError('Error al conectar con el servidor')

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { HOME_POR_ROL, normalizarRol } from '../constants/roles'
 
 // Vacio en dev para usar el proxy de Vite (mismo origen, sin CORS).
 // Para apuntar a otro backend, define VITE_API_URL en .env (ej. URL de produccion).
@@ -33,8 +34,6 @@ const extractErrorMessage = (body, fallback) => {
   return fallback
 }
 
-const normalizeRol = (rol) => (rol ? String(rol).toLowerCase() : '')
-
 const useAutentificacion = () => {
   const navigate = useNavigate()
 
@@ -57,7 +56,7 @@ const useAutentificacion = () => {
         return
       }
 
-      const rolNormalizado = normalizeRol(rol)
+      const rolNormalizado = normalizarRol(rol)
       const nombreCompleto = [nombre, apellidoP, apellidoM].filter(Boolean).join(' ').trim()
 
       localStorage.setItem('token', token)
@@ -71,15 +70,7 @@ const useAutentificacion = () => {
         localStorage.removeItem('nombre')
       }
 
-      if (rolNormalizado === 'tutor') {
-        navigate('/tutor/home')
-      } else if (rolNormalizado === 'tutorado') {
-        navigate('/tutorado/home')
-      } else if (rolNormalizado === 'admin') {
-        navigate('/tutor/home')
-      } else {
-        navigate('/login')
-      }
+      navigate(HOME_POR_ROL[rolNormalizado] ?? '/login')
     } catch {
       setError('Error al conectar con el servidor')
     }
@@ -111,7 +102,6 @@ const useAutentificacion = () => {
     localStorage.removeItem('rol')
     localStorage.removeItem('matricula')
     localStorage.removeItem('nombre')
-    localStorage.removeItem('correo')
     navigate('/login')
   }
 

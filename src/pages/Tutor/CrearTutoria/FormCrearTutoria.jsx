@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import TemasInput from '../../../components/Tutor/TemasInput'
 import { AULAS, EDIFICIOS } from '../../../constants/espacios'
+import { hoyLocalISO } from '../../../utils/fechas'
 import { formatHorario } from '../../../utils/formatters'
 
 const FormCrearTutoria = ({
@@ -22,7 +23,7 @@ const FormCrearTutoria = ({
 }) => {
   const sinHorarios = horariosDisponibles.length === 0
   const sinExperiencias = experienciasDisponibles.length === 0
-  const hoy = new Date().toISOString().split('T')[0]
+  const hoy = hoyLocalISO()
 
   return (
     <form className="crear-tutoria-form" onSubmit={(event) => event.preventDefault()}>

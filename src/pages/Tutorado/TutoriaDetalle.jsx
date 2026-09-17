@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import AppLayout from '../../components/layout/AppLayout'
 import Comentarios from '../../components/Comentarios'
 import { MIN_MINUTOS_CANCELACION } from '../../constants/tutoria'
+import { useAhora } from '../../hooks/useAhora'
 import { useTutoriaDetalleTutorado } from '../../hooks/useTutoriaDetalleTutorado'
 import { formatTiempoRestante, minutosHasta } from '../../utils/fechas'
 import { formatFecha, formatRangoHora, formatTema, SIN_DATO } from '../../utils/formatters'
@@ -17,13 +18,7 @@ const TutoriaDetalle = () => {
 
   const [feedback, setFeedback] = useState(null)
   const [confirmCancel, setConfirmCancel] = useState(false)
-  const [now, setNow] = useState(() => Date.now())
-
-  // Tick cada 30s para re-evaluar cuando se acerque la hora
-  useEffect(() => {
-    const interval = setInterval(() => setNow(Date.now()), 30000)
-    return () => clearInterval(interval)
-  }, [])
+  const now = useAhora()
 
   const tutoradoInscrito = Boolean(inscripcion)
 
@@ -36,19 +31,15 @@ const TutoriaDetalle = () => {
 
   const handleInscribirse = async () => {
     setFeedback(null)
-    const message = await inscribirse()
-    const success =
-      !message.toLowerCase().includes('no fue posible') && !message.toLowerCase().includes('error')
-    setFeedback({ type: success ? 'success' : 'error', text: message })
+    const res = await inscribirse()
+    setFeedback({ type: res.ok ? 'success' : 'error', text: res.message })
   }
 
   const handleConfirmCancel = async () => {
     setFeedback(null)
     setConfirmCancel(false)
-    const message = await cancelarInscripcion()
-    const success =
-      !message.toLowerCase().includes('no fue posible') && !message.toLowerCase().includes('error')
-    setFeedback({ type: success ? 'success' : 'error', text: message })
+    const res = await cancelarInscripcion()
+    setFeedback({ type: res.ok ? 'success' : 'error', text: res.message })
   }
 
   const estadoClass = getEstadoClass(tutoria?.estado)

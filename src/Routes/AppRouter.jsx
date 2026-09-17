@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
+import { HOME_POR_ROL, ROLES } from '../constants/roles'
 import LogIn from '../pages/LogIn/LogIn'
 import Registro from '../pages/Registro/Registro'
 import TutorHome from '../pages/Tutor/Home'
@@ -10,6 +11,10 @@ import TutoradoHome from '../pages/Tutorado/Home'
 import TutoriaDetalle from '../pages/Tutorado/TutoriaDetalle'
 import MisTutorias from '../pages/Tutorado/MisTutorias'
 
+// El admin no tiene panel propio: comparte las pantallas del tutor.
+const ROLES_TUTOR = [ROLES.TUTOR, ROLES.ADMIN]
+const ROLES_TUTORADO = [ROLES.TUTORADO]
+
 const AppRouter = () => {
   const userRole = localStorage.getItem('rol')
 
@@ -18,23 +23,12 @@ const AppRouter = () => {
       <Route path="/login" element={<LogIn />} />
       <Route path="/registro" element={<Registro />} />
 
-      <Route
-        path="/"
-        element={
-          userRole === 'tutor' ? (
-            <Navigate to="/tutor/home" replace />
-          ) : userRole === 'tutorado' ? (
-            <Navigate to="/tutorado/home" replace />
-          ) : (
-            <Navigate to="/login" replace />
-          )
-        }
-      />
+      <Route path="/" element={<Navigate to={HOME_POR_ROL[userRole] ?? '/login'} replace />} />
 
       <Route
         path="/tutor/home"
         element={
-          <PrivateRoute allowedRoles={['tutor']}>
+          <PrivateRoute allowedRoles={ROLES_TUTOR}>
             <TutorHome />
           </PrivateRoute>
         }
@@ -43,7 +37,7 @@ const AppRouter = () => {
       <Route
         path="/tutor/agregar-horario"
         element={
-          <PrivateRoute allowedRoles={['tutor']}>
+          <PrivateRoute allowedRoles={ROLES_TUTOR}>
             <AgregarHorario />
           </PrivateRoute>
         }
@@ -52,7 +46,7 @@ const AppRouter = () => {
       <Route
         path="/tutor/crear"
         element={
-          <PrivateRoute allowedRoles={['tutor']}>
+          <PrivateRoute allowedRoles={ROLES_TUTOR}>
             <CrearTutoria />
           </PrivateRoute>
         }
@@ -61,7 +55,7 @@ const AppRouter = () => {
       <Route
         path="/tutor/tutoria/:id"
         element={
-          <PrivateRoute allowedRoles={['tutor']}>
+          <PrivateRoute allowedRoles={ROLES_TUTOR}>
             <TutoriaDetalleTutor />
           </PrivateRoute>
         }
@@ -70,7 +64,7 @@ const AppRouter = () => {
       <Route
         path="/tutorado/home"
         element={
-          <PrivateRoute allowedRoles={['tutorado']}>
+          <PrivateRoute allowedRoles={ROLES_TUTORADO}>
             <TutoradoHome />
           </PrivateRoute>
         }
@@ -79,7 +73,7 @@ const AppRouter = () => {
       <Route
         path="/tutorado/infoTutoria/:id"
         element={
-          <PrivateRoute allowedRoles={['tutorado']}>
+          <PrivateRoute allowedRoles={ROLES_TUTORADO}>
             <TutoriaDetalle />
           </PrivateRoute>
         }
@@ -88,7 +82,7 @@ const AppRouter = () => {
       <Route
         path="/tutorado/tutorias"
         element={
-          <PrivateRoute allowedRoles={['tutorado']}>
+          <PrivateRoute allowedRoles={ROLES_TUTORADO}>
             <MisTutorias />
           </PrivateRoute>
         }

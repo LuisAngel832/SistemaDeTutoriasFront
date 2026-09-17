@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
+import { ROLES } from '../../constants/roles'
 import { getSesion, suscribirSesion } from '../../utils/sesion'
 import '../../assets/css/components/sidebar.css'
 
@@ -33,7 +34,8 @@ const AppLayout = ({ children, className = '' }) => {
   const [sesion, setSesion] = useState(getSesion)
 
   const { nombre, matricula, rol } = sesion
-  const menu = MENU_POR_ROL[rol] ?? MENU_POR_ROL.tutorado
+  // El admin usa las pantallas del tutor, asi que comparte su menu.
+  const menu = MENU_POR_ROL[rol === ROLES.ADMIN ? ROLES.TUTOR : rol] ?? MENU_POR_ROL.tutorado
 
   const activo = menu.items.find((item) =>
     item.end ? location.pathname === item.to : location.pathname.startsWith(item.to),

@@ -1,5 +1,7 @@
+import { DIAS_SEMANA } from '../constants/horarios'
 import { ESTADO_CLASS, ESTADOS_TUTORIA } from '../constants/tutoria'
-import { yaInicio } from './fechas'
+import { combinarFechaHora, yaInicio } from './fechas'
+import { formatHora } from './formatters'
 
 export const normalizarEstado = (estado) => (estado ? String(estado).toUpperCase() : '')
 
@@ -14,4 +16,30 @@ export const yaTuvoLugar = (tutoria, ahora = Date.now()) => {
   const estado = normalizarEstado(tutoria.estado)
   if (estado === ESTADOS_TUTORIA.COMPLETADA || estado === ESTADOS_TUTORIA.CANCELADA) return true
   return yaInicio(tutoria.fecha, tutoria.horaInicio, ahora)
+}
+
+const normalizarTexto = (texto) =>
+  String(texto ?? '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+
+// El DTO de tutoria no incluye idHorario (solo horaInicio/horaFin), asi que se deduce
+// buscando el horario del tutor con las mismas horas y el dia de la semana de la fecha.
+export const buscarHorarioDeTutoria = (horarios, tutoria) => {
+  if (!tutoria || !horarios?.length) return null
+  if (tutoria.idHorario != null) {
+    return horarios.find((h) => String(h.idHorario) === String(tutoria.idHorario)) ?? null
+  }
+
+  const mismasHoras = horarios.filter(
+    (h) =>
+      formatHora(h.horaInicio) === formatHora(tutoria.horaInicio) &&
+      formatHora(h.horaFin) === formatHora(tutoria.horaFin),
+  )
+  const indiceDia = combinarFechaHora(tutoria.fecha, '00:00')?.getDay()
+  const dia = DIAS_SEMANA.find((d) => d.indice === indiceDia)
+  const mismoDia = mismasHoras.find((h) => normalizarTexto(h.dia) === normalizarTexto(dia?.label))
+
+  return mismoDia ?? (mismasHoras.length === 1 ? mismasHoras[0] : null)
 }
