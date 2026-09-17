@@ -1,66 +1,78 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Outlet, useLocation, useMatches } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import { ROLES } from '../../constants/roles'
+import { ROUTES } from '../../constants/routes'
 import { useAuth } from '../../features/auth/AuthContext'
 import '../../assets/css/components/sidebar.css'
 
 const MENU_POR_ROL = {
-  tutor: {
+  [ROLES.TUTOR]: {
     seccion: 'Panel del tutor',
-    brandTo: '/tutor/home',
+    brandTo: ROUTES.tutor.inicio,
     items: [
-      { to: '/tutor/home', label: 'Mis Tutorias', icon: 'tutorias', end: true },
-      { to: '/tutor/crear', label: 'Crear Tutoria', icon: 'crear' },
-      { to: '/tutor/agregar-horario', label: 'Crear Horario', icon: 'horario' },
+      { to: ROUTES.tutor.inicio, label: 'Mis Tutorias', icon: 'tutorias', end: true },
+      { to: ROUTES.tutor.nuevaTutoria, label: 'Crear Tutoria', icon: 'crear' },
+      { to: ROUTES.tutor.horarios, label: 'Crear Horario', icon: 'horario' },
     ],
   },
-  tutorado: {
+  [ROLES.TUTORADO]: {
     seccion: 'Panel del tutorado',
-    brandTo: '/tutorado/home',
+    brandTo: ROUTES.tutorado.inicio,
     items: [
-      { to: '/tutorado/home', label: 'Explorar Tutorias', icon: 'explorar', end: true },
-      { to: '/tutorado/tutorias', label: 'Mis Tutorias', icon: 'misTutorias' },
+      { to: ROUTES.tutorado.inicio, label: 'Explorar Tutorias', icon: 'explorar', end: true },
+      { to: ROUTES.tutorado.inscripciones, label: 'Mis Tutorias', icon: 'misTutorias' },
     ],
   },
 }
 
 const STORAGE_KEY = 'sidebarCollapsed'
 
-const AppLayout = ({ children, className = '' }) => {
+const leerPreferenciaColapsado = () => {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
+
+// Estructura de las paginas privadas: sidebar + contenido de la ruta activa.
+const AppLayout = () => {
   const location = useLocation()
-  const [collapsed, setCollapsed] = useState(() => localStorage.getItem(STORAGE_KEY) === 'true')
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const matches = useMatches()
   const { nombre, matricula, rol } = useAuth()
+  const [collapsed, setCollapsed] = useState(leerPreferenciaColapsado)
+  // El menu movil queda abierto solo en la ruta donde se abrio: al navegar se cierra solo.
+  const [menuAbiertoEn, setMenuAbiertoEn] = useState(null)
+  const mobileOpen = menuAbiertoEn === location.pathname
+
   // El admin usa las pantallas del tutor, asi que comparte su menu.
-  const menu = MENU_POR_ROL[rol === ROLES.ADMIN ? ROLES.TUTOR : rol] ?? MENU_POR_ROL.tutorado
+  const menu = MENU_POR_ROL[rol === ROLES.ADMIN ? ROLES.TUTOR : rol] ?? MENU_POR_ROL[ROLES.TUTORADO]
+  const titulo = matches.findLast((match) => match.handle?.titulo)?.handle.titulo
 
-  const activo = menu.items.find((item) =>
-    item.end ? location.pathname === item.to : location.pathname.startsWith(item.to),
-  )
-
-  useEffect(() => {
-    setMobileOpen(false)
-  }, [location.pathname])
+  const abrirMenu = () => setMenuAbiertoEn(location.pathname)
+  const cerrarMenu = () => setMenuAbiertoEn(null)
 
   useEffect(() => {
+    if (!mobileOpen) return undefined
     const handleEscape = (event) => {
-      if (event.key === 'Escape') setMobileOpen(false)
+      if (event.key === 'Escape') setMenuAbiertoEn(null)
     }
     document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
-  }, [])
-
-  useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : ''
+    document.body.style.overflow = 'hidden'
     return () => {
+      document.removeEventListener('keydown', handleEscape)
       document.body.style.overflow = ''
     }
   }, [mobileOpen])
 
   const toggleCollapse = () => {
     setCollapsed((valor) => {
-      localStorage.setItem(STORAGE_KEY, String(!valor))
+      try {
+        localStorage.setItem(STORAGE_KEY, String(!valor))
+      } catch {
+        // La preferencia solo dura hasta recargar.
+      }
       return !valor
     })
   }
@@ -77,19 +89,19 @@ const AppLayout = ({ children, className = '' }) => {
         collapsed={collapsed}
         onToggleCollapse={toggleCollapse}
         mobileOpen={mobileOpen}
-        onCloseMobile={() => setMobileOpen(false)}
+        onCloseMobile={cerrarMenu}
       />
 
       {mobileOpen ? (
-        <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} aria-hidden="true" />
+        <div className="sidebar-overlay" onClick={cerrarMenu} aria-hidden="true" />
       ) : null}
 
-      <div className={`app-content${className ? ` ${className}` : ''}`}>
+      <div className="app-content">
         <header className="app-topbar">
           <button
             type="button"
             className="topbar-burger"
-            onClick={() => setMobileOpen(true)}
+            onClick={abrirMenu}
             aria-label="Abrir menu"
             aria-expanded={mobileOpen}
             aria-controls="app-sidebar"
@@ -98,10 +110,10 @@ const AppLayout = ({ children, className = '' }) => {
             <span />
             <span />
           </button>
-          <span className="topbar-title">{activo?.label ?? 'Sistema de Tutorias'}</span>
+          <span className="topbar-title">{titulo ?? 'Sistema de Tutorias'}</span>
         </header>
 
-        {children}
+        <Outlet />
       </div>
     </div>
   )

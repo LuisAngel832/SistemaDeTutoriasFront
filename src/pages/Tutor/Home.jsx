@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import AppLayout from '../../components/layout/AppLayout'
+import { ROUTES } from '../../constants/routes'
 import { useAuth } from '../../features/auth/AuthContext'
 import useMisTutorias from '../../hooks/useMisTutorias'
 import { formatFecha, formatRangoHora, formatTema, SIN_DATO } from '../../utils/formatters'
@@ -11,7 +11,7 @@ const TutoriaCard = ({ tutoria }) => {
   const estadoClass = getEstadoClass(tutoria.estado)
 
   return (
-    <Link to={`/tutor/tutoria/${tutoria.id}`} className="tutoria-card-link">
+    <Link to={ROUTES.tutor.detalle(tutoria.id)} className="tutoria-card-link">
       <article className="tutoria-card">
         <div className="tutoria-card-top">
           <div>
@@ -65,43 +65,41 @@ const TutorHome = () => {
   }, [tutorias, matricula, actualizarNombre])
 
   return (
-    <AppLayout className="tutor-home-page">
-      <main className="tutor-home-main">
-        <div className="tutor-home-header">
-          <div>
-            <h1>Mis Tutorias</h1>
-            <p className="tutor-home-subtitle">Tutorias que has creado y su estado actual.</p>
-          </div>
-          <Link to="/tutor/crear" className="btn-primary-link">
-            + Crear Tutoria
+    <main className="tutor-home-main">
+      <div className="tutor-home-header">
+        <div>
+          <h1>Mis Tutorias</h1>
+          <p className="tutor-home-subtitle">Tutorias que has creado y su estado actual.</p>
+        </div>
+        <Link to={ROUTES.tutor.nuevaTutoria} className="btn-primary-link">
+          + Crear Tutoria
+        </Link>
+      </div>
+
+      {error ? <div className="tutorias-error">{error}</div> : null}
+
+      {isLoading ? (
+        <div className="tutorias-grid">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="tutoria-skeleton" />
+          ))}
+        </div>
+      ) : tutorias.length === 0 && !error ? (
+        <div className="tutorias-empty">
+          <h3>Aun no tienes tutorias</h3>
+          <p>Crea tu primera tutoria para que tus tutorados puedan inscribirse.</p>
+          <Link to={ROUTES.tutor.nuevaTutoria} className="btn-primary-link">
+            + Crear mi primera tutoria
           </Link>
         </div>
-
-        {error ? <div className="tutorias-error">{error}</div> : null}
-
-        {isLoading ? (
-          <div className="tutorias-grid">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="tutoria-skeleton" />
-            ))}
-          </div>
-        ) : tutorias.length === 0 && !error ? (
-          <div className="tutorias-empty">
-            <h3>Aun no tienes tutorias</h3>
-            <p>Crea tu primera tutoria para que tus tutorados puedan inscribirse.</p>
-            <Link to="/tutor/crear" className="btn-primary-link">
-              + Crear mi primera tutoria
-            </Link>
-          </div>
-        ) : (
-          <div className="tutorias-grid">
-            {tutorias.map((tutoria) => (
-              <TutoriaCard key={tutoria.id} tutoria={tutoria} />
-            ))}
-          </div>
-        )}
-      </main>
-    </AppLayout>
+      ) : (
+        <div className="tutorias-grid">
+          {tutorias.map((tutoria) => (
+            <TutoriaCard key={tutoria.id} tutoria={tutoria} />
+          ))}
+        </div>
+      )}
+    </main>
   )
 }
 

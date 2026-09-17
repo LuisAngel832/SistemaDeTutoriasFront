@@ -186,9 +186,9 @@ Pasos:
 
 ```
 src/
-  Routes/
-    AppRouter.jsx          # Configuracion de rutas y proteccion por rol
-    PrivateRoute.jsx       # Valida token y rol antes de renderizar
+  app/
+    router.jsx             # Rutas, carga diferida, redirecciones y paginas de error
+    RaizApp.jsx            # Raiz: sesion, titulo del documento y barra de navegacion
   assets/css/components/   # CSS compartido (sidebar)
   components/
     Comentarios.jsx        # Comentarios de una tutoria (RF15)
@@ -199,10 +199,10 @@ src/
     Tutor/
       TemasInput.jsx       # Input de chips para temas (RF14)
       VentanaEmerjente.jsx # Modal de resultado
-  constants/               # Roles, estados de tutoria, espacios y dias de la semana
+  constants/               # Rutas, roles, estados de tutoria, espacios y dias de la semana
   api/                     # Cliente HTTP, servicios por recurso y mappers de DTOs
   features/
-    auth/                  # AuthProvider, useAuth, storage de la sesion y lectura del JWT
+    auth/                  # AuthProvider, useAuth, guards de rutas, storage y lectura del JWT
   hooks/
     useAhora.js            # Hora actual que se refresca periodicamente
     useRecurso.js          # Carga de datos con cancelacion (base de los demas hooks)
@@ -215,6 +215,7 @@ src/
     useTutoriasExplorar.jsx        # Listado de tutorias disponibles
     useTutoriasTutorado.jsx        # Inscripciones del tutorado
   pages/
+    Sistema/               # Paginas 404 y de error
     LogIn/                 # Pantalla de inicio de sesion
     Registro/              # Pantalla de registro
     Tutor/
@@ -234,20 +235,28 @@ src/
 
 ## Rutas principales
 
-| Ruta                        | Rol      | Pantalla                                             |
-| --------------------------- | -------- | ---------------------------------------------------- |
-| `/login`                    | publico  | Inicio de sesion                                     |
-| `/registro`                 | publico  | Registro                                             |
-| `/tutor/home`               | TUTOR    | Mis tutorias                                         |
-| `/tutor/crear`              | TUTOR    | Crear tutoria                                        |
-| `/tutor/agregar-horario`    | TUTOR    | Gestionar horarios                                   |
-| `/tutor/tutoria/:id`        | TUTOR    | Detalle de tutoria (editar, cancelar, ver inscritos) |
-| `/tutorado/home`            | TUTORADO | Explorar tutorias                                    |
-| `/tutorado/tutorias`        | TUTORADO | Mis inscripciones                                    |
-| `/tutorado/infoTutoria/:id` | TUTORADO | Detalle de tutoria (inscribirse, cancelar, comentar) |
+Las rutas se definen en [`src/app/router.jsx`](src/app/router.jsx) y sus URLs en
+[`src/constants/routes.js`](src/constants/routes.js). Cada pagina se descarga solo al visitarla.
 
-`PrivateRoute` redirige a `/login` si no hay sesion (y vuelve a la ruta pedida despues del
-login) o a la pantalla inicial del usuario si su rol no corresponde.
+| Ruta                      | Rol          | Pantalla                                             |
+| ------------------------- | ------------ | ---------------------------------------------------- |
+| `/login`                  | publico      | Inicio de sesion                                     |
+| `/registro`               | publico      | Registro                                             |
+| `/tutor/home`             | TUTOR, ADMIN | Mis tutorias                                         |
+| `/tutor/tutorias/nueva`   | TUTOR, ADMIN | Crear tutoria                                        |
+| `/tutor/horarios`         | TUTOR, ADMIN | Gestionar horarios                                   |
+| `/tutor/tutorias/:id`     | TUTOR, ADMIN | Detalle de tutoria (editar, cancelar, ver inscritos) |
+| `/tutorado/home`          | TUTORADO     | Explorar tutorias                                    |
+| `/tutorado/inscripciones` | TUTORADO     | Mis inscripciones                                    |
+| `/tutorado/tutorias/:id`  | TUTORADO     | Detalle de tutoria (inscribirse, cancelar, comentar) |
+
+- `RequireRole` redirige a `/login` si no hay sesion (y vuelve a la ruta pedida despues del
+  login) o a la pantalla inicial del usuario si su rol no corresponde.
+- Con sesion activa, `/login` y `/registro` redirigen al inicio del rol.
+- Las URLs anteriores (`/tutor/crear`, `/tutor/agregar-horario`, `/tutor/tutoria/:id`,
+  `/tutorado/tutorias`, `/tutorado/infoTutoria/:id`) redirigen a las nuevas.
+- Las rutas desconocidas muestran una pagina 404 y los errores inesperados una pagina de error
+  con opcion de reintentar.
 
 ## Integracion con el backend
 

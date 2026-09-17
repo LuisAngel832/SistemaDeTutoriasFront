@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import TemasInput from '../../../components/Tutor/TemasInput'
+import { ROUTES } from '../../../constants/routes'
 import { AULAS, EDIFICIOS } from '../../../constants/espacios'
 import { hoyLocalISO } from '../../../utils/fechas'
 import { formatHorario } from '../../../utils/formatters'
@@ -84,7 +85,7 @@ const FormCrearTutoria = ({
         </div>
         {sinHorarios ? (
           <p className="empty-horarios">
-            Primero <Link to="/tutor/agregar-horario">crea un horario</Link> para poder crear una
+            Primero <Link to={ROUTES.tutor.horarios}>crea un horario</Link> para poder crear una
             tutoria.
           </p>
         ) : null}

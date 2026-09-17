@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { ROUTES } from '../../constants/routes'
 import { useAuth } from '../../features/auth/AuthContext'
 import './login.css'
 import './Login_respon.css'
@@ -7,7 +8,6 @@ import './Login_respon.css'
 const LogIn = () => {
   const { login, sesionExpirada } = useAuth()
   const location = useLocation()
-  const navigate = useNavigate()
 
   const [matricula, setMatricula] = useState('')
   const [contrasena, setContrasena] = useState('')
@@ -29,13 +29,11 @@ const LogIn = () => {
 
     setIsSubmitting(true)
     const res = await login(matricula, contrasena)
+    // Con exito no se navega aqui: SoloInvitados redirige a la pagina pedida o al inicio.
     if (!res.ok) {
       setError(res.message)
       setIsSubmitting(false)
-      return
     }
-    // Vuelve a la pagina que se pidio antes de iniciar sesion, si la habia.
-    navigate(location.state?.from?.pathname ?? res.destino, { replace: true })
   }
 
   const aviso = sesionExpirada
@@ -163,7 +161,7 @@ const LogIn = () => {
 
           <p className="auth-switch">
             ¿No tienes cuenta?
-            <Link to="/registro" className="auth-switch-link">
+            <Link to={ROUTES.registro} className="auth-switch-link">
               Crear cuenta
             </Link>
           </p>

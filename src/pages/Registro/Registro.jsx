@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { ROUTES } from '../../constants/routes'
 import { useAuth } from '../../features/auth/AuthContext'
 import '../LogIn/login.css'
+// Registro reutiliza la estructura responsive del login (se carga aparte por el lazy loading).
+import '../LogIn/Login_respon.css'
 import './registro.css'
 import './Registro_respon.css'
 
@@ -75,7 +78,7 @@ const Registro = () => {
       setIsSubmitting(false)
       return
     }
-    navigate('/login', { state: { registrado: true } })
+    navigate(ROUTES.login, { state: { registrado: true } })
   }
 
   return (
@@ -296,7 +299,7 @@ const Registro = () => {
 
           <p className="auth-switch">
             ¿Ya tienes cuenta?
-            <Link to="/login" className="auth-switch-link">
+            <Link to={ROUTES.login} className="auth-switch-link">
               Iniciar sesion
             </Link>
           </p>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import AppLayout from '../../components/layout/AppLayout'
+import { ROUTES } from '../../constants/routes'
 import { useTutoriasTutorado } from '../../hooks/useTutoriasTutorado'
 import { formatFecha, formatRangoHora, SIN_DATO } from '../../utils/formatters'
 import { getEstadoClass } from '../../utils/tutoria'
@@ -46,7 +46,7 @@ const Card = ({ item }) => {
       </div>
 
       {item.idTutoria ? (
-        <Link to={`/tutorado/infoTutoria/${item.idTutoria}`} className="mt-card-cta">
+        <Link to={ROUTES.tutorado.detalle(item.idTutoria)} className="mt-card-cta">
           Ver detalle →
         </Link>
       ) : null}
@@ -62,57 +62,55 @@ const MisTutorias = () => {
   const todasSinDatos = normalizadas.length > 0 && normalizadas.every((t) => !t.materia)
 
   return (
-    <AppLayout className="mt-page">
-      <main className="mt-main">
-        <div className="mt-header">
-          <h1>Mis Tutorias</h1>
-          <p className="mt-subtitle">Las tutorias en las que estas inscrito.</p>
+    <main className="mt-main">
+      <div className="mt-header">
+        <h1>Mis Tutorias</h1>
+        <p className="mt-subtitle">Las tutorias en las que estas inscrito.</p>
+      </div>
+
+      {error ? <div className="mt-error">{error}</div> : null}
+
+      {todasSinDatos ? (
+        <div className="mt-warning">
+          <strong>Funcionalidad parcialmente disponible.</strong>
+          <span>
+            El backend devuelve {normalizadas.length} inscripcion
+            {normalizadas.length === 1 ? '' : 'es'} pero sin los datos de la tutoria. Ver{' '}
+            <a
+              href="https://github.com/Shtven/TutoriasBackend/issues/8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-warning-link"
+            >
+              issue #8
+            </a>
+            .
+          </span>
         </div>
+      ) : null}
 
-        {error ? <div className="mt-error">{error}</div> : null}
-
-        {todasSinDatos ? (
-          <div className="mt-warning">
-            <strong>Funcionalidad parcialmente disponible.</strong>
-            <span>
-              El backend devuelve {normalizadas.length} inscripcion
-              {normalizadas.length === 1 ? '' : 'es'} pero sin los datos de la tutoria. Ver{' '}
-              <a
-                href="https://github.com/Shtven/TutoriasBackend/issues/8"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-warning-link"
-              >
-                issue #8
-              </a>
-              .
-            </span>
-          </div>
-        ) : null}
-
-        {isLoading ? (
-          <div className="mt-grid">
-            {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="mt-skeleton" />
-            ))}
-          </div>
-        ) : normalizadas.length === 0 && !error ? (
-          <div className="mt-empty">
-            <h3>Aun no tienes inscripciones</h3>
-            <p>Explora las tutorias disponibles y reserva tu lugar.</p>
-            <Link to="/tutorado/home" className="mt-empty-cta">
-              Explorar tutorias
-            </Link>
-          </div>
-        ) : (
-          <div className="mt-grid">
-            {normalizadas.map((item) => (
-              <Card key={item.idAsistencia ?? item.idTutoria} item={item} />
-            ))}
-          </div>
-        )}
-      </main>
-    </AppLayout>
+      {isLoading ? (
+        <div className="mt-grid">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="mt-skeleton" />
+          ))}
+        </div>
+      ) : normalizadas.length === 0 && !error ? (
+        <div className="mt-empty">
+          <h3>Aun no tienes inscripciones</h3>
+          <p>Explora las tutorias disponibles y reserva tu lugar.</p>
+          <Link to={ROUTES.tutorado.inicio} className="mt-empty-cta">
+            Explorar tutorias
+          </Link>
+        </div>
+      ) : (
+        <div className="mt-grid">
+          {normalizadas.map((item) => (
+            <Card key={item.idAsistencia ?? item.idTutoria} item={item} />
+          ))}
+        </div>
+      )}
+    </main>
   )
 }
 
