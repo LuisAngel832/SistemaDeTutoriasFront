@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
       const data = await authApi.iniciarSesion({ matricula, pwd })
       const rol = normalizarRol(data?.rol)
       if (!data?.token || !rol) {
-        return { ok: false, message: 'Respuesta del servidor invalida' }
+        return { ok: false, message: 'Respuesta del servidor inválida' }
       }
 
       const nueva = {

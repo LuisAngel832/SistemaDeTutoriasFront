@@ -6,8 +6,8 @@ import styles from './InscritosList.module.css'
 const asistencia = (inscrito, mostrarAsistencia) => {
   if (!mostrarAsistencia) return { tono: 'neutral', texto: 'Pendiente' }
   return inscrito.asistio
-    ? { tono: 'success', texto: 'Asistio' }
-    : { tono: 'danger', texto: 'No asistio' }
+    ? { tono: 'success', texto: 'Asistió' }
+    : { tono: 'danger', texto: 'No asistió' }
 }
 
 // Tutorados inscritos a una tutoria. La asistencia se muestra cuando la sesion ya ocurrio.
@@ -24,7 +24,7 @@ export const InscritosList = ({ inscritos, mostrarAsistencia }) => {
       </div>
 
       {inscritos.length === 0 ? (
-        <EmptyState compact description="Aun no hay inscripciones." />
+        <EmptyState compact description="Aún no hay inscripciones." />
       ) : (
         <ul className={styles.lista}>
           {inscritos.map((inscrito, indice) => {
@@ -40,7 +40,7 @@ export const InscritosList = ({ inscritos, mostrarAsistencia }) => {
                 <span className={styles.datos}>
                   <span className={styles.nombre}>{inscrito.nombre || 'Sin nombre'}</span>
                   <span className={styles.matricula}>
-                    Matricula {inscrito.matricula || SIN_DATO}
+                    Matrícula {inscrito.matricula || SIN_DATO}
                   </span>
                 </span>
                 <Badge tone={estado.tono}>{estado.texto}</Badge>

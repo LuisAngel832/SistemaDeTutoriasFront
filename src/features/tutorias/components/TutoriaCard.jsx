@@ -26,8 +26,8 @@ export const TutoriaCard = ({ tutoria, to, variant = 'tutor', headingLevel = 'h2
   if (variant === 'inscripcion' && !tutoria.materia && !tutoria.fecha) {
     return (
       <article className={clases(styles.card, styles.incompleta)}>
-        <p className={styles.incompletaTitulo}>Inscripcion sin detalles</p>
-        <p className={styles.incompletaTexto}>No se pudo obtener la informacion de esta tutoria.</p>
+        <p className={styles.incompletaTitulo}>Inscripción sin detalles</p>
+        <p className={styles.incompletaTexto}>No se pudo obtener la información de esta tutoría.</p>
       </article>
     )
   }

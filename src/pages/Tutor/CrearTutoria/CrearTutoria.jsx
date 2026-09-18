@@ -39,8 +39,8 @@ const CrearTutoria = () => {
   return (
     <Pagina width="form">
       <PanelFormulario
-        title="Crear Tutoria"
-        subtitle="Programa una nueva sesion para tus tutorados."
+        title="Crear tutoría"
+        subtitle="Programa una nueva sesión para tus tutorados."
         icon={<IconCrear />}
       >
         <form className={styles.formulario} onSubmit={enviar} noValidate>
@@ -50,7 +50,7 @@ const CrearTutoria = () => {
             </Alert>
           ) : null}
 
-          <FormField label="Experiencia Educativa que impartiras" htmlFor="nrc">
+          <FormField label="Experiencia Educativa que impartirás" htmlFor="nrc">
             <Select id="nrc" value={valores.nrc} onChange={alCambiar('nrc')} disabled={sinMaterias}>
               <option value="">
                 {sinMaterias
@@ -71,7 +71,7 @@ const CrearTutoria = () => {
             ) : null}
           </FormField>
 
-          <FormField label="Horario en el que daras la tutoria" htmlFor="horario">
+          <FormField label="Horario en el que darás la tutoría" htmlFor="horario">
             <Select
               id="horario"
               value={valores.idHorario}
@@ -91,13 +91,13 @@ const CrearTutoria = () => {
               <Alert tone="warning" compact>
                 <span>
                   Primero <Link to={ROUTES.tutor.horarios}>crea un horario</Link> para poder crear
-                  una tutoria.
+                  una tutoría.
                 </span>
               </Alert>
             ) : null}
           </FormField>
 
-          <FormField label="Fecha en que se dara la tutoria" htmlFor="fecha">
+          <FormField label="Fecha en que se dará la tutoría" htmlFor="fecha">
             <Input
               id="fecha"
               type="date"
@@ -107,7 +107,7 @@ const CrearTutoria = () => {
             />
           </FormField>
 
-          <FormField label="Edificio donde se dara la tutoria" htmlFor="edificio">
+          <FormField label="Edificio donde se dará la tutoría" htmlFor="edificio">
             <Select id="edificio" value={valores.edificio} onChange={alCambiar('edificio')}>
               <option value="">Selecciona el edificio</option>
               {EDIFICIOS.map((numero) => (
@@ -119,7 +119,7 @@ const CrearTutoria = () => {
           </FormField>
 
           <FormField
-            label="Aula donde se dara la tutoria"
+            label="Aula donde se dará la tutoría"
             htmlFor="aula"
             className={styles.completo}
           >
@@ -134,7 +134,7 @@ const CrearTutoria = () => {
           </FormField>
 
           <FormField
-            label="Temas a tratar durante la tutoria (opcional)"
+            label="Temas a tratar durante la tutoría (opcional)"
             htmlFor="tema-nuevo"
             className={styles.completo}
           >
@@ -151,7 +151,7 @@ const CrearTutoria = () => {
               Limpiar
             </Button>
             <Button type="submit" loading={isSubmitting}>
-              {isSubmitting ? 'Guardando...' : 'Crear Tutoria'}
+              {isSubmitting ? 'Guardando…' : 'Crear tutoría'}
             </Button>
           </div>
         </form>
@@ -160,12 +160,12 @@ const CrearTutoria = () => {
       <Modal
         open={resultado?.ok === true}
         onClose={cerrarResultado}
-        title="Tutoria creada"
+        title="Tutoría creada"
         description={resultado?.message}
         actions={
           <>
             <Button as={Link} to={ROUTES.tutor.inicio} variant="secondary">
-              Ver mis tutorias
+              Ver mis tutorías
             </Button>
             <Button onClick={cerrarResultado}>Crear otra</Button>
           </>

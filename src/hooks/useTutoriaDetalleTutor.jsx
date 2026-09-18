@@ -45,23 +45,23 @@ const useTutoriaDetalleTutor = (id) => {
   }
 
   const actualizar = (payload) =>
-    ejecutar(() => tutoriasApi.actualizar(id, payload), 'Tutoria actualizada')
+    ejecutar(() => tutoriasApi.actualizar(id, payload), 'Tutoría actualizada')
 
-  const cancelar = () => ejecutar(() => tutoriasApi.cancelar(id), 'Tutoria cancelada')
+  const cancelar = () => ejecutar(() => tutoriasApi.cancelar(id), 'Tutoría cancelada')
 
   const completar = () =>
-    ejecutar(() => tutoriasApi.completar(id), 'Tutoria marcada como completada')
+    ejecutar(() => tutoriasApi.completar(id), 'Tutoría marcada como completada')
 
   const agregarTema = async (tema) => {
     const limpio = (tema || '').trim()
-    if (!limpio) return { ok: false, message: 'El tema no puede estar vacio' }
+    if (!limpio) return { ok: false, message: 'El tema no puede estar vacío' }
     return ejecutar(() => temasApi.crear({ idTutoria: id, tema: limpio }), 'Tema agregado', {
       bloquear: false,
     })
   }
 
   const quitarTema = async (idTema) => {
-    if (!idTema) return { ok: false, message: 'Tema invalido' }
+    if (!idTema) return { ok: false, message: 'Tema inválido' }
     return ejecutar(() => temasApi.eliminar(idTema), 'Tema eliminado', { bloquear: false })
   }
 

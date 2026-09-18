@@ -7,9 +7,10 @@ import useHorarios from '../../../hooks/useHorarios'
 import { ListaHorarios } from './ListaHorarios'
 import styles from './AgregarHorario.module.css'
 
+// El valor enviado al backend es `label` (sin acentos); se muestra `nombre`.
 const OPCIONES_DIA = DIAS_SEMANA.map((dia) => ({
   value: dia.label,
-  label: dia.label,
+  label: dia.nombre,
   shortLabel: dia.short,
 }))
 
@@ -80,8 +81,8 @@ const AgregarHorario = () => {
   return (
     <Pagina width="form">
       <PanelFormulario
-        title="Crear Horario"
-        subtitle="Define los bloques recurrentes en los que puedes dar tutorias."
+        title="Crear horario"
+        subtitle="Define los bloques recurrentes en los que puedes dar tutorías."
         icon={<IconHorario />}
       >
         <form className={styles.formulario} onSubmit={enviar} noValidate>
@@ -90,7 +91,7 @@ const AgregarHorario = () => {
           <RadioGroup
             variant="chip"
             name="dia"
-            legend="Dia de la semana en que estaras disponible"
+            legend="Día de la semana en que estarás disponible"
             options={OPCIONES_DIA}
             value={valores.dia}
             onChange={(dia) => cambiar('dia', dia)}
@@ -120,7 +121,7 @@ const AgregarHorario = () => {
               Limpiar
             </Button>
             <Button type="submit" loading={enviando}>
-              {enviando ? 'Guardando...' : 'Crear Horario'}
+              {enviando ? 'Guardando…' : 'Crear horario'}
             </Button>
           </div>
         </form>

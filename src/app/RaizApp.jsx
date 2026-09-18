@@ -22,7 +22,7 @@ export const RaizApp = () => {
   return (
     <AuthProvider>
       {navegacion.state !== 'idle' ? (
-        <div className="barra-navegacion" role="progressbar" aria-label="Cargando pagina" />
+        <div className="barra-navegacion" role="progressbar" aria-label="Cargando página" />
       ) : null}
       <Outlet />
       <ScrollRestoration />

@@ -60,7 +60,7 @@ const useCrearTutoria = () => {
       setTemas([])
       setResultado({
         ok: true,
-        message: 'La tutoria quedo programada y ya es visible para los tutorados.',
+        message: 'La tutoría quedó programada y ya es visible para los tutorados.',
       })
     } catch (err) {
       setResultado({ ok: false, message: err.message })

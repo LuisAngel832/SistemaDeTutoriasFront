@@ -43,11 +43,11 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
       {puedeEscribir ? (
         <form className={styles.formulario} onSubmit={publicar}>
           <label htmlFor={idCampo} className={styles.etiqueta}>
-            Tema u observacion que quieres compartir con el tutor
+            Tema u observación que quieres compartir con el tutor
           </label>
           <Textarea
             id={idCampo}
-            placeholder="Sugiere un tema o deja una observacion para el tutor..."
+            placeholder="Sugiere un tema o deja una observación para el tutor…"
             value={texto}
             onChange={(evento) => setTexto(evento.target.value)}
             maxLength={maxLength}
@@ -66,7 +66,7 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
               loading={enviando}
               disabled={!texto.trim()}
             >
-              {enviando ? 'Publicando...' : 'Publicar comentario'}
+              {enviando ? 'Publicando…' : 'Publicar comentario'}
             </Button>
           </div>
         </form>
@@ -76,14 +76,14 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
       {error ? <Alert tone="error">{error}</Alert> : null}
 
       {isLoading ? (
-        <EmptyState compact description="Cargando comentarios..." />
+        <EmptyState compact description="Cargando comentarios…" />
       ) : comentarios.length === 0 ? (
         <EmptyState
           compact
           description={
             puedeEscribir
-              ? 'Aun no hay comentarios. Se el primero en sugerir un tema.'
-              : 'Aun no hay comentarios de los tutorados.'
+              ? 'Aún no hay comentarios. Sé el primero en sugerir un tema.'
+              : 'Aún no hay comentarios de los tutorados.'
           }
         />
       ) : (

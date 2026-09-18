@@ -22,11 +22,11 @@ const TutorHome = () => {
   return (
     <Pagina aria-busy={isLoading}>
       <EncabezadoPagina
-        title="Mis Tutorias"
-        subtitle="Tutorias que has creado y su estado actual."
+        title="Mis tutorías"
+        subtitle="Tutorías que has creado y su estado actual."
         action={
           <Button as={Link} to={ROUTES.tutor.nuevaTutoria}>
-            + Crear Tutoria
+            + Crear tutoría
           </Button>
         }
       />
@@ -41,11 +41,11 @@ const TutorHome = () => {
         </GridTarjetas>
       ) : tutorias.length === 0 && !error ? (
         <EmptyState
-          title="Aun no tienes tutorias"
-          description="Crea tu primera tutoria para que tus tutorados puedan inscribirse."
+          title="Aún no tienes tutorías"
+          description="Crea tu primera tutoría para que tus tutorados puedan inscribirse."
           action={
             <Button as={Link} to={ROUTES.tutor.nuevaTutoria}>
-              + Crear mi primera tutoria
+              + Crear mi primera tutoría
             </Button>
           }
         />

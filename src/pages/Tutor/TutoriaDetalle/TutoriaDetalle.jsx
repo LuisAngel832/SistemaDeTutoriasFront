@@ -27,7 +27,7 @@ import styles from './TutoriaDetalle.module.css'
 
 const Volver = () => (
   <Button as={Link} to={ROUTES.tutor.inicio} variant="secondary" size="sm">
-    ← Mis tutorias
+    ← Mis tutorías
   </Button>
 )
 
@@ -59,9 +59,9 @@ const TutoriaDetalleTutor = () => {
     return (
       <Pagina>
         <DetalleError
-          message={error || 'No se encontro la tutoria.'}
+          message={error || 'No se encontró la tutoría.'}
           to={ROUTES.tutor.inicio}
-          linkLabel="Volver a mis tutorias"
+          linkLabel="Volver a mis tutorías"
         />
       </Pagina>
     )
@@ -112,13 +112,13 @@ const TutoriaDetalleTutor = () => {
         {programada ? (
           <TemasInput
             compact
-            label="Tema nuevo para esta tutoria"
+            label="Tema nuevo para esta tutoría"
             temas={tutoria.temas}
             onAdd={agregarTema}
             onRemove={quitarTema}
             canRemove={(tema) => Boolean(tema.idTema)}
             disabled={isSubmitting}
-            emptyMessage="Aun no hay temas. Agrega el primero."
+            emptyMessage="Aún no hay temas. Agrega el primero."
           />
         ) : (
           <ListaTemas temas={tutoria.temas} />
@@ -127,7 +127,7 @@ const TutoriaDetalleTutor = () => {
       {programada ? (
         <div className={styles.editar}>
           <Button variant="secondary" onClick={() => setEditando(true)}>
-            Editar tutoria
+            Editar tutoría
           </Button>
         </div>
       ) : null}
@@ -159,7 +159,7 @@ const TutoriaDetalleTutor = () => {
               Comentarios de los tutorados
             </h2>
             <p className={styles.comentariosDescripcion}>
-              Sugerencias y observaciones previas a la sesion.
+              Sugerencias y observaciones previas a la sesión.
             </p>
             <Comentarios idTutoria={id} modo="lectura" />
           </Card>

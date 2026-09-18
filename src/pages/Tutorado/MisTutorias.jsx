@@ -10,7 +10,7 @@ const MisTutorias = () => {
 
   return (
     <Pagina aria-busy={isLoading}>
-      <EncabezadoPagina title="Mis Tutorias" subtitle="Las tutorias en las que estas inscrito." />
+      <EncabezadoPagina title="Mis tutorías" subtitle="Las tutorías en las que estás inscrito." />
 
       {error ? <Alert tone="error">{error}</Alert> : null}
 
@@ -21,11 +21,11 @@ const MisTutorias = () => {
         </GridTarjetas>
       ) : tutorias.length === 0 && !error ? (
         <EmptyState
-          title="Aun no tienes inscripciones"
-          description="Explora las tutorias disponibles y reserva tu lugar."
+          title="Aún no tienes inscripciones"
+          description="Explora las tutorías disponibles y reserva tu lugar."
           action={
             <Button as={Link} to={ROUTES.tutorado.inicio} variant="brand">
-              Explorar tutorias
+              Explorar tutorías
             </Button>
           }
         />

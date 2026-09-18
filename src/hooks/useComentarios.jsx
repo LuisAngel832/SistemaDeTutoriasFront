@@ -28,7 +28,7 @@ const useComentarios = (idTutoria) => {
 
   const crear = async (comentario) => {
     const texto = (comentario || '').trim()
-    if (!texto) return { ok: false, message: 'El comentario no puede estar vacio' }
+    if (!texto) return { ok: false, message: 'El comentario no puede estar vacío' }
     return ejecutar(
       () => comentariosApi.crear({ idTutoria, comentario: texto }),
       'Comentario publicado',
@@ -36,7 +36,7 @@ const useComentarios = (idTutoria) => {
   }
 
   const eliminar = async (idComentario) => {
-    if (!idComentario) return { ok: false, message: 'Comentario invalido' }
+    if (!idComentario) return { ok: false, message: 'Comentario inválido' }
     return ejecutar(() => comentariosApi.eliminar(idComentario), 'Comentario eliminado')
   }
 

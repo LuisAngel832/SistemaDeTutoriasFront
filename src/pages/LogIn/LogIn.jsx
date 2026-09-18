@@ -9,7 +9,7 @@ import styles from './LogIn.module.css'
 const CARACTERISTICAS = [
   'Programa sesiones de manera sencilla',
   'Da seguimiento a tus tutorados',
-  'Mantente al dia con tus horarios',
+  'Mantente al día con tus horarios',
 ]
 
 const LogIn = () => {
@@ -40,18 +40,18 @@ const LogIn = () => {
   }
 
   const aviso = sesionExpirada
-    ? { tono: 'warning', texto: 'Tu sesion expiro. Vuelve a iniciar sesion para continuar.' }
+    ? { tono: 'warning', texto: 'Tu sesión expiró. Vuelve a iniciar sesión para continuar.' }
     : location.state?.registrado
-      ? { tono: 'success', texto: 'Cuenta creada. Ya puedes iniciar sesion.' }
+      ? { tono: 'success', texto: 'Cuenta creada. Ya puedes iniciar sesión.' }
       : null
 
   return (
     <AuthLayout
       brandTitle="Bienvenido de vuelta"
-      brandSubtitle="Gestiona tus tutorias, horarios e inscripciones desde un solo lugar."
+      brandSubtitle="Gestiona tus tutorías, horarios e inscripciones desde un solo lugar."
       features={CARACTERISTICAS}
-      title="Iniciar sesion"
-      subtitle="Ingresa con tu matricula para continuar."
+      title="Iniciar sesión"
+      subtitle="Ingresa con tu matrícula para continuar."
       footer={
         <>
           ¿No tienes cuenta?<Link to={ROUTES.registro}>Crear cuenta</Link>
@@ -65,7 +65,7 @@ const LogIn = () => {
           <Alert tone={aviso.tono}>{aviso.texto}</Alert>
         ) : null}
 
-        <FormField label="Matricula institucional" htmlFor="matricula">
+        <FormField label="Matrícula institucional" htmlFor="matricula">
           <Input
             id="matricula"
             placeholder="Ej. 20230001"
@@ -79,10 +79,10 @@ const LogIn = () => {
           />
         </FormField>
 
-        <FormField label="Contrasena de tu cuenta" htmlFor="contrasena">
+        <FormField label="Contraseña de tu cuenta" htmlFor="contrasena">
           <PasswordInput
             id="contrasena"
-            placeholder="Tu contrasena"
+            placeholder="Tu contraseña"
             value={contrasena}
             onChange={(evento) => {
               setContrasena(evento.target.value)
@@ -93,7 +93,7 @@ const LogIn = () => {
         </FormField>
 
         <Button type="submit" size="lg" fullWidth loading={enviando} className={styles.enviar}>
-          {enviando ? 'Ingresando...' : 'Iniciar sesion'}
+          {enviando ? 'Ingresando…' : 'Iniciar sesión'}
         </Button>
       </form>
     </AuthLayout>

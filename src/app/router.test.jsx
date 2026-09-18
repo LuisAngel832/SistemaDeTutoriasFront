@@ -31,7 +31,7 @@ describe('router', () => {
   it('"/" lleva al login sin sesion y al inicio del rol con sesion', async () => {
     const sinSesion = renderRuta('/')
     await esperarRuta(sinSesion, '/login')
-    expect(await screen.findByRole('heading', { name: 'Iniciar sesion' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Iniciar sesión' })).toBeInTheDocument()
   })
 
   it('carga la pagina de la ruta y actualiza el titulo del documento', async () => {
@@ -40,7 +40,7 @@ describe('router', () => {
 
     await esperarRuta(router, '/tutor/home')
     expect(
-      await screen.findByRole('heading', { name: 'Mis Tutorias', level: 1 }),
+      await screen.findByRole('heading', { name: 'Mis tutorías', level: 1 }),
     ).toBeInTheDocument()
     await waitFor(() => expect(document.title).toBe('Mis tutorías · Sistema de Tutorías'))
   })
@@ -69,13 +69,13 @@ describe('router', () => {
     const router = renderRuta('/tutor/horarios')
 
     await esperarRuta(router, '/tutor/horarios')
-    expect(await screen.findByRole('heading', { name: /Crear Horario/ })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /Crear horario/ })).toBeInTheDocument()
   })
 
   it('muestra la pagina 404 en rutas desconocidas', async () => {
     renderRuta('/no-existe')
     expect(
-      await screen.findByRole('heading', { name: 'No encontramos esta pagina' }),
+      await screen.findByRole('heading', { name: 'No encontramos esta página' }),
     ).toBeInTheDocument()
   })
 })
@@ -93,7 +93,7 @@ describe('PaginaError', () => {
     const consola = vi.spyOn(console, 'error').mockImplementation(() => {})
     render(<RouterProvider router={router} />)
 
-    expect(await screen.findByRole('heading', { name: 'Algo salio mal' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Algo salió mal' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Reintentar' })).toBeInTheDocument()
     consola.mockRestore()
   })

@@ -46,12 +46,12 @@ export const EditarTutoriaForm = ({ tutoria, horarios, isSubmitting, onGuardar, 
 
   return (
     <form className={styles.formulario} onSubmit={enviar} noValidate>
-      <h2 className={styles.titulo}>Editar tutoria</h2>
+      <h2 className={styles.titulo}>Editar tutoría</h2>
 
       {error ? <Alert tone="error">{error}</Alert> : null}
 
       <div className={styles.grid}>
-        <FormField label="Horario en el que daras la tutoria" htmlFor="editar-horario">
+        <FormField label="Horario en el que darás la tutoría" htmlFor="editar-horario">
           <Select id="editar-horario" value={valores.idHorario} onChange={cambiar('idHorario')}>
             <option value="">Selecciona un horario</option>
             {horarios.map((horario) => (
@@ -62,7 +62,7 @@ export const EditarTutoriaForm = ({ tutoria, horarios, isSubmitting, onGuardar, 
           </Select>
         </FormField>
 
-        <FormField label="Fecha en que se dara la tutoria" htmlFor="editar-fecha">
+        <FormField label="Fecha en que se dará la tutoría" htmlFor="editar-fecha">
           <Input
             id="editar-fecha"
             type="date"
@@ -72,7 +72,7 @@ export const EditarTutoriaForm = ({ tutoria, horarios, isSubmitting, onGuardar, 
           />
         </FormField>
 
-        <FormField label="Edificio donde se dara la tutoria" htmlFor="editar-edificio">
+        <FormField label="Edificio donde se dará la tutoría" htmlFor="editar-edificio">
           <Select id="editar-edificio" value={valores.edificio} onChange={cambiar('edificio')}>
             <option value="">Selecciona el edificio</option>
             {EDIFICIOS.map((numero) => (
@@ -83,7 +83,7 @@ export const EditarTutoriaForm = ({ tutoria, horarios, isSubmitting, onGuardar, 
           </Select>
         </FormField>
 
-        <FormField label="Aula donde se dara la tutoria" htmlFor="editar-aula">
+        <FormField label="Aula donde se dará la tutoría" htmlFor="editar-aula">
           <Select id="editar-aula" value={valores.aula} onChange={cambiar('aula')}>
             <option value="">Selecciona el aula</option>
             {AULAS.map((numero) => (
@@ -100,7 +100,7 @@ export const EditarTutoriaForm = ({ tutoria, horarios, isSubmitting, onGuardar, 
           Cancelar
         </Button>
         <Button type="submit" loading={isSubmitting}>
-          {isSubmitting ? 'Guardando...' : 'Guardar cambios'}
+          {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
         </Button>
       </div>
     </form>

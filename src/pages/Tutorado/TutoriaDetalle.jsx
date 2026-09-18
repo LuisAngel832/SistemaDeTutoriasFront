@@ -47,7 +47,7 @@ const TutoriaDetalle = () => {
     return (
       <Pagina>
         <DetalleError
-          message={error || 'No se encontro la tutoria.'}
+          message={error || 'No se encontró la tutoría.'}
           to={ROUTES.tutorado.inicio}
           linkLabel="Volver a explorar"
         />
@@ -75,7 +75,7 @@ const TutoriaDetalle = () => {
             <SeccionTutoria
               title="Comentarios y sugerencias"
               description={
-                inscrito ? undefined : 'Inscribete para sugerir temas u observaciones al tutor.'
+                inscrito ? undefined : 'Inscríbete para sugerir temas u observaciones al tutor.'
               }
             >
               <Comentarios idTutoria={id} modo={inscrito ? 'tutorado' : 'lectura'} />

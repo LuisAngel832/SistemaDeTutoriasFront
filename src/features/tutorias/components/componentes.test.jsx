@@ -55,7 +55,7 @@ describe('TutoriaCard', () => {
 
   it('variante inscripcion sin datos muestra un aviso', () => {
     conRouter(<TutoriaCard tutoria={{ idAsistencia: 4 }} variant="inscripcion" />)
-    expect(screen.getByText('Inscripcion sin detalles')).toBeInTheDocument()
+    expect(screen.getByText('Inscripción sin detalles')).toBeInTheDocument()
   })
 })
 
@@ -133,8 +133,8 @@ describe('InscritosList', () => {
     expect(screen.getAllByText('Pendiente')).toHaveLength(2)
 
     rerender(<InscritosList inscritos={inscritos} mostrarAsistencia />)
-    expect(screen.getByText('Asistio')).toBeInTheDocument()
-    expect(screen.getByText('No asistio')).toBeInTheDocument()
+    expect(screen.getByText('Asistió')).toBeInTheDocument()
+    expect(screen.getByText('No asistió')).toBeInTheDocument()
   })
 })
 
@@ -154,18 +154,18 @@ describe('AccionesTutoria', () => {
 
     const completar = screen.getByRole('button', { name: 'Marcar como completada' })
     expect(completar).toBeDisabled()
-    expect(completar).toHaveAccessibleDescription(/cuando inicie la sesion/)
+    expect(completar).toHaveAccessibleDescription(/cuando inicie la sesión/)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Cancelar tutoria' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Cancelar tutoría' }))
     expect(onCancelar).not.toHaveBeenCalled()
 
-    await userEvent.click(screen.getByRole('button', { name: 'Si, cancelar' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Sí, cancelar' }))
     expect(onCancelar).toHaveBeenCalledTimes(1)
   })
 
   it('en una tutoria finalizada solo informa el estado', () => {
     render(<AccionesTutoria tutoria={{ ...tutoria, estado: 'CANCELADA' }} />)
-    expect(screen.getByText(/Esta tutoria esta cancelada/)).toBeInTheDocument()
+    expect(screen.getByText(/Esta tutoría está cancelada/)).toBeInTheDocument()
     expect(screen.queryByRole('button')).not.toBeInTheDocument()
   })
 })
@@ -185,8 +185,8 @@ describe('EditarTutoriaForm', () => {
       />,
     )
 
-    expect(screen.getByLabelText('Horario en el que daras la tutoria')).toHaveValue('7')
-    expect(screen.getByLabelText('Aula donde se dara la tutoria')).toHaveValue('5')
+    expect(screen.getByLabelText('Horario en el que darás la tutoría')).toHaveValue('7')
+    expect(screen.getByLabelText('Aula donde se dará la tutoría')).toHaveValue('5')
 
     await userEvent.click(screen.getByRole('button', { name: 'Guardar cambios' }))
     expect(onGuardar).toHaveBeenCalledWith({
@@ -213,7 +213,7 @@ describe('EditarTutoriaForm', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Completa todos los campos.')
     expect(onGuardar).not.toHaveBeenCalled()
 
-    await userEvent.selectOptions(screen.getByLabelText('Aula donde se dara la tutoria'), '3')
+    await userEvent.selectOptions(screen.getByLabelText('Aula donde se dará la tutoría'), '3')
     await userEvent.click(screen.getByRole('button', { name: 'Guardar cambios' }))
     expect(await screen.findByRole('alert')).toHaveTextContent('El horario no existe')
   })

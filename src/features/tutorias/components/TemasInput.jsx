@@ -17,7 +17,7 @@ export const TemasInput = ({
   inputId,
   label = 'Tema nuevo',
   emptyMessage,
-  hint = 'Los tutorados veran estos temas en la sesion.',
+  hint = 'Los tutorados verán estos temas en la sesión.',
   max = MAX_TEMAS,
   maxCaracteres = MAX_CARACTERES_TEMA,
 }) => {
@@ -50,7 +50,7 @@ export const TemasInput = ({
           id={id}
           type="text"
           className={styles.campo}
-          placeholder={lleno ? `Maximo ${max} temas` : 'Escribe un tema y presiona Enter'}
+          placeholder={lleno ? `Máximo ${max} temas` : 'Escribe un tema y presiona Enter'}
           value={borrador}
           onChange={(evento) => setBorrador(evento.target.value.slice(0, maxCaracteres))}
           onKeyDown={alPresionarTecla}
@@ -100,7 +100,7 @@ export const TemasInput = ({
 
       <div className={styles.meta} id={idAyuda}>
         {compact ? (
-          <span className={styles.ayuda}>Maximo {maxCaracteres} caracteres por tema.</span>
+          <span className={styles.ayuda}>Máximo {maxCaracteres} caracteres por tema.</span>
         ) : (
           <>
             <span className={styles.ayuda}>{hint}</span>

@@ -56,8 +56,9 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 - Diseno responsive con breakpoints para escritorio, tablet y movil.
 - Sidebar lateral colapsable (se recuerda la preferencia) y drawer con menu hamburguesa en
   pantallas pequenas.
-- Tema visual unificado (paleta azul/verde) con animaciones sutiles.
-- Soporte para `prefers-reduced-motion`.
+- Tema visual unificado con tokens de diseno (paleta azul/verde) y animaciones sutiles.
+- Accesibilidad: contraste AA, radios y dialogos nativos, mensajes anunciados a lectores de
+  pantalla y soporte para `prefers-reduced-motion`.
 
 ## Stack
 

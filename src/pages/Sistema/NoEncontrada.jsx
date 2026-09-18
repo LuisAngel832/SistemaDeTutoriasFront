@@ -6,9 +6,9 @@ const NoEncontrada = () => (
   <main className="sistema-page">
     <section className="sistema-card">
       <p className="sistema-codigo">404</p>
-      <h1 className="sistema-titulo">No encontramos esta pagina</h1>
+      <h1 className="sistema-titulo">No encontramos esta página</h1>
       <p className="sistema-texto">
-        Es posible que el enlace este mal escrito o que la pagina ya no exista.
+        Es posible que el enlace esté mal escrito o que la página ya no exista.
       </p>
       <div className="sistema-acciones">
         <Link to={ROUTES.inicio} className="sistema-btn primario">

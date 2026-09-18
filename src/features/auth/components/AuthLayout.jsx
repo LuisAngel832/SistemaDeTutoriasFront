@@ -17,7 +17,7 @@ export const AuthLayout = ({
       <aside className={styles.marca}>
         <div className={styles.marcaSuperior}>
           <span className={styles.punto} aria-hidden="true" />
-          <span className={styles.nombre}>Sistema de Tutorias</span>
+          <span className={styles.nombre}>Sistema de Tutorías</span>
         </div>
 
         <div className={styles.marcaCuerpo}>
@@ -37,7 +37,7 @@ export const AuthLayout = ({
           ) : null}
         </div>
 
-        <p className={styles.pie}>© {new Date().getFullYear()} Sistema de Tutorias</p>
+        <p className={styles.pie}>© {new Date().getFullYear()} Sistema de Tutorías</p>
       </aside>
 
       <main className={styles.panel}>

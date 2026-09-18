@@ -26,7 +26,7 @@ export const AccionesTutoria = ({
           Estado
         </h2>
         <p className={styles.texto}>
-          Esta tutoria esta {tutoria.estado?.toLowerCase() || 'finalizada'}. Ya no se pueden hacer
+          Esta tutoría está {tutoria.estado?.toLowerCase() || 'finalizada'}. Ya no se pueden hacer
           cambios.
         </p>
       </Card>
@@ -56,7 +56,7 @@ export const AccionesTutoria = ({
         </Button>
         {puedeCompletar ? null : (
           <p className={styles.pista} id={idPistaCompletar}>
-            Podras marcarla como completada cuando inicie la sesion.
+            Podrás marcarla como completada cuando inicie la sesión.
           </p>
         )}
 
@@ -67,11 +67,11 @@ export const AccionesTutoria = ({
           disabled={isSubmitting || !puedeCancelar}
           aria-describedby={puedeCancelar ? undefined : idPistaCancelar}
         >
-          Cancelar tutoria
+          Cancelar tutoría
         </Button>
         {puedeCancelar ? null : (
           <p className={styles.pista} id={idPistaCancelar}>
-            Solo puedes cancelar con mas de {MIN_MINUTOS_CANCELACION} minutos de anticipacion.
+            Solo puedes cancelar con más de {MIN_MINUTOS_CANCELACION} minutos de anticipación.
           </p>
         )}
       </div>
@@ -79,8 +79,8 @@ export const AccionesTutoria = ({
       <ConfirmDialog
         open={confirmando === 'completar'}
         title="Marcar como completada"
-        description="Confirma que la tutoria ya se impartio. Despues ya no podras editarla."
-        confirmLabel="Si, completar"
+        description="Confirma que la tutoría ya se impartió. Después ya no podrás editarla."
+        confirmLabel="Sí, completar"
         loading={isSubmitting}
         onConfirm={confirmar}
         onCancel={() => setConfirmando(null)}
@@ -88,9 +88,9 @@ export const AccionesTutoria = ({
       <ConfirmDialog
         open={confirmando === 'cancelar'}
         tone="danger"
-        title="Cancelar tutoria"
-        description="Los inscritos seran notificados por correo. Esta accion no se puede deshacer."
-        confirmLabel="Si, cancelar"
+        title="Cancelar tutoría"
+        description="Los inscritos serán notificados por correo. Esta acción no se puede deshacer."
+        confirmLabel="Sí, cancelar"
         loading={isSubmitting}
         onConfirm={confirmar}
         onCancel={() => setConfirmando(null)}

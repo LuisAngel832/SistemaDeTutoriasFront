@@ -46,16 +46,16 @@ export const useTutoriaDetalleTutorado = (id) => {
 
   // El backend responde "Asistencia marcada.", que confunde al tutorado: se usa un texto propio.
   const inscribirse = () =>
-    ejecutar(() => asistenciaApi.inscribirse(id), 'Te inscribiste a la tutoria.')
+    ejecutar(() => asistenciaApi.inscribirse(id), 'Te inscribiste a la tutoría.')
 
   const cancelarInscripcion = async () => {
     const idAsistencia = datos.inscripcion?.idAsistencia
     if (!idAsistencia) {
-      return { ok: false, message: 'No tienes una inscripcion para cancelar' }
+      return { ok: false, message: 'No tienes una inscripción para cancelar' }
     }
     return ejecutar(
       () => asistenciaApi.cancelarInscripcion(idAsistencia),
-      'Cancelaste tu inscripcion.',
+      'Cancelaste tu inscripción.',
     )
   }
 

@@ -8,16 +8,16 @@ import { clases } from '../../utils/clases'
 import styles from './Registro.module.css'
 
 const OPCIONES_ROL = [
-  { value: 'tutorado', label: 'Tutorado', description: 'Quiero inscribirme a tutorias' },
-  { value: 'tutor', label: 'Tutor', description: 'Quiero impartir tutorias' },
+  { value: 'tutorado', label: 'Tutorado', description: 'Quiero inscribirme a tutorías' },
+  { value: 'tutor', label: 'Tutor', description: 'Quiero impartir tutorías' },
 ]
 
 // Ids de rol que espera el backend en el registro.
 const ROL_IDS = { tutor: 2, tutorado: 3 }
 
 const CARACTERISTICAS = [
-  'Acceso inmediato a tutorias activas',
-  'Inscripcion y cancelacion en un click',
+  'Acceso inmediato a tutorías activas',
+  'Inscripción y cancelación en un clic',
   'Tu historial siempre disponible',
 ]
 
@@ -58,7 +58,7 @@ const Registro = () => {
     }
 
     if (campos.pwd.length < MIN_CARACTERES_CONTRASENA) {
-      setError(`La contrasena debe tener al menos ${MIN_CARACTERES_CONTRASENA} caracteres`)
+      setError(`La contraseña debe tener al menos ${MIN_CARACTERES_CONTRASENA} caracteres`)
       return
     }
 
@@ -76,13 +76,13 @@ const Registro = () => {
     <AuthLayout
       wide
       brandTitle="Crea tu cuenta"
-      brandSubtitle="Registrate como tutor o tutorado y comienza a aprovechar las tutorias de tu universidad."
+      brandSubtitle="Regístrate como tutor o tutorado y comienza a aprovechar las tutorías de tu universidad."
       features={CARACTERISTICAS}
       title="Registro"
       subtitle="Completa tus datos para crear la cuenta."
       footer={
         <>
-          ¿Ya tienes cuenta?<Link to={ROUTES.login}>Iniciar sesion</Link>
+          ¿Ya tienes cuenta?<Link to={ROUTES.login}>Iniciar sesión</Link>
         </>
       }
     >
@@ -112,7 +112,7 @@ const Registro = () => {
           />
         </FormField>
 
-        <FormField label="Matricula institucional" htmlFor="matricula">
+        <FormField label="Matrícula institucional" htmlFor="matricula">
           <Input
             id="matricula"
             placeholder="Ej. 20230001"
@@ -126,7 +126,7 @@ const Registro = () => {
         <FormField label="Apellido paterno" htmlFor="apellidoP">
           <Input
             id="apellidoP"
-            placeholder="Perez"
+            placeholder="Pérez"
             value={campos.apellidoP}
             onChange={alCambiar('apellidoP')}
             autoComplete="family-name"
@@ -136,14 +136,14 @@ const Registro = () => {
         <FormField label="Apellido materno" htmlFor="apellidoM">
           <Input
             id="apellidoM"
-            placeholder="Lopez"
+            placeholder="López"
             value={campos.apellidoM}
             onChange={alCambiar('apellidoM')}
           />
         </FormField>
 
         <FormField
-          label="Correo electronico de contacto"
+          label="Correo electrónico de contacto"
           htmlFor="correo"
           className={styles.completo}
         >
@@ -158,14 +158,14 @@ const Registro = () => {
         </FormField>
 
         <FormField
-          label="Contrasena para tu cuenta"
+          label="Contraseña para tu cuenta"
           htmlFor="pwd"
           hint={`Debe tener al menos ${MIN_CARACTERES_CONTRASENA} caracteres.`}
           className={styles.completo}
         >
           <PasswordInput
             id="pwd"
-            placeholder={`Minimo ${MIN_CARACTERES_CONTRASENA} caracteres`}
+            placeholder={`Mínimo ${MIN_CARACTERES_CONTRASENA} caracteres`}
             value={campos.pwd}
             onChange={alCambiar('pwd')}
             autoComplete="new-password"
@@ -179,7 +179,7 @@ const Registro = () => {
           loading={enviando}
           className={clases(styles.completo, styles.enviar)}
         >
-          {enviando ? 'Registrando...' : 'Crear cuenta'}
+          {enviando ? 'Registrando…' : 'Crear cuenta'}
         </Button>
       </form>
     </AuthLayout>

@@ -30,11 +30,11 @@ export const yaInicio = (fecha, hora, ahora = Date.now()) => {
 
 export const formatTiempoRestante = (minutos) => {
   if (minutos == null) return ''
-  if (minutos < 0) return 'la tutoria ya inicio'
+  if (minutos < 0) return 'la tutoría ya inició'
   if (minutos < 60) return `comienza en ${minutos} min`
   const horas = Math.floor(minutos / 60)
   const resto = minutos % 60
   if (horas < 24) return `comienza en ${horas}h ${resto}m`
   const dias = Math.floor(horas / 24)
-  return `comienza en ${dias} dia${dias === 1 ? '' : 's'}`
+  return `comienza en ${dias} día${dias === 1 ? '' : 's'}`
 }

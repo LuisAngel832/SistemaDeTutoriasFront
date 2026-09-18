@@ -52,12 +52,12 @@ describe('minutosHasta y yaInicio', () => {
 describe('formatTiempoRestante', () => {
   it.each([
     [null, ''],
-    [-1, 'la tutoria ya inicio'],
+    [-1, 'la tutoría ya inició'],
     [0, 'comienza en 0 min'],
     [59, 'comienza en 59 min'],
     [125, 'comienza en 2h 5m'],
-    [60 * 24, 'comienza en 1 dia'],
-    [60 * 72 + 30, 'comienza en 3 dias'],
+    [60 * 24, 'comienza en 1 día'],
+    [60 * 72 + 30, 'comienza en 3 días'],
   ])('%s minutos -> "%s"', (minutos, esperado) => {
     expect(formatTiempoRestante(minutos)).toBe(esperado)
   })

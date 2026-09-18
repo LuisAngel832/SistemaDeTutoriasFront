@@ -37,7 +37,7 @@ export const PanelInscripcion = ({
   return (
     <Card as="section" padding="lg" aria-labelledby={idTitulo}>
       <h2 className={styles.titulo} id={idTitulo}>
-        {inscrito ? 'Tu inscripcion' : 'Inscribirse'}
+        {inscrito ? 'Tu inscripción' : 'Inscribirse'}
       </h2>
 
       {resultado ? <Alert tone={resultado.tone}>{resultado.texto}</Alert> : null}
@@ -47,18 +47,18 @@ export const PanelInscripcion = ({
           <div className={styles.estado}>
             <span className={styles.punto} aria-hidden="true" />
             <div>
-              <strong>Estas inscrito</strong>
-              <span>{tiempo ? `La tutoria ${tiempo}.` : 'Te esperamos en la sesion.'}</span>
+              <strong>Estás inscrito</strong>
+              <span>{tiempo ? `La tutoría ${tiempo}.` : 'Te esperamos en la sesión.'}</span>
             </div>
           </div>
 
           {yaComenzo ? (
             <Alert tone="info" compact>
-              La tutoria ya comenzo. Ya no es posible cancelar.
+              La tutoría ya comenzó. Ya no es posible cancelar.
             </Alert>
           ) : tardeParaCancelar ? (
             <Alert tone="warning" compact>
-              Solo puedes cancelar con mas de {MIN_MINUTOS_CANCELACION} minutos de anticipacion.
+              Solo puedes cancelar con más de {MIN_MINUTOS_CANCELACION} minutos de anticipación.
             </Alert>
           ) : (
             <Button
@@ -67,7 +67,7 @@ export const PanelInscripcion = ({
               onClick={() => setConfirmando(true)}
               disabled={isSubmitting}
             >
-              Cancelar inscripcion
+              Cancelar inscripción
             </Button>
           )}
         </>
@@ -75,10 +75,10 @@ export const PanelInscripcion = ({
         <>
           <p className={styles.descripcion}>
             {noAceptaInscripciones
-              ? 'Esta tutoria ya no acepta inscripciones.'
+              ? 'Esta tutoría ya no acepta inscripciones.'
               : yaComenzo
-                ? 'La tutoria ya comenzo, no es posible inscribirse.'
-                : `Al inscribirte recibiras una confirmacion por correo y veras esta tutoria en tu lista${
+                ? 'La tutoría ya comenzó, no es posible inscribirse.'
+                : `Al inscribirte recibirás una confirmación por correo y verás esta tutoría en tu lista${
                     tiempo ? ` (${tiempo})` : ''
                   }.`}
           </p>
@@ -88,7 +88,7 @@ export const PanelInscripcion = ({
             disabled={noAceptaInscripciones || yaComenzo}
             onClick={() => ejecutar(onInscribirse)}
           >
-            {isSubmitting ? 'Inscribiendo...' : 'Inscribirme'}
+            {isSubmitting ? 'Inscribiendo…' : 'Inscribirme'}
           </Button>
         </>
       )}
@@ -96,9 +96,9 @@ export const PanelInscripcion = ({
       <ConfirmDialog
         open={confirmando}
         tone="danger"
-        title="Cancelar inscripcion"
-        description="Perderas tu lugar en esta tutoria. Puedes volver a inscribirte si quedan lugares."
-        confirmLabel="Si, cancelar"
+        title="Cancelar inscripción"
+        description="Perderás tu lugar en esta tutoría. Puedes volver a inscribirte si quedan lugares."
+        confirmLabel="Sí, cancelar"
         cancelLabel="Mantener"
         loading={isSubmitting}
         onConfirm={() => ejecutar(onCancelar)}

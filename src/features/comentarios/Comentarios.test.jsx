@@ -65,7 +65,7 @@ describe('Comentarios', () => {
     )
     renderComentarios({ modo: 'tutorado' })
 
-    const campo = await screen.findByLabelText(/Tema u observacion/)
+    const campo = await screen.findByLabelText(/Tema u observación/)
     await userEvent.type(campo, 'Ver depreciaciones')
     expect(screen.getByText('18/280 caracteres')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Publicar comentario' }))

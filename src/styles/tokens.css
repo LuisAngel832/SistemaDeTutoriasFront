@@ -20,8 +20,9 @@
   --color-acento: #4ade80;
 
   /* Exito (acciones principales, estados positivos) */
-  --color-exito: #28ad56;
-  --color-exito-hover: #239a4b;
+  /* Verde accesible: texto blanco encima cumple contraste 4.5:1 (antes #28ad56, 2.9:1). */
+  --color-exito: #1d8442;
+  --color-exito-hover: #17703a;
   --color-exito-deshabilitado: #9ed3b1;
   --color-exito-texto: #1e7a3f;
   --color-exito-profundo: #14432a;
@@ -66,8 +67,8 @@
   --sombra-tarjeta: 0 2px 10px rgba(15, 30, 60, 0.04);
   --sombra-tarjeta-hover: 0 8px 22px rgba(15, 30, 60, 0.09);
   --sombra-panel: 0 4px 24px rgba(15, 30, 60, 0.05);
-  --sombra-exito: 0 2px 6px rgba(40, 173, 86, 0.25);
-  --sombra-exito-hover: 0 4px 12px rgba(40, 173, 86, 0.35);
+  --sombra-exito: 0 2px 6px rgba(29, 132, 66, 0.3);
+  --sombra-exito-hover: 0 4px 12px rgba(29, 132, 66, 0.4);
   --anillo-foco: 0 0 0 3px rgba(45, 95, 167, 0.15);
   --contorno-foco: 3px solid rgba(45, 95, 167, 0.35);
 

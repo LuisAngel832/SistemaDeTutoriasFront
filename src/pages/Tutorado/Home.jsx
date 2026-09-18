@@ -31,8 +31,8 @@ const TutoradoHome = () => {
         type="search"
         id="buscar-tutoria"
         className={styles.campo}
-        aria-label="Buscar tutorias por Experiencia Educativa o por nombre del tutor"
-        placeholder="Buscar por Experiencia Educativa o nombre del tutor..."
+        aria-label="Buscar tutorías por Experiencia Educativa o por nombre del tutor"
+        placeholder="Buscar por Experiencia Educativa o nombre del tutor…"
         value={busqueda}
         onChange={(evento) => setBusqueda(evento.target.value)}
       />
@@ -42,8 +42,8 @@ const TutoradoHome = () => {
   return (
     <Pagina aria-busy={isLoading}>
       <EncabezadoPagina
-        title="Explorar Tutorias"
-        subtitle="Encuentra una tutoria disponible e inscribete con un click."
+        title="Explorar tutorías"
+        subtitle="Encuentra una tutoría disponible e inscríbete con un clic."
         action={buscador}
       />
 
@@ -57,23 +57,23 @@ const TutoradoHome = () => {
         </GridTarjetas>
       ) : tutorias.length === 0 && !error ? (
         <EmptyState
-          title="No hay tutorias disponibles"
-          description="Vuelve mas tarde o revisa tus inscripciones actuales."
+          title="No hay tutorías disponibles"
+          description="Vuelve más tarde o revisa tus inscripciones actuales."
           action={
             <Button as={Link} to={ROUTES.tutorado.inscripciones} variant="brand">
-              Ver mis tutorias
+              Ver mis tutorías
             </Button>
           }
         />
       ) : filtradas.length === 0 ? (
         <EmptyState
           title="Sin resultados"
-          description={`No encontramos tutorias que coincidan con "${busqueda}".`}
+          description={`No encontramos tutorías que coincidan con "${busqueda}".`}
         />
       ) : (
         <>
           <p className={styles.conteo} role="status">
-            {filtradas.length} tutoria{filtradas.length === 1 ? '' : 's'}
+            {filtradas.length} tutoría{filtradas.length === 1 ? '' : 's'}
             {busqueda ? ` para "${busqueda}"` : ' disponibles'}
           </p>
           <GridTarjetas>

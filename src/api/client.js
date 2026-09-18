@@ -7,10 +7,10 @@ const TIMEOUT_MS = 15_000
 
 export const MENSAJES_ERROR = {
   red: 'Error al conectar con el servidor',
-  timeout: 'El servidor tardo demasiado en responder, intenta de nuevo',
-  sesion: 'Tu sesion expiro, vuelve a iniciar sesion',
-  permisos: 'No tienes permiso para realizar esta accion',
-  generico: 'Ocurrio un error inesperado',
+  timeout: 'El servidor tardó demasiado en responder, inténtalo de nuevo',
+  sesion: 'Tu sesión expiró, vuelve a iniciar sesión',
+  permisos: 'No tienes permiso para realizar esta acción',
+  generico: 'Ocurrió un error inesperado',
 }
 
 export class ApiError extends Error {

@@ -1,5 +1,6 @@
 import { useId } from 'react'
 import { Alert, EmptyState, Skeleton } from '../../../components/ui'
+import { nombreDeDia } from '../../../constants/horarios'
 import { formatRangoHora } from '../../../utils/formatters'
 import styles from './ListaHorarios.module.css'
 
@@ -23,7 +24,7 @@ export const ListaHorarios = ({ horarios, isLoading, error, eliminandoId, onElim
           <Skeleton height={58} />
         </div>
       ) : horarios.length === 0 ? (
-        <EmptyState compact description="Aun no tienes horarios. Crea uno arriba para empezar." />
+        <EmptyState compact description="Aún no tienes horarios. Crea uno arriba para empezar." />
       ) : (
         <ul className={styles.horarios}>
           {horarios.map((horario) => {
@@ -31,7 +32,7 @@ export const ListaHorarios = ({ horarios, isLoading, error, eliminandoId, onElim
             return (
               <li key={horario.idHorario} className={styles.horario}>
                 <span className={styles.datos}>
-                  <span className={styles.dia}>{horario.dia}</span>
+                  <span className={styles.dia}>{nombreDeDia(horario.dia)}</span>
                   <span className={styles.horas}>
                     {formatRangoHora(horario.horaInicio, horario.horaFin)}
                   </span>
@@ -41,7 +42,7 @@ export const ListaHorarios = ({ horarios, isLoading, error, eliminandoId, onElim
                   className={styles.eliminar}
                   onClick={() => onEliminar(horario.idHorario)}
                   disabled={eliminando}
-                  aria-label={`Eliminar horario del ${horario.dia} de ${formatRangoHora(horario.horaInicio, horario.horaFin)}`}
+                  aria-label={`Eliminar horario del ${nombreDeDia(horario.dia)} de ${formatRangoHora(horario.horaInicio, horario.horaFin)}`}
                   title="Eliminar horario"
                 >
                   <span aria-hidden="true">{eliminando ? '…' : '×'}</span>

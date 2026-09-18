@@ -14,10 +14,10 @@ const PaginaError = () => {
     <main className="sistema-page">
       <section className="sistema-card" role="alert">
         <p className="sistema-codigo">Ups</p>
-        <h1 className="sistema-titulo">Algo salio mal</h1>
+        <h1 className="sistema-titulo">Algo salió mal</h1>
         <p className="sistema-texto">
-          Ocurrio un error inesperado al mostrar esta pagina. Intenta de nuevo; si el problema
-          continua, vuelve al inicio.
+          Ocurrió un error inesperado al mostrar esta página. Inténtalo de nuevo; si el problema
+          continúa, vuelve al inicio.
         </p>
         <div className="sistema-acciones">
           <button

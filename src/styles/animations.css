@@ -78,13 +78,13 @@
 /* Indicador de inscripcion activa */
 @keyframes pulso-exito {
   0% {
-    box-shadow: 0 0 0 0 rgba(40, 173, 86, 0.5);
+    box-shadow: 0 0 0 0 rgba(29, 132, 66, 0.5);
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(40, 173, 86, 0);
+    box-shadow: 0 0 0 8px rgba(29, 132, 66, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(40, 173, 86, 0);
+    box-shadow: 0 0 0 0 rgba(29, 132, 66, 0);
   }
 }
 

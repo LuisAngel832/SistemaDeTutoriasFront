@@ -205,13 +205,13 @@ describe('Modal y ConfirmDialog', () => {
         open
         title="Cancelar tutoria"
         description="Los inscritos seran notificados."
-        confirmLabel="Si, cancelar"
+        confirmLabel="Sí, cancelar"
         tone="danger"
         onConfirm={onConfirm}
         onCancel={onCancel}
       />,
     )
-    await userEvent.click(screen.getByRole('button', { name: 'Si, cancelar' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Sí, cancelar' }))
     expect(onConfirm).toHaveBeenCalledTimes(1)
 
     rerender(
@@ -219,7 +219,7 @@ describe('Modal y ConfirmDialog', () => {
         open
         loading
         title="Cancelar tutoria"
-        confirmLabel="Si, cancelar"
+        confirmLabel="Sí, cancelar"
         onConfirm={onConfirm}
         onCancel={onCancel}
       />,
