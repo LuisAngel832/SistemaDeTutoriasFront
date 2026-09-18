@@ -1,14 +1,14 @@
 import { useId, useState } from 'react'
-import { Alert, Button, EmptyState, Textarea } from '../../components/ui'
-import { useAuth } from '../auth/AuthContext'
-import useComentarios from '../../hooks/useComentarios'
-import { avisar } from '../../utils/avisos'
-import { getInicial } from '../../utils/formatters'
+import { Alert, Button, EmptyState, Textarea } from '@/components/ui'
+import { useAuth } from '@/features/auth/AuthContext'
+import { useComentarios } from './useComentarios'
+import { avisar } from '@/utils/avisos'
+import { getInicial } from '@/utils/formatters'
 import styles from './Comentarios.module.css'
 
 // Comentarios de una tutoria (RF15).
 // modo: lectura (solo ver) | tutorado (puede publicar y borrar sus comentarios)
-const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
+export const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
   const { comentarios, isLoading, error, crear, eliminar } = useComentarios(idTutoria)
   const { matricula } = useAuth()
   const [texto, setTexto] = useState('')
@@ -124,5 +124,3 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
     </div>
   )
 }
-
-export default Comentarios

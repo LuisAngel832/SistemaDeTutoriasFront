@@ -1,7 +1,7 @@
 import { useId } from 'react'
 import { Link } from 'react-router-dom'
-import { Alert, Card, Chip, Skeleton } from '../../../components/ui'
-import { formatTema } from '../../../utils/formatters'
+import { Alert, Card, Chip, Skeleton } from '@/components/ui'
+import { formatTema } from '@/utils/formatters'
 import { EstadoBadge } from './EstadoBadge'
 import styles from './DetalleTutoria.module.css'
 

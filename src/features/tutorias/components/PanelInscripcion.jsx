@@ -1,9 +1,9 @@
 import { useId, useState } from 'react'
-import { Alert, Button, Card, ConfirmDialog } from '../../../components/ui'
-import { MIN_MINUTOS_CANCELACION } from '../../../constants/tutoria'
-import { avisar } from '../../../utils/avisos'
-import { formatTiempoRestante } from '../../../utils/fechas'
-import { esProgramada } from '../../../utils/tutoria'
+import { Alert, Button, Card, ConfirmDialog } from '@/components/ui'
+import { MIN_MINUTOS_CANCELACION } from '@/constants/tutoria'
+import { avisar } from '@/utils/avisos'
+import { formatTiempoRestante } from '@/utils/fechas'
+import { esProgramada } from '@/utils/tutoria'
 import styles from './PanelInscripcion.module.css'
 
 // Inscripcion del tutorado a una tutoria, con las reglas de tiempo del backend.

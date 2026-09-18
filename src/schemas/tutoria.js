@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { MAX_CARACTERES_TEMA, MAX_TEMAS } from '../constants/tutoria'
-import { hoyLocalISO } from '../utils/fechas'
+import { MAX_CARACTERES_TEMA, MAX_TEMAS } from '@/constants/tutoria'
+import { hoyLocalISO } from '@/utils/fechas'
 
 // Los selects entregan strings; el esquema los convierte a los numeros que espera el backend.
 const seleccionNumerica = (mensaje) => z.string().min(1, mensaje).transform(Number)

@@ -1,11 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Alert, Button, FormField, Input, Select } from '../../../components/ui'
-import { AULAS, EDIFICIOS } from '../../../constants/espacios'
-import { editarTutoriaSchema } from '../../../schemas/tutoria'
-import { hoyLocalISO } from '../../../utils/fechas'
-import { formatHorario } from '../../../utils/formatters'
-import { buscarHorarioDeTutoria } from '../../../utils/tutoria'
+import { Alert, Button, FormField, Input, Select } from '@/components/ui'
+import { AULAS, EDIFICIOS } from '@/constants/espacios'
+import { editarTutoriaSchema } from '@/schemas/tutoria'
+import { hoyLocalISO } from '@/utils/fechas'
+import { formatHorario } from '@/utils/formatters'
+import { buscarHorarioDeTutoria } from '@/utils/tutoria'
 import styles from './EditarTutoriaForm.module.css'
 
 const valoresIniciales = (tutoria, horarios) => {

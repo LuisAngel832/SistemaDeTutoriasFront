@@ -1,4 +1,4 @@
-import { clases } from '../../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './AuthLayout.module.css'
 
 // Estructura de login y registro: panel de marca + panel del formulario.

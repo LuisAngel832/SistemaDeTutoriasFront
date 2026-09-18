@@ -1,4 +1,4 @@
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './Pagina.module.css'
 
 // Estructura comun de las paginas privadas.

@@ -1,6 +1,6 @@
 import { delay, http, HttpResponse } from 'msw'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { respuestaError, respuestaOk, servidor, usarServidorMock } from '../test/servidor'
+import { respuestaError, respuestaOk, servidor, usarServidorMock } from '@/test/servidor'
 import { api, ApiError, configureApi, esCancelacion, MENSAJES_ERROR } from './client'
 
 usarServidorMock()

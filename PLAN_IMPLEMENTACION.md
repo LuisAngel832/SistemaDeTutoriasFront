@@ -456,12 +456,12 @@ skeleton; al inscribirse, "Mis inscripciones" se actualiza sin recargar.
 > Los avisos de las acciones (crear/eliminar horario, inscribirse, comentarios, acciones del tutor) son toasts de `sonner`;
 > los errores de validacion siguen junto a su campo y los de carga como `Alert` en la pantalla.
 
-### PR 4.3 — `refactor/estructura-por-features` (mecanico)
+### PR 4.3 — `refactor/estructura-por-features` (mecanico) ✅
 
 Solo mover archivos con `git mv` y actualizar imports: **sin cambios de logica**.
 
-- [ ] Alias `@` → `src` en `vite.config.js` y `jsconfig.json` (autocompletado en el editor).
-- [ ] Mover a la estructura objetivo:
+- [x] Alias `@` → `src` en `vite.config.js` y `jsconfig.json` (autocompletado en el editor).
+- [x] Mover a la estructura objetivo:
   ```
   src/
     app/          main.jsx, App.jsx, providers.jsx, router.jsx
@@ -480,13 +480,17 @@ Solo mover archivos con `git mv` y actualizar imports: **sin cambios de logica**
     utils/
     test/
   ```
-- [ ] Hooks sin JSX con extension `.js`; named exports en todo excepto paginas.
-- [ ] Reemplazar imports relativos profundos por `@/...`.
-- [ ] Borrar carpetas vacias (`Routes/`, `pages/`, `hooks/`).
-- [ ] Actualizar la estructura en README.
+- [x] Hooks sin JSX con extension `.js`; named exports en todo excepto paginas.
+- [x] Reemplazar imports relativos profundos por `@/...`.
+- [x] Borrar carpetas vacias (`Routes/`, `pages/`, `hooks/`).
+- [x] Actualizar la estructura en README.
 
 **Criterios de aceptacion:** `grep -rn "\.\./\.\./" src` sin resultados; build, lint, tests y
 checklist manual en verde.
+
+> Hecho. Las paginas viven en `features/<dominio>/pages/`, los hooks junto a su feature y
+> `useAhora`, `ejecutarMutacion` y `avisos` en la capa compartida. `grep -rn "../../" src` no devuelve nada.
+> Las paginas de error (`PaginaError`, `NoEncontrada`) quedaron en `app/` porque las usa el router.
 
 **Cierre del Sprint 4:** tag `v1.0.0`, CHANGELOG completo y redeploy.
 

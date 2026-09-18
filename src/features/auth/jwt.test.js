@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { crearToken } from '../../test/tokens'
+import { crearToken } from '@/test/tokens'
 import { decodificarToken, expiracionDelToken, tokenExpirado } from './jwt'
 
 describe('decodificarToken', () => {

@@ -188,56 +188,42 @@ Pasos:
 
 ## Estructura del proyecto
 
+Cada carpeta de `features/` reune la interfaz, los hooks y el estado de un dominio; lo que
+usan varias features vive en `components/`, `utils/` o `constants/`. Los imports entre
+carpetas usan el alias `@` (`@/components/ui`), definido en `vite.config.js` y `jsconfig.json`.
+
 ```
 src/
-  app/
-    providers.jsx          # Proveedor de TanStack Query (y devtools en desarrollo)
-    queryClient.js         # Configuracion de cache y reintentos
+  app/                     # Arranque, rutas y proveedores globales
+    main.jsx               # Punto de entrada (lo carga index.html)
     router.jsx             # Rutas, carga diferida, redirecciones y paginas de error
     RaizApp.jsx            # Raiz: sesion, titulo del documento y barra de navegacion
-  assets/css/components/   # CSS compartido (sidebar)
+    providers.jsx          # TanStack Query, avisos (sonner) y devtools en desarrollo
+    queryClient.js         # Configuracion de cache y reintentos
+    PaginaError.jsx        # Pantalla de error; NoEncontrada.jsx es el 404
+  api/                     # Cliente HTTP, servicios por recurso, mappers y claves de cache
   components/
-    layout/
-      AppLayout.jsx        # Estructura de las paginas privadas (sidebar + contenido)
-      Sidebar.jsx          # Navegacion lateral por rol
+    layout/                # AppLayout (sidebar + contenido), Sidebar y Pagina
     ui/                    # Componentes base: Button, Card, FormField, Modal, Alert... (CSS Modules)
   constants/               # Rutas, roles, estados de tutoria, espacios y dias de la semana
-  api/                     # Cliente HTTP, servicios por recurso, mappers y claves de cache
   features/
-    auth/                  # AuthProvider, useAuth, guards, AuthLayout, storage y JWT
-    comentarios/           # Comentarios de una tutoria (RF15)
-    tutorias/components/   # TutoriaCard, TutoriaInfoGrid, TemasInput, InscritosList, acciones
-  hooks/
-    useAhora.js            # Hora actual que se refresca periodicamente
-    ejecutarMutacion.js    # Ejecuta una mutacion y devuelve { ok, message }
-    useComentarios.jsx     # CRUD de comentarios sobre una tutoria
-    useCrearTutoria.jsx    # Listas y mutacion de crear tutoria
-    useHorarios.jsx        # CRUD de horarios del tutor
-    useMisTutorias.jsx     # Tutorias del tutor autenticado
-    useTutoriaDetalleTutor.jsx     # Detalle, edicion, cancelar, completar, temas
-    useTutoriaDetalleTutorado.jsx  # Detalle + inscripcion + cancelacion
-    useTutoriasExplorar.jsx        # Listado de tutorias disponibles
-    useTutoriasTutorado.jsx        # Inscripciones del tutorado
-  pages/
-    Sistema/               # Paginas 404 y de error
-    LogIn/                 # Pantalla de inicio de sesion
-    Registro/              # Pantalla de registro
-    Tutor/
-      Home.jsx             # Mis tutorias (tutor)
-      AgregarHorario/
-      CrearTutoria/
-      TutoriaDetalle/      # Detalle de tutoria del tutor
-    Tutorado/
-      Home.jsx             # Explorar tutorias
-      MisTutorias.jsx
-      TutoriaDetalle.jsx
+    auth/                  # AuthProvider, useAuth, guards, storage, JWT y pages/ (login y registro)
+    comentarios/           # Comentarios de una tutoria (RF15) y su hook
+    horarios/              # ListaHorarios y useHorarios (CRUD de horarios del tutor)
+    tutorias/
+      components/          # TutoriaCard, TutoriaInfoGrid, TemasInput, InscritosList, acciones
+      hooks/               # Listados, detalle, inscripcion y creacion de tutorias
+    tutor/pages/           # Mis tutorias, crear tutoria, horarios y detalle
+    tutorado/pages/        # Explorar tutorias, mis inscripciones y detalle
   schemas/                 # Validacion de los formularios con Zod (auth, horario, tutoria)
   styles/
     tokens.css             # Colores, sombras y radios (unica fuente de valores de diseno)
     animations.css         # Animaciones compartidas y reduccion de movimiento
     global.css             # Estilos base del documento
+  test/                    # Setup de Vitest, servidor MSW y helpers de render
   utils/
     avisos.js              # Muestra { ok, message } como toast
+    ejecutarMutacion.js    # Ejecuta una mutacion y devuelve { ok, message }
     fechas.js              # Fechas en hora local y tiempo restante
     formatters.js          # Formato de fechas, horas, temas e iniciales
     tutoria.js             # Reglas de dominio (estado, horario de una tutoria)

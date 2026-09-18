@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation, useMatches } from 'react-router-dom'
-import Sidebar from './Sidebar'
-import { ROLES } from '../../constants/roles'
-import { ROUTES } from '../../constants/routes'
-import { useAuth } from '../../features/auth/AuthContext'
-import '../../assets/css/components/sidebar.css'
+import { Sidebar } from './Sidebar'
+import { ROLES } from '@/constants/roles'
+import { ROUTES } from '@/constants/routes'
+import { useAuth } from '@/features/auth/AuthContext'
+import './sidebar.css'
 
 const MENU_POR_ROL = {
   [ROLES.TUTOR]: {
@@ -37,7 +37,7 @@ const leerPreferenciaColapsado = () => {
 }
 
 // Estructura de las paginas privadas: sidebar + contenido de la ruta activa.
-const AppLayout = () => {
+export const AppLayout = () => {
   const location = useLocation()
   const matches = useMatches()
   const { nombre, matricula, rol } = useAuth()
@@ -118,5 +118,3 @@ const AppLayout = () => {
     </div>
   )
 }
-
-export default AppLayout

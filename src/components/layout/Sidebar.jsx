@@ -1,6 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
-import { useAuth } from '../../features/auth/AuthContext'
-import { getIniciales } from '../../utils/formatters'
+import { useAuth } from '@/features/auth/AuthContext'
+import { getIniciales } from '@/utils/formatters'
 import {
   IconClose,
   IconCollapse,
@@ -10,7 +10,7 @@ import {
   IconLogout,
   IconMisTutorias,
   IconTutorias,
-} from '../ui/icons'
+} from '@/components/ui/icons'
 
 const iconsByName = {
   tutorias: IconTutorias,
@@ -20,7 +20,7 @@ const iconsByName = {
   misTutorias: IconMisTutorias,
 }
 
-const Sidebar = ({
+export const Sidebar = ({
   items,
   brandTo,
   seccion,
@@ -121,5 +121,3 @@ const Sidebar = ({
     </aside>
   )
 }
-
-export default Sidebar

@@ -1,5 +1,5 @@
 import { useId } from 'react'
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './RadioGroup.module.css'
 
 // Radios nativos con apariencia de tarjeta o chip: se navegan con flechas y Tab como

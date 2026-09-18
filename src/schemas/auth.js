@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { ROLES } from '../constants/roles'
+import { ROLES } from '@/constants/roles'
 
 export const MIN_CARACTERES_CONTRASENA = 8
 
