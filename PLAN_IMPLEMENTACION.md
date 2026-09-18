@@ -331,75 +331,85 @@ en Render funciona; las URLs antiguas redirigen.
 
 ### PR 3.1 — `style/design-tokens` (mecanico)
 
-- [ ] `src/styles/tokens.css`: colores (primario, texto, muted, bordes, fondos, exito, alerta,
+- [x] `src/styles/tokens.css`: colores (primario, texto, muted, bordes, fondos, exito, alerta,
       peligro), tipografia, espaciado, radios, sombras, z-index, duraciones y breakpoints
       documentados en comentarios.
-- [ ] `src/styles/animations.css`: `fade-in`, `shimmer`, `spin`, `pulse` (reemplazan los 28
+- [x] `src/styles/animations.css`: `fade-in`, `shimmer`, `spin`, `pulse` (reemplazan los 28
       `@keyframes` actuales) y regla global de `prefers-reduced-motion`.
-- [ ] `src/styles/global.css` (renombre de `index.css`) importando tokens y animaciones.
-- [ ] Reemplazar hex por `var(--...)` en todos los CSS, **un commit por carpeta** para facilitar
+- [x] `src/styles/global.css` (renombre de `index.css`) importando tokens y animaciones.
+- [x] Reemplazar hex por `var(--...)` en todos los CSS, **un commit por carpeta** para facilitar
       la revision.
-- [ ] Oscurecer el gris de texto secundario (`#8a93a3`) hasta cumplir contraste 4.5:1.
-- [ ] Unir los CSS responsive (`Login_respon.css`, `Registro_respon.css`,
+- [x] Oscurecer el gris de texto secundario (`#8a93a3`) hasta cumplir contraste 4.5:1.
+- [x] Unir los CSS responsive (`Login_respon.css`, `Registro_respon.css`,
       `agregarHorarioR.css`, `crearTutoriaR.css`) dentro de su archivo principal.
 
 **Criterios de aceptacion:** `grep -rEo "#[0-9a-fA-F]{6}" src --include=*.css` solo devuelve
 resultados en `tokens.css`; comparacion con capturas del Sprint 0 sin diferencias salvo el
 ajuste de contraste.
 
+> Verificado con capturas antes/despues: la diferencia maxima fue 0.17 % (solo el gris de apoyo).
+
 ### PR 3.2 — `feat/componentes-ui`
 
 Todos con **CSS Modules** (`Button.module.css`) y exportados desde `src/components/ui/index.js`.
 
-- [ ] `Button` (variantes `primary | secondary | ghost | danger`, tamanos, `loading`,
+- [x] `Button` (variantes `primary | secondary | ghost | danger`, tamanos, `loading`,
       `fullWidth`, soporte `as={Link}`).
-- [ ] `Card`, `Badge`, `Chip` (con boton de quitar opcional).
-- [ ] `Input`, `Select`, `Textarea`, `FormField` (label, ayuda, error, `aria-describedby`,
+- [x] `Card`, `Badge`, `Chip` (con boton de quitar opcional).
+- [x] `Input`, `Select`, `Textarea`, `FormField` (label, ayuda, error, `aria-describedby`,
       `aria-invalid`), `RadioGroup` basado en `<input type="radio">`.
-- [ ] `Alert` (`role="alert"` para error, `aria-live="polite"` para exito/info).
-- [ ] `Skeleton`, `Spinner`, `EmptyState`.
-- [ ] `Modal` sobre `<dialog>` nativo (foco inicial, Escape, retorno del foco) y
+- [x] `Alert` (`role="alert"` para error, `aria-live="polite"` para exito/info).
+- [x] `Skeleton`, `Spinner`, `EmptyState`.
+- [x] `Modal` sobre `<dialog>` nativo (foco inicial, Escape, retorno del foco) y
       `ConfirmDialog`.
-- [ ] Iconos: agregar a `components/layout/icons.jsx` (o adoptar `lucide-react`) los de
+- [x] Iconos: agregar a `components/layout/icons.jsx` (o adoptar `lucide-react`) los de
       calendario, reloj, edificio, puerta y busqueda para reemplazar emojis.
-- [ ] Instalar `eslint-plugin-jsx-a11y` (config `recommended`).
-- [ ] Pruebas: `Button` (loading deshabilita), `Modal` (Escape y foco), `Alert` (roles),
+- [x] Instalar `eslint-plugin-jsx-a11y` (config `recommended`).
+- [x] Pruebas: `Button` (loading deshabilita), `Modal` (Escape y foco), `Alert` (roles),
       `RadioGroup` (flechas).
+
+> Se uso `eslint-plugin-jsx-a11y-x` (fork mantenido) porque `eslint-plugin-jsx-a11y` aun no admite ESLint 10. `Modal` atiende Escape en `keydown` ademas del evento `cancel`, que no todos los navegadores disparan igual.
 
 ### PR 3.3 — `refactor/componentes-de-dominio`
 
-- [ ] `EstadoBadge` (usa `ESTADO_CLASS`).
-- [ ] `TutoriaCard` con `variant="tutor" | "explorar" | "inscripcion"` (reemplaza las 3
+- [x] `EstadoBadge` (usa `ESTADO_CLASS`).
+- [x] `TutoriaCard` con `variant="tutor" | "explorar" | "inscripcion"` (reemplaza las 3
       tarjetas).
-- [ ] `TutoriaInfoGrid` (fecha, horario, edificio, aula con iconos SVG).
-- [ ] `TemasInput` unificado con prop `compact` (reemplaza `TemaQuickInput`).
-- [ ] `InscritosList`, `AccionesTutoriaCard`, `EditarTutoriaForm`.
-- [ ] `AuthLayout` (panel de marca compartido por Login y Registro).
-- [ ] Mover `Comentarios` a `src/features/comentarios/`.
+- [x] `TutoriaInfoGrid` (fecha, horario, edificio, aula con iconos SVG).
+- [x] `TemasInput` unificado con prop `compact` (reemplaza `TemaQuickInput`).
+- [x] `InscritosList`, `AccionesTutoriaCard`, `EditarTutoriaForm`.
+- [x] `AuthLayout` (panel de marca compartido por Login y Registro).
+- [x] Mover `Comentarios` a `src/features/comentarios/`.
+
+> Se agregaron ademas componentes compartidos por los dos detalles (DetalleTutoriaLayout, EncabezadoTutoria, SeccionTutoria, ListaTemas) y `PanelInscripcion` para el tutorado.
 
 ### PR 3.4 — `refactor/paginas-con-ui` (3 PRs)
 
-- [ ] **3.4a Auth:** `LogIn`, `Registro` sobre `AuthLayout` + componentes `ui/`.
-- [ ] **3.4b Tutor:** `Home`, `CrearTutoria`, `AgregarHorario`, `TutoriaDetalle`
+- [x] **3.4a Auth:** `LogIn`, `Registro` sobre `AuthLayout` + componentes `ui/`.
+- [x] **3.4b Tutor:** `Home`, `CrearTutoria`, `AgregarHorario`, `TutoriaDetalle`
       (objetivo: < 150 lineas).
-- [ ] **3.4c Tutorado:** `Home`, `MisTutorias`, `TutoriaDetalle`.
-- [ ] Borrar los estilos por pagina que queden sin uso y quitar `style={{...}}` inline.
-- [ ] Quitar de la UI el aviso tecnico del issue #8 del backend (dejarlo en un
+- [x] **3.4c Tutorado:** `Home`, `MisTutorias`, `TutoriaDetalle`.
+- [x] Borrar los estilos por pagina que queden sin uso y quitar `style={{...}}` inline.
+- [x] Quitar de la UI el aviso tecnico del issue #8 del backend (dejarlo en un
       `console.warn` solo en desarrollo, si aun aplica).
 
 **Criterios de aceptacion:** CSS total de `src/` reducido al menos 40 % (hoy ~5,800 lineas);
 ningun archivo de pagina supera 200 lineas.
 
+> CSS: 5,800 -> 3,004 lineas (-48 %). Paginas: ninguna supera 180 lineas; el detalle del tutor bajo de 571 a 172 (la meta de 150 quedo cerca). Al separar las paginas en chunks aparecio una dependencia oculta de CSS entre Registro y Login, corregida en el PR 2.5.
+
 ### PR 3.5 — `a11y/accesibilidad-y-textos`
 
-- [ ] Reemplazar `VentanaEmerjente` por `Modal` y borrar el componente.
-- [ ] Feedback y errores con `Alert`; contenedores en carga con `aria-busy`.
-- [ ] Selector de rol (Registro) y de dia (Horarios) con `RadioGroup`.
-- [ ] Revisar el nombre accesible de las tarjetas-enlace.
-- [ ] **Ortografia:** corregir acentos en todos los textos visibles (Tutorías, Contraseña,
+- [x] Reemplazar `VentanaEmerjente` por `Modal` y borrar el componente.
+- [x] Feedback y errores con `Alert`; contenedores en carga con `aria-busy`.
+- [x] Selector de rol (Registro) y de dia (Horarios) con `RadioGroup`.
+- [x] Revisar el nombre accesible de las tarjetas-enlace.
+- [x] **Ortografia:** corregir acentos en todos los textos visibles (Tutorías, Contraseña,
       Matrícula, Sesión, Día, Miércoles...). Mantener sin acento los valores que se envian al
       backend (p. ej. `dia`) salvo que el backend lo acepte.
-- [ ] Revision con Lighthouse y axe DevTools en cada pantalla: accesibilidad ≥ 95.
+- [x] Revision con Lighthouse y axe DevTools en cada pantalla: accesibilidad ≥ 95.
+
+> La auditoria se hizo con axe-core (mismo motor que axe DevTools y que la seccion de accesibilidad de Lighthouse) sobre las 10 pantallas: 0 hallazgos con las reglas WCAG 2.1 A/AA y de buenas practicas. Ademas se corrigio el contraste del verde de las acciones principales (2.9:1 -> 4.7:1).
 
 **Cierre del Sprint 3:** comparar capturas con las del Sprint 0, tag `v0.4.0` y redeploy.
 
