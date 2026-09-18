@@ -1,82 +1,77 @@
-import { useCallback, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { asistenciaApi } from '../api/asistencia'
-import { esCancelacion } from '../api/client'
+import { clavesAsistencia, clavesTutorias } from '../api/queryKeys'
 import { temasApi } from '../api/temas'
 import { tutoriasApi } from '../api/tutorias'
-import { useRecurso } from './useRecurso'
-
-const DETALLE_INICIAL = { tutoria: null, inscritos: [] }
+import { ejecutarMutacion } from './ejecutarMutacion'
 
 const useTutoriaDetalleTutor = (id) => {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const queryClient = useQueryClient()
 
-  // La lista de inscritos es secundaria: si falla se muestra vacia y el detalle sigue visible.
-  const cargarDetalle = useCallback(
-    async ({ signal }) => {
-      const [tutoria, inscritos] = await Promise.all([
-        tutoriasApi.detalle(id, { signal }),
-        asistenciaApi.inscritosDeTutoria(id, { signal }).catch((error) => {
-          if (esCancelacion(error)) throw error
-          return []
-        }),
-      ])
-      return { tutoria, inscritos }
-    },
-    [id],
-  )
+  const tutoriaQuery = useQuery({
+    queryKey: clavesTutorias.detalle(id),
+    queryFn: ({ signal }) => tutoriasApi.detalle(id, { signal }),
+    enabled: Boolean(id),
+  })
 
-  const { datos, isLoading, error, recargar, refrescar } = useRecurso(
-    cargarDetalle,
-    DETALLE_INICIAL,
-  )
+  // La lista de inscritos es secundaria: si falla, el detalle se sigue mostrando.
+  const inscritosQuery = useQuery({
+    queryKey: clavesAsistencia.inscritos(id),
+    queryFn: ({ signal }) => asistenciaApi.inscritosDeTutoria(id, { signal }),
+    enabled: Boolean(id),
+    retry: false,
+  })
 
-  // Ejecuta una mutacion, refresca el detalle y devuelve { ok, message } para la pantalla.
-  const ejecutar = async (accion, mensajeExito, { bloquear = true } = {}) => {
-    if (bloquear) setIsSubmitting(true)
-    try {
-      await accion()
-      await refrescar()
-      return { ok: true, message: mensajeExito }
-    } catch (err) {
-      return { ok: false, message: err.message }
-    } finally {
-      if (bloquear) setIsSubmitting(false)
-    }
-  }
+  const invalidar = () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: clavesTutorias.todas }),
+      queryClient.invalidateQueries({ queryKey: clavesAsistencia.inscritos(id) }),
+    ])
 
-  const actualizar = (payload) =>
-    ejecutar(() => tutoriasApi.actualizar(id, payload), 'Tutoría actualizada')
-
-  const cancelar = () => ejecutar(() => tutoriasApi.cancelar(id), 'Tutoría cancelada')
-
-  const completar = () =>
-    ejecutar(() => tutoriasApi.completar(id), 'Tutoría marcada como completada')
+  const actualizarTutoria = useMutation({
+    mutationFn: (payload) => tutoriasApi.actualizar(id, payload),
+    onSuccess: invalidar,
+  })
+  const cancelarTutoria = useMutation({
+    mutationFn: () => tutoriasApi.cancelar(id),
+    onSuccess: invalidar,
+  })
+  const completarTutoria = useMutation({
+    mutationFn: () => tutoriasApi.completar(id),
+    onSuccess: invalidar,
+  })
+  const crearTema = useMutation({
+    mutationFn: (tema) => temasApi.crear({ idTutoria: id, tema }),
+    onSuccess: invalidar,
+  })
+  const eliminarTema = useMutation({ mutationFn: temasApi.eliminar, onSuccess: invalidar })
 
   const agregarTema = async (tema) => {
     const limpio = (tema || '').trim()
     if (!limpio) return { ok: false, message: 'El tema no puede estar vacío' }
-    return ejecutar(() => temasApi.crear({ idTutoria: id, tema: limpio }), 'Tema agregado', {
-      bloquear: false,
-    })
+    return ejecutarMutacion(crearTema, limpio, 'Tema agregado')
   }
 
   const quitarTema = async (idTema) => {
     if (!idTema) return { ok: false, message: 'Tema inválido' }
-    return ejecutar(() => temasApi.eliminar(idTema), 'Tema eliminado', { bloquear: false })
+    return ejecutarMutacion(eliminarTema, idTema, 'Tema eliminado')
   }
 
   return {
-    tutoria: datos.tutoria,
-    inscritos: datos.inscritos,
-    isLoading,
-    error,
-    isSubmitting,
-    actualizar,
-    cancelar,
-    completar,
+    tutoria: tutoriaQuery.data ?? null,
+    inscritos: inscritosQuery.data ?? [],
+    isLoading: tutoriaQuery.isPending,
+    error: tutoriaQuery.error?.message ?? '',
+    // Las acciones sobre la tutoria bloquean la pantalla; los temas no.
+    isSubmitting:
+      actualizarTutoria.isPending || cancelarTutoria.isPending || completarTutoria.isPending,
+    actualizar: (payload) => ejecutarMutacion(actualizarTutoria, payload, 'Tutoría actualizada'),
+    cancelar: () => ejecutarMutacion(cancelarTutoria, undefined, 'Tutoría cancelada'),
+    completar: () =>
+      ejecutarMutacion(completarTutoria, undefined, 'Tutoría marcada como completada'),
     agregarTema,
     quitarTema,
-    recargar,
+    recargar: tutoriaQuery.refetch,
   }
 }
 

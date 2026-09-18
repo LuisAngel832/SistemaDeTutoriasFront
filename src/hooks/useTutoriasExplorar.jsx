@@ -1,8 +1,17 @@
+import { useQuery } from '@tanstack/react-query'
+import { clavesTutorias } from '../api/queryKeys'
 import { tutoriasApi } from '../api/tutorias'
-import { useRecurso } from './useRecurso'
 
 export const useTutoriasExplorar = () => {
-  const { datos: tutorias, isLoading, error, recargar } = useRecurso(tutoriasApi.disponibles, [])
+  const { data, isPending, error, refetch } = useQuery({
+    queryKey: clavesTutorias.disponibles(),
+    queryFn: ({ signal }) => tutoriasApi.disponibles({ signal }),
+  })
 
-  return { tutorias, isLoading, error, refetch: recargar }
+  return {
+    tutorias: data ?? [],
+    isLoading: isPending,
+    error: error?.message ?? '',
+    refetch,
+  }
 }

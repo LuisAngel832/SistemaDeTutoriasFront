@@ -9,6 +9,8 @@ proyecto sigue [Versionado Semantico](https://semver.org/lang/es/).
 
 ### Agregado
 
+- TanStack Query para los datos del servidor: cache entre pantallas, reintentos controlados
+  e invalidacion automatica despues de cada operacion.
 - Sistema de diseno: tokens de color, sombras y radios, animaciones compartidas y componentes
   base reutilizables (botones, campos, alertas, dialogos, tarjetas).
 - Pruebas automatizadas con Vitest, Testing Library y MSW (se ejecutan en el CI).

@@ -67,6 +67,7 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 | Build & dev server | [Vite](https://vitejs.dev/) 8                                             |
 | UI                 | [React](https://react.dev/) 19                                            |
 | Routing            | [react-router-dom](https://reactrouter.com/) 7                            |
+| Datos del servidor | [TanStack Query](https://tanstack.com/query) 5 (cache, reintentos)        |
 | Pruebas            | Vitest + Testing Library (jsdom) y MSW                                    |
 | Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh` |
 | Formato            | Prettier 3 + lint-staged (pre-commit) y commitlint (commit-msg)           |
@@ -188,6 +189,8 @@ Pasos:
 ```
 src/
   app/
+    providers.jsx          # Proveedor de TanStack Query (y devtools en desarrollo)
+    queryClient.js         # Configuracion de cache y reintentos
     router.jsx             # Rutas, carga diferida, redirecciones y paginas de error
     RaizApp.jsx            # Raiz: sesion, titulo del documento y barra de navegacion
   assets/css/components/   # CSS compartido (sidebar)
@@ -200,7 +203,7 @@ src/
       TemasInput.jsx       # Input de chips para temas (RF14)
       VentanaEmerjente.jsx # Modal de resultado
   constants/               # Rutas, roles, estados de tutoria, espacios y dias de la semana
-  api/                     # Cliente HTTP, servicios por recurso y mappers de DTOs
+  api/                     # Cliente HTTP, servicios por recurso, mappers y claves de cache
   features/
     auth/                  # AuthProvider, useAuth, guards, AuthLayout, storage y JWT
     comentarios/           # Comentarios de una tutoria (RF15)

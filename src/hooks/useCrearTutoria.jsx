@@ -1,21 +1,35 @@
 import { useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { horariosApi } from '../api/horarios'
 import { materiasApi } from '../api/materias'
+import { clavesHorarios, clavesMaterias, clavesTutorias } from '../api/queryKeys'
 import { tutoriasApi } from '../api/tutorias'
-import { useRecurso } from './useRecurso'
 
 const VALORES_INICIALES = { nrc: '', idHorario: '', fecha: '', edificio: '', aula: '' }
 
 const useCrearTutoria = () => {
+  const queryClient = useQueryClient()
   const [valores, setValores] = useState(VALORES_INICIALES)
   const [temas, setTemas] = useState([])
   // { ok, message } del ultimo intento de crear la tutoria.
   const [resultado, setResultado] = useState(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Si fallan, el formulario muestra los selects vacios con su aviso.
-  const { datos: horarios, isLoading: cargandoHorarios } = useRecurso(horariosApi.listar, [])
-  const { datos: materias, isLoading: cargandoMaterias } = useRecurso(materiasApi.listar, [])
+  const horariosQuery = useQuery({
+    queryKey: clavesHorarios.lista(),
+    queryFn: ({ signal }) => horariosApi.listar({ signal }),
+  })
+  const materiasQuery = useQuery({
+    queryKey: clavesMaterias.lista(),
+    queryFn: ({ signal }) => materiasApi.listar({ signal }),
+    // El catalogo de experiencias educativas cambia poco.
+    staleTime: 5 * 60_000,
+  })
+
+  const crearTutoria = useMutation({
+    mutationFn: tutoriasApi.crear,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: clavesTutorias.todas }),
+  })
 
   const cambiar = (campo, valor) => {
     setValores((actuales) => ({ ...actuales, [campo]: valor }))
@@ -46,9 +60,8 @@ const useCrearTutoria = () => {
       return
     }
 
-    setIsSubmitting(true)
     try {
-      await tutoriasApi.crear({
+      await crearTutoria.mutateAsync({
         idHorario: Number(valores.idHorario),
         fecha: valores.fecha,
         edificio: Number(valores.edificio),
@@ -62,10 +75,8 @@ const useCrearTutoria = () => {
         ok: true,
         message: 'La tutoría quedó programada y ya es visible para los tutorados.',
       })
-    } catch (err) {
-      setResultado({ ok: false, message: err.message })
-    } finally {
-      setIsSubmitting(false)
+    } catch (error) {
+      setResultado({ ok: false, message: error.message })
     }
   }
 
@@ -79,10 +90,10 @@ const useCrearTutoria = () => {
     crear,
     resultado,
     cerrarResultado: () => setResultado(null),
-    horarios,
-    materias,
-    cargandoListas: cargandoHorarios || cargandoMaterias,
-    isSubmitting,
+    horarios: horariosQuery.data ?? [],
+    materias: materiasQuery.data ?? [],
+    cargandoListas: horariosQuery.isPending || materiasQuery.isPending,
+    isSubmitting: crearTutoria.isPending,
   }
 }
 

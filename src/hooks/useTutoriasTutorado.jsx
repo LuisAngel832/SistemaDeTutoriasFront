@@ -1,14 +1,18 @@
+import { useQuery } from '@tanstack/react-query'
 import { asistenciaApi } from '../api/asistencia'
-import { useRecurso } from './useRecurso'
+import { clavesAsistencia } from '../api/queryKeys'
 
 // Inscripciones del tutorado, ya normalizadas por mapInscripcion.
 export const useTutoriasTutorado = () => {
-  const {
-    datos: tutorias,
-    isLoading,
-    error,
-    recargar,
-  } = useRecurso(asistenciaApi.misInscripciones, [])
+  const { data, isPending, error, refetch } = useQuery({
+    queryKey: clavesAsistencia.misInscripciones(),
+    queryFn: ({ signal }) => asistenciaApi.misInscripciones({ signal }),
+  })
 
-  return { tutorias, isLoading, error, refetch: recargar }
+  return {
+    tutorias: data ?? [],
+    isLoading: isPending,
+    error: error?.message ?? '',
+    refetch,
+  }
 }

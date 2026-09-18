@@ -1,72 +1,59 @@
-import { useCallback, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { asistenciaApi } from '../api/asistencia'
-import { esCancelacion } from '../api/client'
+import { clavesAsistencia, clavesTutorias } from '../api/queryKeys'
 import { tutoriasApi } from '../api/tutorias'
-import { useRecurso } from './useRecurso'
-
-const DETALLE_INICIAL = { tutoria: null, inscripcion: null }
+import { ejecutarMutacion } from './ejecutarMutacion'
 
 export const useTutoriaDetalleTutorado = (id) => {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const queryClient = useQueryClient()
+
+  const tutoriaQuery = useQuery({
+    queryKey: clavesTutorias.detalle(id),
+    queryFn: ({ signal }) => tutoriasApi.detalle(id, { signal }),
+    enabled: Boolean(id),
+  })
 
   // El backend no indica si el tutorado ya esta inscrito: se busca en sus inscripciones.
-  const cargarDetalle = useCallback(
-    async ({ signal }) => {
-      const [tutoria, inscripciones] = await Promise.all([
-        tutoriasApi.detalle(id, { signal }),
-        asistenciaApi.misInscripciones({ signal }).catch((error) => {
-          if (esCancelacion(error)) throw error
-          return []
-        }),
-      ])
-      const inscripcion =
-        inscripciones.find((item) => String(item.idTutoria) === String(id)) ?? null
-      return { tutoria, inscripcion }
-    },
-    [id],
-  )
+  const inscripcionesQuery = useQuery({
+    queryKey: clavesAsistencia.misInscripciones(),
+    queryFn: ({ signal }) => asistenciaApi.misInscripciones({ signal }),
+    retry: false,
+  })
+  const inscripcion =
+    inscripcionesQuery.data?.find((item) => String(item.idTutoria) === String(id)) ?? null
 
-  const { datos, isLoading, error, recargar, refrescar } = useRecurso(
-    cargarDetalle,
-    DETALLE_INICIAL,
-  )
+  const invalidar = () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: clavesTutorias.todas }),
+      queryClient.invalidateQueries({ queryKey: clavesAsistencia.todas }),
+    ])
 
-  const ejecutar = async (accion, mensajeExito) => {
-    setIsSubmitting(true)
-    try {
-      await accion()
-      await refrescar()
-      return { ok: true, message: mensajeExito }
-    } catch (err) {
-      return { ok: false, message: err.message }
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  // El backend responde "Asistencia marcada.", que confunde al tutorado: se usa un texto propio.
-  const inscribirse = () =>
-    ejecutar(() => asistenciaApi.inscribirse(id), 'Te inscribiste a la tutoría.')
+  const inscribirseM = useMutation({
+    mutationFn: () => asistenciaApi.inscribirse(id),
+    onSuccess: invalidar,
+  })
+  const cancelarM = useMutation({
+    mutationFn: (idAsistencia) => asistenciaApi.cancelarInscripcion(idAsistencia),
+    onSuccess: invalidar,
+  })
 
   const cancelarInscripcion = async () => {
-    const idAsistencia = datos.inscripcion?.idAsistencia
+    const idAsistencia = inscripcion?.idAsistencia
     if (!idAsistencia) {
       return { ok: false, message: 'No tienes una inscripción para cancelar' }
     }
-    return ejecutar(
-      () => asistenciaApi.cancelarInscripcion(idAsistencia),
-      'Cancelaste tu inscripción.',
-    )
+    return ejecutarMutacion(cancelarM, idAsistencia, 'Cancelaste tu inscripción.')
   }
 
   return {
-    tutoria: datos.tutoria,
-    inscripcion: datos.inscripcion,
-    isLoading,
-    error,
-    isSubmitting,
-    inscribirse,
+    tutoria: tutoriaQuery.data ?? null,
+    inscripcion,
+    isLoading: tutoriaQuery.isPending,
+    error: tutoriaQuery.error?.message ?? '',
+    isSubmitting: inscribirseM.isPending || cancelarM.isPending,
+    // El backend responde "Asistencia marcada.", que confunde al tutorado: se usa un texto propio.
+    inscribirse: () => ejecutarMutacion(inscribirseM, undefined, 'Te inscribiste a la tutoría.'),
     cancelarInscripcion,
-    recargar,
+    recargar: tutoriaQuery.refetch,
   }
 }

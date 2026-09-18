@@ -1,52 +1,46 @@
-import { useCallback } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { comentariosApi } from '../api/comentarios'
-import { useRecurso } from './useRecurso'
+import { clavesComentarios } from '../api/queryKeys'
+import { ejecutarMutacion } from './ejecutarMutacion'
 
 const useComentarios = (idTutoria) => {
-  const cargarComentarios = useCallback(
-    async ({ signal }) => (idTutoria ? comentariosApi.deTutoria(idTutoria, { signal }) : []),
-    [idTutoria],
-  )
+  const queryClient = useQueryClient()
+  const invalidar = () =>
+    queryClient.invalidateQueries({ queryKey: clavesComentarios.deTutoria(idTutoria) })
 
-  const {
-    datos: comentarios,
-    isLoading,
-    error,
-    recargar,
-    refrescar,
-  } = useRecurso(cargarComentarios, [])
+  const { data, isPending, error, refetch } = useQuery({
+    queryKey: clavesComentarios.deTutoria(idTutoria),
+    queryFn: ({ signal }) => comentariosApi.deTutoria(idTutoria, { signal }),
+    enabled: Boolean(idTutoria),
+  })
 
-  const ejecutar = async (accion, mensajeExito) => {
-    try {
-      await accion()
-      await refrescar()
-      return { ok: true, message: mensajeExito }
-    } catch (err) {
-      return { ok: false, message: err.message }
-    }
-  }
+  const crearComentario = useMutation({
+    mutationFn: (comentario) => comentariosApi.crear({ idTutoria, comentario }),
+    onSuccess: invalidar,
+  })
+  const eliminarComentario = useMutation({
+    mutationFn: comentariosApi.eliminar,
+    onSuccess: invalidar,
+  })
 
   const crear = async (comentario) => {
     const texto = (comentario || '').trim()
     if (!texto) return { ok: false, message: 'El comentario no puede estar vacío' }
-    return ejecutar(
-      () => comentariosApi.crear({ idTutoria, comentario: texto }),
-      'Comentario publicado',
-    )
+    return ejecutarMutacion(crearComentario, texto, 'Comentario publicado')
   }
 
   const eliminar = async (idComentario) => {
     if (!idComentario) return { ok: false, message: 'Comentario inválido' }
-    return ejecutar(() => comentariosApi.eliminar(idComentario), 'Comentario eliminado')
+    return ejecutarMutacion(eliminarComentario, idComentario, 'Comentario eliminado')
   }
 
   return {
-    comentarios,
-    isLoading,
-    error,
+    comentarios: data ?? [],
+    isLoading: isPending,
+    error: error?.message ?? '',
     crear,
     eliminar,
-    recargar,
+    recargar: refetch,
   }
 }
 

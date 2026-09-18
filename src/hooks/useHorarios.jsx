@@ -1,33 +1,30 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { horariosApi } from '../api/horarios'
-import { useRecurso } from './useRecurso'
+import { clavesHorarios } from '../api/queryKeys'
 
 const useHorarios = () => {
-  const {
-    datos: horarios,
-    isLoading,
-    error,
-    recargar,
-    refrescar,
-  } = useRecurso(horariosApi.listar, [])
+  const queryClient = useQueryClient()
+  const invalidar = () => queryClient.invalidateQueries({ queryKey: clavesHorarios.todos })
 
-  // Lanzan ApiError si el backend rechaza la operacion (el formulario muestra el mensaje).
-  const crearHorario = async (payload) => {
-    await horariosApi.crear(payload)
-    await refrescar()
-  }
+  const { data, isPending, error, refetch } = useQuery({
+    queryKey: clavesHorarios.lista(),
+    queryFn: ({ signal }) => horariosApi.listar({ signal }),
+  })
 
-  const eliminarHorario = async (idHorario) => {
-    await horariosApi.eliminar(idHorario)
-    await refrescar()
-  }
+  // Lanzan ApiError si el backend rechaza la operacion (la pantalla muestra el mensaje).
+  const crear = useMutation({ mutationFn: horariosApi.crear, onSuccess: invalidar })
+  const eliminar = useMutation({ mutationFn: horariosApi.eliminar, onSuccess: invalidar })
 
   return {
-    horarios,
-    isLoading,
-    error,
-    refetch: recargar,
-    crearHorario,
-    eliminarHorario,
+    horarios: data ?? [],
+    isLoading: isPending,
+    error: error?.message ?? '',
+    refetch,
+    crearHorario: crear.mutateAsync,
+    creando: crear.isPending,
+    eliminarHorario: eliminar.mutateAsync,
+    // Id del horario que se esta eliminando (para deshabilitar solo ese boton).
+    eliminandoId: eliminar.isPending ? eliminar.variables : null,
   }
 }
 

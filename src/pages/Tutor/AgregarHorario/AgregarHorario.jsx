@@ -20,12 +20,11 @@ const VALORES_INICIALES = { dia: '', horaInicio: '', horaFin: '' }
 const conSegundos = (hora) => `${hora}:00`
 
 const AgregarHorario = () => {
-  const { horarios, isLoading, error, crearHorario, eliminarHorario } = useHorarios()
+  const { horarios, isLoading, error, crearHorario, creando, eliminarHorario, eliminandoId } =
+    useHorarios()
 
   const [valores, setValores] = useState(VALORES_INICIALES)
   const [resultado, setResultado] = useState(null)
-  const [enviando, setEnviando] = useState(false)
-  const [eliminandoId, setEliminandoId] = useState(null)
 
   const cambiar = (campo, valor) => {
     setValores((actuales) => ({ ...actuales, [campo]: valor }))
@@ -49,7 +48,6 @@ const AgregarHorario = () => {
       return
     }
 
-    setEnviando(true)
     try {
       await crearHorario({
         dia: valores.dia,
@@ -60,21 +58,16 @@ const AgregarHorario = () => {
       setResultado({ tone: 'success', texto: 'Horario creado correctamente.' })
     } catch (err) {
       setResultado({ tone: 'error', texto: err.message })
-    } finally {
-      setEnviando(false)
     }
   }
 
   const eliminar = async (idHorario) => {
     setResultado(null)
-    setEliminandoId(idHorario)
     try {
       await eliminarHorario(idHorario)
       setResultado({ tone: 'success', texto: 'Horario eliminado.' })
     } catch (err) {
       setResultado({ tone: 'error', texto: err.message })
-    } finally {
-      setEliminandoId(null)
     }
   }
 
@@ -117,11 +110,11 @@ const AgregarHorario = () => {
           </div>
 
           <div className={styles.acciones}>
-            <Button variant="secondary" onClick={limpiar} disabled={enviando}>
+            <Button variant="secondary" onClick={limpiar} disabled={creando}>
               Limpiar
             </Button>
-            <Button type="submit" loading={enviando}>
-              {enviando ? 'Guardando…' : 'Crear horario'}
+            <Button type="submit" loading={creando}>
+              {creando ? 'Guardando…' : 'Crear horario'}
             </Button>
           </div>
         </form>
