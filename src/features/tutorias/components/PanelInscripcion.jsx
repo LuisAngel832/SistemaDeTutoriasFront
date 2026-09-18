@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import { Alert, Button, Card, ConfirmDialog } from '../../../components/ui'
 import { MIN_MINUTOS_CANCELACION } from '../../../constants/tutoria'
+import { avisar } from '../../../utils/avisos'
 import { formatTiempoRestante } from '../../../utils/fechas'
 import { esProgramada } from '../../../utils/tutoria'
 import styles from './PanelInscripcion.module.css'
@@ -14,7 +15,6 @@ export const PanelInscripcion = ({
   onInscribirse,
   onCancelar,
 }) => {
-  const [resultado, setResultado] = useState(null)
   const [confirmando, setConfirmando] = useState(false)
   const idTitulo = useId()
 
@@ -28,9 +28,7 @@ export const PanelInscripcion = ({
       : null
 
   const ejecutar = async (accion) => {
-    setResultado(null)
-    const res = await accion()
-    setResultado({ tone: res.ok ? 'success' : 'error', texto: res.message })
+    avisar(await accion())
     setConfirmando(false)
   }
 
@@ -39,8 +37,6 @@ export const PanelInscripcion = ({
       <h2 className={styles.titulo} id={idTitulo}>
         {inscrito ? 'Tu inscripción' : 'Inscribirse'}
       </h2>
-
-      {resultado ? <Alert tone={resultado.tone}>{resultado.texto}</Alert> : null}
 
       {inscrito ? (
         <>

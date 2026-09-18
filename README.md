@@ -62,17 +62,19 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 
 ## Stack
 
-| Capa               | Tecnologia                                                                |
-| ------------------ | ------------------------------------------------------------------------- |
-| Build & dev server | [Vite](https://vitejs.dev/) 8                                             |
-| UI                 | [React](https://react.dev/) 19                                            |
-| Routing            | [react-router-dom](https://reactrouter.com/) 7                            |
-| Datos del servidor | [TanStack Query](https://tanstack.com/query) 5 (cache, reintentos)        |
-| Pruebas            | Vitest + Testing Library (jsdom) y MSW                                    |
-| Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh` |
-| Formato            | Prettier 3 + lint-staged (pre-commit) y commitlint (commit-msg)           |
-| Lenguaje           | JavaScript (JSX)                                                          |
-| Estilos            | CSS por componente con tokens de diseno y tipografia Montserrat           |
+| Capa               | Tecnologia                                                                    |
+| ------------------ | ----------------------------------------------------------------------------- |
+| Build & dev server | [Vite](https://vitejs.dev/) 8                                                 |
+| UI                 | [React](https://react.dev/) 19                                                |
+| Routing            | [react-router-dom](https://reactrouter.com/) 7                                |
+| Datos del servidor | [TanStack Query](https://tanstack.com/query) 5 (cache, reintentos)            |
+| Formularios        | [react-hook-form](https://react-hook-form.com/) 7 + [Zod](https://zod.dev/) 4 |
+| Avisos             | [sonner](https://sonner.emilkowal.ski/) (toasts de las acciones)              |
+| Pruebas            | Vitest + Testing Library (jsdom) y MSW                                        |
+| Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh`     |
+| Formato            | Prettier 3 + lint-staged (pre-commit) y commitlint (commit-msg)               |
+| Lenguaje           | JavaScript (JSX)                                                              |
+| Estilos            | CSS por componente con tokens de diseno y tipografia Montserrat               |
 
 ## Requisitos
 
@@ -199,9 +201,6 @@ src/
       AppLayout.jsx        # Estructura de las paginas privadas (sidebar + contenido)
       Sidebar.jsx          # Navegacion lateral por rol
     ui/                    # Componentes base: Button, Card, FormField, Modal, Alert... (CSS Modules)
-    Tutor/
-      TemasInput.jsx       # Input de chips para temas (RF14)
-      VentanaEmerjente.jsx # Modal de resultado
   constants/               # Rutas, roles, estados de tutoria, espacios y dias de la semana
   api/                     # Cliente HTTP, servicios por recurso, mappers y claves de cache
   features/
@@ -210,9 +209,9 @@ src/
     tutorias/components/   # TutoriaCard, TutoriaInfoGrid, TemasInput, InscritosList, acciones
   hooks/
     useAhora.js            # Hora actual que se refresca periodicamente
-    useRecurso.js          # Carga de datos con cancelacion (base de los demas hooks)
+    ejecutarMutacion.js    # Ejecuta una mutacion y devuelve { ok, message }
     useComentarios.jsx     # CRUD de comentarios sobre una tutoria
-    useCrearTutoria.jsx    # Estado y submit de crear tutoria
+    useCrearTutoria.jsx    # Listas y mutacion de crear tutoria
     useHorarios.jsx        # CRUD de horarios del tutor
     useMisTutorias.jsx     # Tutorias del tutor autenticado
     useTutoriaDetalleTutor.jsx     # Detalle, edicion, cancelar, completar, temas
@@ -232,11 +231,13 @@ src/
       Home.jsx             # Explorar tutorias
       MisTutorias.jsx
       TutoriaDetalle.jsx
+  schemas/                 # Validacion de los formularios con Zod (auth, horario, tutoria)
   styles/
     tokens.css             # Colores, sombras y radios (unica fuente de valores de diseno)
     animations.css         # Animaciones compartidas y reduccion de movimiento
     global.css             # Estilos base del documento
   utils/
+    avisos.js              # Muestra { ok, message } como toast
     fechas.js              # Fechas en hora local y tiempo restante
     formatters.js          # Formato de fechas, horas, temas e iniciales
     tutoria.js             # Reglas de dominio (estado, horario de una tutoria)

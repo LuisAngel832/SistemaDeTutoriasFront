@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 import { Link, useLocation } from 'react-router-dom'
 import { Alert, Button, FormField, Input, PasswordInput } from '../../components/ui'
 import { ROUTES } from '../../constants/routes'
 import { useAuth } from '../../features/auth/AuthContext'
 import { AuthLayout } from '../../features/auth/components/AuthLayout'
+import { loginSchema } from '../../schemas/auth'
 import styles from './LogIn.module.css'
 
 const CARACTERISTICAS = [
@@ -16,28 +18,21 @@ const LogIn = () => {
   const { login, sesionExpirada } = useAuth()
   const location = useLocation()
 
-  const [matricula, setMatricula] = useState('')
-  const [contrasena, setContrasena] = useState('')
-  const [error, setError] = useState('')
-  const [enviando, setEnviando] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { matricula: '', contrasena: '' },
+  })
 
-  const enviar = async (evento) => {
-    evento.preventDefault()
-
-    if (!matricula.trim() || !contrasena) {
-      setError('Todos los campos son obligatorios')
-      return
-    }
-
-    setError('')
-    setEnviando(true)
-    const res = await login(matricula.trim(), contrasena)
+  const enviar = handleSubmit(async ({ matricula, contrasena }) => {
+    const res = await login(matricula, contrasena)
     // Con exito no se navega aqui: SoloInvitados redirige a la pagina pedida o al inicio.
-    if (!res.ok) {
-      setError(res.message)
-      setEnviando(false)
-    }
-  }
+    if (!res.ok) setError('root', { message: res.message })
+  })
 
   const aviso = sesionExpirada
     ? { tono: 'warning', texto: 'Tu sesión expiró. Vuelve a iniciar sesión para continuar.' }
@@ -59,41 +54,41 @@ const LogIn = () => {
       }
     >
       <form className={styles.formulario} onSubmit={enviar} noValidate>
-        {error ? (
-          <Alert tone="error">{error}</Alert>
+        {errors.root ? (
+          <Alert tone="error">{errors.root.message}</Alert>
         ) : aviso ? (
           <Alert tone={aviso.tono}>{aviso.texto}</Alert>
         ) : null}
 
-        <FormField label="Matrícula institucional" htmlFor="matricula">
+        <FormField
+          label="Matrícula institucional"
+          htmlFor="matricula"
+          error={errors.matricula?.message}
+        >
           <Input
             id="matricula"
             placeholder="Ej. 20230001"
-            value={matricula}
-            onChange={(evento) => {
-              setMatricula(evento.target.value)
-              setError('')
-            }}
             autoComplete="username"
             inputMode="numeric"
+            {...register('matricula')}
           />
         </FormField>
 
-        <FormField label="Contraseña de tu cuenta" htmlFor="contrasena">
+        <FormField
+          label="Contraseña de tu cuenta"
+          htmlFor="contrasena"
+          error={errors.contrasena?.message}
+        >
           <PasswordInput
             id="contrasena"
             placeholder="Tu contraseña"
-            value={contrasena}
-            onChange={(evento) => {
-              setContrasena(evento.target.value)
-              setError('')
-            }}
             autoComplete="current-password"
+            {...register('contrasena')}
           />
         </FormField>
 
-        <Button type="submit" size="lg" fullWidth loading={enviando} className={styles.enviar}>
-          {enviando ? 'Ingresando…' : 'Iniciar sesión'}
+        <Button type="submit" size="lg" fullWidth loading={isSubmitting} className={styles.enviar}>
+          {isSubmitting ? 'Ingresando…' : 'Iniciar sesión'}
         </Button>
       </form>
     </AuthLayout>

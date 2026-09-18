@@ -157,3 +157,10 @@
     grid-template-columns: 1fr;
   }
 }
+
+.error {
+  margin: 0.5rem 0 0;
+  color: var(--color-peligro-texto);
+  font-size: 0.78rem;
+  font-weight: 500;
+}

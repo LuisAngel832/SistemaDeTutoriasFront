@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Pagina } from '../../../components/layout/Pagina'
-import { Alert, Button, Card } from '../../../components/ui'
+import { Button, Card } from '../../../components/ui'
 import { MIN_MINUTOS_CANCELACION } from '../../../constants/tutoria'
 import { ROUTES } from '../../../constants/routes'
 import Comentarios from '../../../features/comentarios/Comentarios'
@@ -21,6 +21,7 @@ import { TutoriaInfoGrid } from '../../../features/tutorias/components/TutoriaIn
 import { useAhora } from '../../../hooks/useAhora'
 import useHorarios from '../../../hooks/useHorarios'
 import useTutoriaDetalleTutor from '../../../hooks/useTutoriaDetalleTutor'
+import { avisar } from '../../../utils/avisos'
 import { minutosHasta } from '../../../utils/fechas'
 import { esProgramada, yaTuvoLugar } from '../../../utils/tutoria'
 import styles from './TutoriaDetalle.module.css'
@@ -39,11 +40,10 @@ const TutoriaDetalleTutor = () => {
   const ahora = useAhora()
 
   const [editando, setEditando] = useState(false)
-  const [resultado, setResultado] = useState(null)
 
-  // Muestra el resultado de una accion y lo devuelve para quien la llamo.
+  // Avisa del resultado de una accion y lo devuelve para quien la llamo.
   const informar = (res) => {
-    setResultado({ tone: res.ok ? 'success' : 'error', texto: res.message })
+    avisar(res)
     return res
   }
 
@@ -138,7 +138,6 @@ const TutoriaDetalleTutor = () => {
     <Pagina>
       <DetalleTutoriaLayout
         back={<Volver />}
-        notice={resultado ? <Alert tone={resultado.tone}>{resultado.texto}</Alert> : null}
         main={principal}
         aside={
           <>

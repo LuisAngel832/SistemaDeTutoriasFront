@@ -421,36 +421,40 @@ ningun archivo de pagina supera 200 lineas.
 **Esfuerzo estimado:** 8–10 dias.
 **Entregable:** `v1.0.0`.
 
-### PR 4.1 — `feat/tanstack-query` (2–3 PRs)
+### PR 4.1 — `feat/tanstack-query` (2–3 PRs) ✅
 
-- [ ] Instalar `@tanstack/react-query` y `@tanstack/react-query-devtools` (solo dev).
-- [ ] `src/app/providers.jsx` con `QueryClientProvider` (`staleTime: 30s`, `retry: 1`, sin
+- [x] Instalar `@tanstack/react-query` y `@tanstack/react-query-devtools` (solo dev).
+- [x] `src/app/providers.jsx` con `QueryClientProvider` (`staleTime: 30s`, `retry: 1`, sin
       reintento en 4xx).
-- [ ] `src/api/queryKeys.js` (fabrica de keys: `tutoriaKeys.all`, `.mias()`, `.detalle(id)`...).
-- [ ] Queries: `useMisTutorias`, `useTutoriasDisponibles`, `useInscripciones`, `useHorarios`,
+- [x] `src/api/queryKeys.js` (fabrica de keys: `tutoriaKeys.all`, `.mias()`, `.detalle(id)`...).
+- [x] Queries: `useMisTutorias`, `useTutoriasDisponibles`, `useInscripciones`, `useHorarios`,
       `useMaterias`, `useTutoria(id)`, `useInscritos(id)`, `useComentarios(id)`.
-- [ ] Mutaciones con invalidacion: crear/editar/cancelar/completar tutoria, crear/eliminar
+- [x] Mutaciones con invalidacion: crear/editar/cancelar/completar tutoria, crear/eliminar
       horario, agregar/quitar tema, inscribirse/cancelar, crear/eliminar comentario.
-- [ ] `isPending` por mutacion (cada boton muestra su propio estado de carga).
-- [ ] Borrar el estado manual `isLoading/error/data` de los hooks migrados.
-- [ ] Regresar `react-hooks/set-state-in-effect` a `error` en `eslint.config.js`.
-- [ ] Actualizar el helper de tests para incluir `QueryClientProvider`.
+- [x] `isPending` por mutacion (cada boton muestra su propio estado de carga).
+- [x] Borrar el estado manual `isLoading/error/data` de los hooks migrados.
+- [x] Regresar `react-hooks/set-state-in-effect` a `error` en `eslint.config.js`.
+- [x] Actualizar el helper de tests para incluir `QueryClientProvider`.
 
 **Criterios de aceptacion:** 0 warnings de lint; volver de un detalle a la lista no muestra
 skeleton; al inscribirse, "Mis inscripciones" se actualiza sin recargar.
 
-### PR 4.2 — `feat/formularios-zod` (2 PRs)
+### PR 4.2 — `feat/formularios-zod` (2 PRs) ✅
 
-- [ ] Instalar `react-hook-form`, `zod`, `@hookform/resolvers`, `sonner`.
-- [ ] Esquemas en `src/schemas/`: `loginSchema`, `registroSchema` (correo, matricula con
+- [x] Instalar `react-hook-form`, `zod`, `@hookform/resolvers`, `sonner`.
+- [x] Esquemas en `src/schemas/`: `loginSchema`, `registroSchema` (correo, matricula con
       formato institucional, contrasena ≥ 8), `horarioSchema` (fin > inicio),
       `tutoriaSchema` (fecha ≥ hoy, campos requeridos, temas ≤ 10).
-- [ ] Integrar `FormField` con `react-hook-form` (errores por campo).
-- [ ] Migrar Login, Registro, Crear tutoria, Horarios y Editar tutoria; todos con `<form onSubmit>`
+- [x] Integrar `FormField` con `react-hook-form` (errores por campo).
+- [x] Migrar Login, Registro, Crear tutoria, Horarios y Editar tutoria; todos con `<form onSubmit>`
       y boton `type="submit"` (Enter envia).
-- [ ] `Toaster` de `sonner` en `providers.jsx`; los resultados de mutaciones se muestran como
+- [x] `Toaster` de `sonner` en `providers.jsx`; los resultados de mutaciones se muestran como
       toast en vez de modal.
-- [ ] Pruebas de cada esquema y de un formulario completo (crear tutoria).
+- [x] Pruebas de cada esquema y de un formulario completo (crear tutoria).
+
+> Hecho. Los esquemas viven en `src/schemas/` (`auth.js`, `horario.js`, `tutoria.js`) y los selects se convierten a numero con `transform(Number)`.
+> Los avisos de las acciones (crear/eliminar horario, inscribirse, comentarios, acciones del tutor) son toasts de `sonner`;
+> los errores de validacion siguen junto a su campo y los de carga como `Alert` en la pantalla.
 
 ### PR 4.3 — `refactor/estructura-por-features` (mecanico)
 

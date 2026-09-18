@@ -36,7 +36,7 @@ describe('Comentarios', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Eliminar mi comentario' }))
     await waitFor(() => expect(screen.queryByText('Mio')).not.toBeInTheDocument())
-    expect(screen.getByRole('status')).toHaveTextContent('Comentario eliminado')
+    expect(await screen.findByText('Comentario eliminado')).toBeInTheDocument()
   })
 
   it('en modo lectura no muestra el formulario ni botones de borrar', async () => {

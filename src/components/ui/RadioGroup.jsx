@@ -14,9 +14,11 @@ export const RadioGroup = ({
   onChange,
   variant = 'card',
   disabled = false,
+  error,
   className,
 }) => {
   const idBase = useId()
+  const idError = error ? `${idBase}-error` : undefined
 
   return (
     <fieldset className={clases(styles.grupo, className)}>
@@ -46,7 +48,7 @@ export const RadioGroup = ({
                 disabled={disabled}
                 onChange={() => onChange(opcion.value)}
                 aria-labelledby={idEtiqueta}
-                aria-describedby={idDescripcion}
+                aria-describedby={[idDescripcion, idError].filter(Boolean).join(' ') || undefined}
               />
               {variant === 'chip' ? (
                 <>
@@ -74,6 +76,11 @@ export const RadioGroup = ({
           )
         })}
       </div>
+      {error ? (
+        <p className={styles.error} id={idError}>
+          {error}
+        </p>
+      ) : null}
     </fieldset>
   )
 }

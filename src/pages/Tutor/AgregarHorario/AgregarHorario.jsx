@@ -1,9 +1,12 @@
-import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Controller, useForm } from 'react-hook-form'
 import { PanelFormulario, Pagina } from '../../../components/layout/Pagina'
-import { Alert, Button, FormField, Input, RadioGroup } from '../../../components/ui'
+import { Button, FormField, Input, RadioGroup } from '../../../components/ui'
 import { IconHorario } from '../../../components/ui/icons'
 import { DIAS_SEMANA } from '../../../constants/horarios'
 import useHorarios from '../../../hooks/useHorarios'
+import { horarioSchema } from '../../../schemas/horario'
+import { avisar } from '../../../utils/avisos'
 import { ListaHorarios } from './ListaHorarios'
 import styles from './AgregarHorario.module.css'
 
@@ -23,51 +26,34 @@ const AgregarHorario = () => {
   const { horarios, isLoading, error, crearHorario, creando, eliminarHorario, eliminandoId } =
     useHorarios()
 
-  const [valores, setValores] = useState(VALORES_INICIALES)
-  const [resultado, setResultado] = useState(null)
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({ resolver: zodResolver(horarioSchema), defaultValues: VALORES_INICIALES })
 
-  const cambiar = (campo, valor) => {
-    setValores((actuales) => ({ ...actuales, [campo]: valor }))
-    setResultado(null)
-  }
-
-  const limpiar = () => {
-    setValores(VALORES_INICIALES)
-    setResultado(null)
-  }
-
-  const enviar = async (evento) => {
-    evento.preventDefault()
-
-    if (!valores.dia || !valores.horaInicio || !valores.horaFin) {
-      setResultado({ tone: 'error', texto: 'Completa todos los campos.' })
-      return
-    }
-    if (valores.horaFin <= valores.horaInicio) {
-      setResultado({ tone: 'error', texto: 'La hora final debe ser mayor que la hora de inicio.' })
-      return
-    }
-
+  const enviar = handleSubmit(async (valores) => {
     try {
       await crearHorario({
         dia: valores.dia,
         horaInicio: conSegundos(valores.horaInicio),
         horaFin: conSegundos(valores.horaFin),
       })
-      setValores(VALORES_INICIALES)
-      setResultado({ tone: 'success', texto: 'Horario creado correctamente.' })
+      reset(VALORES_INICIALES)
+      avisar({ ok: true, message: 'Horario creado correctamente.' })
     } catch (err) {
-      setResultado({ tone: 'error', texto: err.message })
+      avisar({ ok: false, message: err.message })
     }
-  }
+  })
 
   const eliminar = async (idHorario) => {
-    setResultado(null)
     try {
       await eliminarHorario(idHorario)
-      setResultado({ tone: 'success', texto: 'Horario eliminado.' })
+      avisar({ ok: true, message: 'Horario eliminado.' })
     } catch (err) {
-      setResultado({ tone: 'error', texto: err.message })
+      avisar({ ok: false, message: err.message })
     }
   }
 
@@ -79,38 +65,41 @@ const AgregarHorario = () => {
         icon={<IconHorario />}
       >
         <form className={styles.formulario} onSubmit={enviar} noValidate>
-          {resultado ? <Alert tone={resultado.tone}>{resultado.texto}</Alert> : null}
-
-          <RadioGroup
-            variant="chip"
+          <Controller
+            control={control}
             name="dia"
-            legend="Día de la semana en que estarás disponible"
-            options={OPCIONES_DIA}
-            value={valores.dia}
-            onChange={(dia) => cambiar('dia', dia)}
+            render={({ field }) => (
+              <RadioGroup
+                variant="chip"
+                name={field.name}
+                legend="Día de la semana en que estarás disponible"
+                options={OPCIONES_DIA}
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.dia?.message}
+              />
+            )}
           />
 
           <div className={styles.horas}>
-            <FormField label="Hora en que inicia tu disponibilidad" htmlFor="hora-inicio">
-              <Input
-                id="hora-inicio"
-                type="time"
-                value={valores.horaInicio}
-                onChange={(evento) => cambiar('horaInicio', evento.target.value)}
-              />
+            <FormField
+              label="Hora en que inicia tu disponibilidad"
+              htmlFor="hora-inicio"
+              error={errors.horaInicio?.message}
+            >
+              <Input id="hora-inicio" type="time" {...register('horaInicio')} />
             </FormField>
-            <FormField label="Hora en que termina tu disponibilidad" htmlFor="hora-fin">
-              <Input
-                id="hora-fin"
-                type="time"
-                value={valores.horaFin}
-                onChange={(evento) => cambiar('horaFin', evento.target.value)}
-              />
+            <FormField
+              label="Hora en que termina tu disponibilidad"
+              htmlFor="hora-fin"
+              error={errors.horaFin?.message}
+            >
+              <Input id="hora-fin" type="time" {...register('horaFin')} />
             </FormField>
           </div>
 
           <div className={styles.acciones}>
-            <Button variant="secondary" onClick={limpiar} disabled={creando}>
+            <Button variant="secondary" onClick={() => reset(VALORES_INICIALES)} disabled={creando}>
               Limpiar
             </Button>
             <Button type="submit" loading={creando}>
