@@ -494,6 +494,9 @@ checklist manual en verde.
 
 **Cierre del Sprint 4:** tag `v1.0.0`, CHANGELOG completo y redeploy.
 
+> CHANGELOG actualizado en la seccion `[Sin publicar]`. El tag `v1.0.0` y el redeploy
+> quedan pendientes de tu decision (publicar cambia lo que ven los usuarios).
+
 ---
 
 ## Fase 5 — Despues
