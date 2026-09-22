@@ -1,10 +1,10 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
-import AppLayout from '../components/layout/AppLayout'
-import { CargandoPagina } from '../components/layout/CargandoPagina'
-import { ROLES_TUTOR, ROLES_TUTORADO } from '../constants/roles'
-import { ROUTES } from '../constants/routes'
-import { RedireccionInicio, RequireRole, SoloInvitados } from '../features/auth/guards'
-import PaginaError from '../pages/Sistema/PaginaError'
+import { AppLayout } from '@/components/layout/AppLayout'
+import { CargandoPagina } from '@/components/layout/CargandoPagina'
+import { ROLES_TUTOR, ROLES_TUTORADO } from '@/constants/roles'
+import { ROUTES } from '@/constants/routes'
+import { RedireccionInicio, RequireRole, SoloInvitados } from '@/features/auth/guards'
+import PaginaError from './PaginaError'
 import { RaizApp } from './RaizApp'
 import { RedirigirDetalle } from './RedirigirDetalle'
 
@@ -25,12 +25,12 @@ export const rutas = [
           {
             path: ROUTES.login,
             handle: { titulo: 'Iniciar sesión' },
-            lazy: pagina(() => import('../pages/LogIn/LogIn')),
+            lazy: pagina(() => import('@/features/auth/pages/LogIn')),
           },
           {
             path: ROUTES.registro,
             handle: { titulo: 'Crear cuenta' },
-            lazy: pagina(() => import('../pages/Registro/Registro')),
+            lazy: pagina(() => import('@/features/auth/pages/Registro')),
           },
         ],
       },
@@ -48,22 +48,26 @@ export const rutas = [
                   {
                     path: ROUTES.tutor.inicio,
                     handle: { titulo: 'Mis tutorías' },
-                    lazy: pagina(() => import('../pages/Tutor/Home')),
+                    lazy: pagina(() => import('@/features/tutor/pages/Home')),
                   },
                   {
                     path: ROUTES.tutor.nuevaTutoria,
                     handle: { titulo: 'Crear tutoría' },
-                    lazy: pagina(() => import('../pages/Tutor/CrearTutoria/CrearTutoria')),
+                    lazy: pagina(() => import('@/features/tutor/pages/CrearTutoria/CrearTutoria')),
                   },
                   {
                     path: ROUTES.tutor.horarios,
                     handle: { titulo: 'Mis horarios' },
-                    lazy: pagina(() => import('../pages/Tutor/AgregarHorario/AgregarHorario')),
+                    lazy: pagina(
+                      () => import('@/features/tutor/pages/AgregarHorario/AgregarHorario'),
+                    ),
                   },
                   {
                     path: ROUTES.tutor.detalle(':id'),
                     handle: { titulo: 'Detalle de tutoría' },
-                    lazy: pagina(() => import('../pages/Tutor/TutoriaDetalle/TutoriaDetalle')),
+                    lazy: pagina(
+                      () => import('@/features/tutor/pages/TutoriaDetalle/TutoriaDetalle'),
+                    ),
                   },
                 ],
               },
@@ -84,17 +88,17 @@ export const rutas = [
                   {
                     path: ROUTES.tutorado.inicio,
                     handle: { titulo: 'Explorar tutorías' },
-                    lazy: pagina(() => import('../pages/Tutorado/Home')),
+                    lazy: pagina(() => import('@/features/tutorado/pages/Home')),
                   },
                   {
                     path: ROUTES.tutorado.inscripciones,
                     handle: { titulo: 'Mis tutorías' },
-                    lazy: pagina(() => import('../pages/Tutorado/MisTutorias')),
+                    lazy: pagina(() => import('@/features/tutorado/pages/MisTutorias')),
                   },
                   {
                     path: ROUTES.tutorado.detalle(':id'),
                     handle: { titulo: 'Detalle de tutoría' },
-                    lazy: pagina(() => import('../pages/Tutorado/TutoriaDetalle')),
+                    lazy: pagina(() => import('@/features/tutorado/pages/TutoriaDetalle')),
                   },
                 ],
               },
@@ -119,7 +123,7 @@ export const rutas = [
       {
         path: '*',
         handle: { titulo: 'Página no encontrada' },
-        lazy: pagina(() => import('../pages/Sistema/NoEncontrada')),
+        lazy: pagina(() => import('./NoEncontrada')),
       },
     ],
   },

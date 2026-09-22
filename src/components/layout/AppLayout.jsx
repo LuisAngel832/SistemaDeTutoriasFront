@@ -1,27 +1,27 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation, useMatches } from 'react-router-dom'
-import Sidebar from './Sidebar'
-import { ROLES } from '../../constants/roles'
-import { ROUTES } from '../../constants/routes'
-import { useAuth } from '../../features/auth/AuthContext'
-import '../../assets/css/components/sidebar.css'
+import { Sidebar } from './Sidebar'
+import { ROLES } from '@/constants/roles'
+import { ROUTES } from '@/constants/routes'
+import { useAuth } from '@/features/auth/AuthContext'
+import './sidebar.css'
 
 const MENU_POR_ROL = {
   [ROLES.TUTOR]: {
     seccion: 'Panel del tutor',
     brandTo: ROUTES.tutor.inicio,
     items: [
-      { to: ROUTES.tutor.inicio, label: 'Mis Tutorias', icon: 'tutorias', end: true },
-      { to: ROUTES.tutor.nuevaTutoria, label: 'Crear Tutoria', icon: 'crear' },
-      { to: ROUTES.tutor.horarios, label: 'Crear Horario', icon: 'horario' },
+      { to: ROUTES.tutor.inicio, label: 'Mis tutorías', icon: 'tutorias', end: true },
+      { to: ROUTES.tutor.nuevaTutoria, label: 'Crear tutoría', icon: 'crear' },
+      { to: ROUTES.tutor.horarios, label: 'Crear horario', icon: 'horario' },
     ],
   },
   [ROLES.TUTORADO]: {
     seccion: 'Panel del tutorado',
     brandTo: ROUTES.tutorado.inicio,
     items: [
-      { to: ROUTES.tutorado.inicio, label: 'Explorar Tutorias', icon: 'explorar', end: true },
-      { to: ROUTES.tutorado.inscripciones, label: 'Mis Tutorias', icon: 'misTutorias' },
+      { to: ROUTES.tutorado.inicio, label: 'Explorar tutorías', icon: 'explorar', end: true },
+      { to: ROUTES.tutorado.inscripciones, label: 'Mis tutorías', icon: 'misTutorias' },
     ],
   },
 }
@@ -37,7 +37,7 @@ const leerPreferenciaColapsado = () => {
 }
 
 // Estructura de las paginas privadas: sidebar + contenido de la ruta activa.
-const AppLayout = () => {
+export const AppLayout = () => {
   const location = useLocation()
   const matches = useMatches()
   const { nombre, matricula, rol } = useAuth()
@@ -102,7 +102,7 @@ const AppLayout = () => {
             type="button"
             className="topbar-burger"
             onClick={abrirMenu}
-            aria-label="Abrir menu"
+            aria-label="Abrir menú"
             aria-expanded={mobileOpen}
             aria-controls="app-sidebar"
           >
@@ -110,7 +110,7 @@ const AppLayout = () => {
             <span />
             <span />
           </button>
-          <span className="topbar-title">{titulo ?? 'Sistema de Tutorias'}</span>
+          <span className="topbar-title">{titulo ?? 'Sistema de Tutorías'}</span>
         </header>
 
         <Outlet />
@@ -118,5 +118,3 @@ const AppLayout = () => {
     </div>
   )
 }
-
-export default AppLayout

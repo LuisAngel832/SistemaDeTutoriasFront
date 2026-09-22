@@ -1,0 +1,114 @@
+/* Estilos compartidos por Input, Select, Textarea y PasswordInput */
+.control {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-sm);
+  background-color: var(--color-superficie);
+  color: var(--color-texto);
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.control::placeholder {
+  color: var(--color-texto-placeholder);
+}
+
+.control:hover:not(:focus):not(:disabled) {
+  border-color: var(--color-borde-fuerte);
+}
+
+.control:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: var(--anillo-foco);
+}
+
+.control:disabled {
+  background-color: var(--color-fondo-suave);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.control[aria-invalid='true'] {
+  border-color: var(--color-peligro-borde-hover);
+}
+
+.control[aria-invalid='true']:focus {
+  box-shadow: 0 0 0 3px rgba(217, 48, 48, 0.15);
+}
+
+/* Select con flecha propia */
+.selectWrap {
+  position: relative;
+}
+
+.selectWrap::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--color-texto-suave);
+  border-bottom: 2px solid var(--color-texto-suave);
+  transform: translateY(-75%) rotate(45deg);
+  pointer-events: none;
+}
+
+.select {
+  appearance: none;
+  padding-right: 2.4rem;
+  cursor: pointer;
+}
+
+.textarea {
+  height: auto;
+  min-height: 80px;
+  padding: 0.65rem 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+/* Input con boton dentro (p. ej. mostrar contrasena) */
+.conAccion {
+  position: relative;
+}
+
+.conAccion .control {
+  padding-right: 5.5rem;
+}
+
+.accion {
+  position: absolute;
+  top: 50%;
+  right: 0.45rem;
+  transform: translateY(-50%);
+  padding: 0.3rem 0.55rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-texto-suave);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.accion:hover {
+  background-color: var(--color-fondo-hover);
+  color: var(--color-texto);
+}
+
+.accion:focus-visible {
+  outline: var(--contorno-foco);
+  outline-offset: 1px;
+}

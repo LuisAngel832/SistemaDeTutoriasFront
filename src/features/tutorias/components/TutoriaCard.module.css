@@ -1,0 +1,143 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  height: 100%;
+  padding: 1.15rem 1.25rem;
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie);
+  box-shadow: var(--sombra-tarjeta);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-tarjeta-hover);
+  border-color: var(--color-borde-hover);
+}
+
+.encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.titulos {
+  min-width: 0;
+}
+
+.titulo {
+  margin: 0;
+  color: var(--color-texto);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.tutor {
+  margin: 0.15rem 0 0;
+  color: var(--color-texto-suave);
+  font-size: 0.82rem;
+}
+
+.info {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 0.35rem 0.7rem;
+  margin: 0.3rem 0 0;
+  color: var(--color-texto);
+  font-size: 0.88rem;
+}
+
+.info dt {
+  color: var(--color-texto-suave);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.info dd {
+  margin: 0;
+}
+
+.temas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.accion {
+  margin-top: auto;
+}
+
+/* Variante tutor: el enlace del titulo cubre toda la tarjeta */
+.enlazada {
+  cursor: pointer;
+}
+
+.enlaceTarjeta {
+  color: inherit;
+  text-decoration: none;
+}
+
+.enlaceTarjeta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.enlaceTarjeta:focus-visible {
+  outline: none;
+}
+
+.enlaceTarjeta:focus-visible::after {
+  outline: var(--contorno-foco);
+  outline-offset: 2px;
+}
+
+.pista {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  color: var(--color-primario);
+  font-size: 0.82rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.enlazada:hover .pista,
+.enlazada:focus-within .pista {
+  opacity: 1;
+}
+
+/* Inscripcion sin datos de la tutoria */
+.incompleta {
+  justify-content: center;
+  padding: 1.5rem 1.25rem;
+  border-style: dashed;
+  background-color: var(--color-fondo-suave);
+  text-align: center;
+}
+
+.incompletaTitulo {
+  margin: 0;
+  color: var(--color-texto-secundario);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.incompletaTexto {
+  margin: 0;
+  color: var(--color-texto-tenue);
+  font-size: 0.82rem;
+}

@@ -56,21 +56,25 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 - Diseno responsive con breakpoints para escritorio, tablet y movil.
 - Sidebar lateral colapsable (se recuerda la preferencia) y drawer con menu hamburguesa en
   pantallas pequenas.
-- Tema visual unificado (paleta azul/verde) con animaciones sutiles.
-- Soporte para `prefers-reduced-motion`.
+- Tema visual unificado con tokens de diseno (paleta azul/verde) y animaciones sutiles.
+- Accesibilidad: contraste AA, radios y dialogos nativos, mensajes anunciados a lectores de
+  pantalla y soporte para `prefers-reduced-motion`.
 
 ## Stack
 
-| Capa               | Tecnologia                                                                |
-| ------------------ | ------------------------------------------------------------------------- |
-| Build & dev server | [Vite](https://vitejs.dev/) 8                                             |
-| UI                 | [React](https://react.dev/) 19                                            |
-| Routing            | [react-router-dom](https://reactrouter.com/) 7                            |
-| Pruebas            | Vitest + Testing Library (jsdom) y MSW                                    |
-| Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh` |
-| Formato            | Prettier 3 + lint-staged (pre-commit) y commitlint (commit-msg)           |
-| Lenguaje           | JavaScript (JSX)                                                          |
-| Estilos            | CSS plano por componente y tipografia Montserrat (Fontsource)             |
+| Capa               | Tecnologia                                                                    |
+| ------------------ | ----------------------------------------------------------------------------- |
+| Build & dev server | [Vite](https://vitejs.dev/) 8                                                 |
+| UI                 | [React](https://react.dev/) 19                                                |
+| Routing            | [react-router-dom](https://reactrouter.com/) 7                                |
+| Datos del servidor | [TanStack Query](https://tanstack.com/query) 5 (cache, reintentos)            |
+| Formularios        | [react-hook-form](https://react-hook-form.com/) 7 + [Zod](https://zod.dev/) 4 |
+| Avisos             | [sonner](https://sonner.emilkowal.ski/) (toasts de las acciones)              |
+| Pruebas            | Vitest + Testing Library (jsdom) y MSW                                        |
+| Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh`     |
+| Formato            | Prettier 3 + lint-staged (pre-commit) y commitlint (commit-msg)               |
+| Lenguaje           | JavaScript (JSX)                                                              |
+| Estilos            | CSS por componente con tokens de diseno y tipografia Montserrat               |
 
 ## Requisitos
 
@@ -184,50 +188,42 @@ Pasos:
 
 ## Estructura del proyecto
 
+Cada carpeta de `features/` reune la interfaz, los hooks y el estado de un dominio; lo que
+usan varias features vive en `components/`, `utils/` o `constants/`. Los imports entre
+carpetas usan el alias `@` (`@/components/ui`), definido en `vite.config.js` y `jsconfig.json`.
+
 ```
 src/
-  app/
+  app/                     # Arranque, rutas y proveedores globales
+    main.jsx               # Punto de entrada (lo carga index.html)
     router.jsx             # Rutas, carga diferida, redirecciones y paginas de error
     RaizApp.jsx            # Raiz: sesion, titulo del documento y barra de navegacion
-  assets/css/components/   # CSS compartido (sidebar)
+    providers.jsx          # TanStack Query, avisos (sonner) y devtools en desarrollo
+    queryClient.js         # Configuracion de cache y reintentos
+    PaginaError.jsx        # Pantalla de error; NoEncontrada.jsx es el 404
+  api/                     # Cliente HTTP, servicios por recurso, mappers y claves de cache
   components/
-    Comentarios.jsx        # Comentarios de una tutoria (RF15)
-    layout/
-      AppLayout.jsx        # Estructura de las paginas privadas (sidebar + contenido)
-      Sidebar.jsx          # Navegacion lateral por rol
-      icons.jsx            # Iconos SVG de la navegacion
-    Tutor/
-      TemasInput.jsx       # Input de chips para temas (RF14)
-      VentanaEmerjente.jsx # Modal de resultado
+    layout/                # AppLayout (sidebar + contenido), Sidebar y Pagina
+    ui/                    # Componentes base: Button, Card, FormField, Modal, Alert... (CSS Modules)
   constants/               # Rutas, roles, estados de tutoria, espacios y dias de la semana
-  api/                     # Cliente HTTP, servicios por recurso y mappers de DTOs
   features/
-    auth/                  # AuthProvider, useAuth, guards de rutas, storage y lectura del JWT
-  hooks/
-    useAhora.js            # Hora actual que se refresca periodicamente
-    useRecurso.js          # Carga de datos con cancelacion (base de los demas hooks)
-    useComentarios.jsx     # CRUD de comentarios sobre una tutoria
-    useCrearTutoria.jsx    # Estado y submit de crear tutoria
-    useHorarios.jsx        # CRUD de horarios del tutor
-    useMisTutorias.jsx     # Tutorias del tutor autenticado
-    useTutoriaDetalleTutor.jsx     # Detalle, edicion, cancelar, completar, temas
-    useTutoriaDetalleTutorado.jsx  # Detalle + inscripcion + cancelacion
-    useTutoriasExplorar.jsx        # Listado de tutorias disponibles
-    useTutoriasTutorado.jsx        # Inscripciones del tutorado
-  pages/
-    Sistema/               # Paginas 404 y de error
-    LogIn/                 # Pantalla de inicio de sesion
-    Registro/              # Pantalla de registro
-    Tutor/
-      Home.jsx             # Mis tutorias (tutor)
-      AgregarHorario/
-      CrearTutoria/
-      TutoriaDetalle/      # Detalle de tutoria del tutor
-    Tutorado/
-      Home.jsx             # Explorar tutorias
-      MisTutorias.jsx
-      TutoriaDetalle.jsx
+    auth/                  # AuthProvider, useAuth, guards, storage, JWT y pages/ (login y registro)
+    comentarios/           # Comentarios de una tutoria (RF15) y su hook
+    horarios/              # ListaHorarios y useHorarios (CRUD de horarios del tutor)
+    tutorias/
+      components/          # TutoriaCard, TutoriaInfoGrid, TemasInput, InscritosList, acciones
+      hooks/               # Listados, detalle, inscripcion y creacion de tutorias
+    tutor/pages/           # Mis tutorias, crear tutoria, horarios y detalle
+    tutorado/pages/        # Explorar tutorias, mis inscripciones y detalle
+  schemas/                 # Validacion de los formularios con Zod (auth, horario, tutoria)
+  styles/
+    tokens.css             # Colores, sombras y radios (unica fuente de valores de diseno)
+    animations.css         # Animaciones compartidas y reduccion de movimiento
+    global.css             # Estilos base del documento
+  test/                    # Setup de Vitest, servidor MSW y helpers de render
   utils/
+    avisos.js              # Muestra { ok, message } como toast
+    ejecutarMutacion.js    # Ejecuta una mutacion y devuelve { ok, message }
     fechas.js              # Fechas en hora local y tiempo restante
     formatters.js          # Formato de fechas, horas, temas e iniciales
     tutoria.js             # Reglas de dominio (estado, horario de una tutoria)

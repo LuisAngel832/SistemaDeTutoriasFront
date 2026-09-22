@@ -1,3 +1,5 @@
+import { nombreDeDia } from '@/constants/horarios'
+
 // Formateo de datos para mostrarlos en la interfaz.
 
 export const SIN_DATO = '—'
@@ -23,7 +25,7 @@ export const formatRangoHora = (inicio, fin) => `${formatHora(inicio)} – ${for
 
 // Horario recurrente del tutor: "Lunes · 10:00 - 12:00"
 export const formatHorario = (horario) =>
-  `${horario.dia} · ${formatHora(horario.horaInicio)} - ${formatHora(horario.horaFin)}`
+  `${nombreDeDia(horario.dia)} · ${formatHora(horario.horaInicio)} - ${formatHora(horario.horaFin)}`
 
 // El backend devuelve { idTema, tema }; se aceptan tambien strings sueltos.
 export const formatTema = (tema) => tema?.tema || tema?.nombre || String(tema)

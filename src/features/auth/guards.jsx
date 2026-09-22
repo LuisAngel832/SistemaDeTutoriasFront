@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { HOME_POR_ROL } from '../../constants/roles'
-import { ROUTES } from '../../constants/routes'
+import { HOME_POR_ROL } from '@/constants/roles'
+import { ROUTES } from '@/constants/routes'
 import { useAuth } from './AuthContext'
 
 // Rutas privadas. Sin sesion: manda a /login recordando la ruta pedida (salvo que el usuario

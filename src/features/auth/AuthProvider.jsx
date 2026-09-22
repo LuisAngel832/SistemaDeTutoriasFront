@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { authApi } from '../../api/auth'
-import { configureApi } from '../../api/client'
-import { HOME_POR_ROL, normalizarRol } from '../../constants/roles'
-import { ROUTES } from '../../constants/routes'
+import { authApi } from '@/api/auth'
+import { configureApi } from '@/api/client'
+import { HOME_POR_ROL, normalizarRol } from '@/constants/roles'
+import { ROUTES } from '@/constants/routes'
 import { AuthContext } from './AuthContext'
 import { expiracionDelToken, tokenExpirado } from './jwt'
 import { esClaveDeSesion, guardarSesion, leerSesion, limpiarSesion, SESION_VACIA } from './storage'
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
       const data = await authApi.iniciarSesion({ matricula, pwd })
       const rol = normalizarRol(data?.rol)
       if (!data?.token || !rol) {
-        return { ok: false, message: 'Respuesta del servidor invalida' }
+        return { ok: false, message: 'Respuesta del servidor inválida' }
       }
 
       const nueva = {
