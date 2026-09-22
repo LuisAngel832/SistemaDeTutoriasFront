@@ -1,0 +1,26 @@
+.titulo {
+  margin: 0 0 1rem;
+  color: var(--color-texto);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.texto {
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pista {
+  margin: -0.2rem 0 0.2rem;
+  color: var(--color-texto-tenue);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}

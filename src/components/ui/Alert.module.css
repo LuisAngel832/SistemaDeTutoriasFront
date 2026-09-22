@@ -1,0 +1,44 @@
+.alerta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.75rem 0.95rem;
+  border: 1px solid transparent;
+  border-radius: var(--radio-sm);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  animation: aparecer-desde-arriba 0.25s ease-out;
+}
+
+.compacta {
+  padding: 0.5rem 0.7rem;
+  font-size: 0.82rem;
+}
+
+.titulo {
+  font-weight: 700;
+}
+
+.error {
+  border-color: var(--color-peligro-borde);
+  background-color: var(--color-peligro-suave);
+  color: var(--color-peligro-texto);
+}
+
+.warning {
+  border-color: var(--color-alerta-borde);
+  background-color: var(--color-alerta-suave);
+  color: var(--color-alerta-texto);
+}
+
+.success {
+  border-color: var(--color-exito-borde);
+  background-color: var(--color-exito-suave);
+  color: var(--color-exito-texto);
+}
+
+.info {
+  border-color: var(--color-primario-borde);
+  background-color: var(--color-primario-tenue);
+  color: var(--color-primario-texto);
+}

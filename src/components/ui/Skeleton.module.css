@@ -1,0 +1,20 @@
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(228, 232, 240, 0.6) 50%,
+    transparent 100%
+  );
+  animation: brillo-carga 1.4s linear infinite;
+}

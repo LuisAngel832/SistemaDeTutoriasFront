@@ -1,0 +1,33 @@
+.vacio {
+  padding: 2.5rem 1.5rem;
+  border: 1px dashed var(--color-borde);
+  border-radius: var(--radio-lg);
+  background-color: var(--color-superficie);
+  color: var(--color-texto-secundario);
+  text-align: center;
+}
+
+.compacto {
+  padding: 1rem;
+  font-size: 0.88rem;
+}
+
+.titulo {
+  margin: 0 0 0.4rem;
+  color: var(--color-texto);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.descripcion {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.compacto .descripcion {
+  font-size: 0.88rem;
+}
+
+.accion {
+  margin-top: 1rem;
+}
