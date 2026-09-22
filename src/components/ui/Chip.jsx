@@ -1,4 +1,4 @@
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './Chip.module.css'
 
 // tone: neutral | primary. Con `onRemove` muestra un boton para quitarlo.

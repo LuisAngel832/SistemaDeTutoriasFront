@@ -421,43 +421,47 @@ ningun archivo de pagina supera 200 lineas.
 **Esfuerzo estimado:** 8–10 dias.
 **Entregable:** `v1.0.0`.
 
-### PR 4.1 — `feat/tanstack-query` (2–3 PRs)
+### PR 4.1 — `feat/tanstack-query` (2–3 PRs) ✅
 
-- [ ] Instalar `@tanstack/react-query` y `@tanstack/react-query-devtools` (solo dev).
-- [ ] `src/app/providers.jsx` con `QueryClientProvider` (`staleTime: 30s`, `retry: 1`, sin
+- [x] Instalar `@tanstack/react-query` y `@tanstack/react-query-devtools` (solo dev).
+- [x] `src/app/providers.jsx` con `QueryClientProvider` (`staleTime: 30s`, `retry: 1`, sin
       reintento en 4xx).
-- [ ] `src/api/queryKeys.js` (fabrica de keys: `tutoriaKeys.all`, `.mias()`, `.detalle(id)`...).
-- [ ] Queries: `useMisTutorias`, `useTutoriasDisponibles`, `useInscripciones`, `useHorarios`,
+- [x] `src/api/queryKeys.js` (fabrica de keys: `tutoriaKeys.all`, `.mias()`, `.detalle(id)`...).
+- [x] Queries: `useMisTutorias`, `useTutoriasDisponibles`, `useInscripciones`, `useHorarios`,
       `useMaterias`, `useTutoria(id)`, `useInscritos(id)`, `useComentarios(id)`.
-- [ ] Mutaciones con invalidacion: crear/editar/cancelar/completar tutoria, crear/eliminar
+- [x] Mutaciones con invalidacion: crear/editar/cancelar/completar tutoria, crear/eliminar
       horario, agregar/quitar tema, inscribirse/cancelar, crear/eliminar comentario.
-- [ ] `isPending` por mutacion (cada boton muestra su propio estado de carga).
-- [ ] Borrar el estado manual `isLoading/error/data` de los hooks migrados.
-- [ ] Regresar `react-hooks/set-state-in-effect` a `error` en `eslint.config.js`.
-- [ ] Actualizar el helper de tests para incluir `QueryClientProvider`.
+- [x] `isPending` por mutacion (cada boton muestra su propio estado de carga).
+- [x] Borrar el estado manual `isLoading/error/data` de los hooks migrados.
+- [x] Regresar `react-hooks/set-state-in-effect` a `error` en `eslint.config.js`.
+- [x] Actualizar el helper de tests para incluir `QueryClientProvider`.
 
 **Criterios de aceptacion:** 0 warnings de lint; volver de un detalle a la lista no muestra
 skeleton; al inscribirse, "Mis inscripciones" se actualiza sin recargar.
 
-### PR 4.2 — `feat/formularios-zod` (2 PRs)
+### PR 4.2 — `feat/formularios-zod` (2 PRs) ✅
 
-- [ ] Instalar `react-hook-form`, `zod`, `@hookform/resolvers`, `sonner`.
-- [ ] Esquemas en `src/schemas/`: `loginSchema`, `registroSchema` (correo, matricula con
+- [x] Instalar `react-hook-form`, `zod`, `@hookform/resolvers`, `sonner`.
+- [x] Esquemas en `src/schemas/`: `loginSchema`, `registroSchema` (correo, matricula con
       formato institucional, contrasena ≥ 8), `horarioSchema` (fin > inicio),
       `tutoriaSchema` (fecha ≥ hoy, campos requeridos, temas ≤ 10).
-- [ ] Integrar `FormField` con `react-hook-form` (errores por campo).
-- [ ] Migrar Login, Registro, Crear tutoria, Horarios y Editar tutoria; todos con `<form onSubmit>`
+- [x] Integrar `FormField` con `react-hook-form` (errores por campo).
+- [x] Migrar Login, Registro, Crear tutoria, Horarios y Editar tutoria; todos con `<form onSubmit>`
       y boton `type="submit"` (Enter envia).
-- [ ] `Toaster` de `sonner` en `providers.jsx`; los resultados de mutaciones se muestran como
+- [x] `Toaster` de `sonner` en `providers.jsx`; los resultados de mutaciones se muestran como
       toast en vez de modal.
-- [ ] Pruebas de cada esquema y de un formulario completo (crear tutoria).
+- [x] Pruebas de cada esquema y de un formulario completo (crear tutoria).
 
-### PR 4.3 — `refactor/estructura-por-features` (mecanico)
+> Hecho. Los esquemas viven en `src/schemas/` (`auth.js`, `horario.js`, `tutoria.js`) y los selects se convierten a numero con `transform(Number)`.
+> Los avisos de las acciones (crear/eliminar horario, inscribirse, comentarios, acciones del tutor) son toasts de `sonner`;
+> los errores de validacion siguen junto a su campo y los de carga como `Alert` en la pantalla.
+
+### PR 4.3 — `refactor/estructura-por-features` (mecanico) ✅
 
 Solo mover archivos con `git mv` y actualizar imports: **sin cambios de logica**.
 
-- [ ] Alias `@` → `src` en `vite.config.js` y `jsconfig.json` (autocompletado en el editor).
-- [ ] Mover a la estructura objetivo:
+- [x] Alias `@` → `src` en `vite.config.js` y `jsconfig.json` (autocompletado en el editor).
+- [x] Mover a la estructura objetivo:
   ```
   src/
     app/          main.jsx, App.jsx, providers.jsx, router.jsx
@@ -476,15 +480,22 @@ Solo mover archivos con `git mv` y actualizar imports: **sin cambios de logica**
     utils/
     test/
   ```
-- [ ] Hooks sin JSX con extension `.js`; named exports en todo excepto paginas.
-- [ ] Reemplazar imports relativos profundos por `@/...`.
-- [ ] Borrar carpetas vacias (`Routes/`, `pages/`, `hooks/`).
-- [ ] Actualizar la estructura en README.
+- [x] Hooks sin JSX con extension `.js`; named exports en todo excepto paginas.
+- [x] Reemplazar imports relativos profundos por `@/...`.
+- [x] Borrar carpetas vacias (`Routes/`, `pages/`, `hooks/`).
+- [x] Actualizar la estructura en README.
 
 **Criterios de aceptacion:** `grep -rn "\.\./\.\./" src` sin resultados; build, lint, tests y
 checklist manual en verde.
 
+> Hecho. Las paginas viven en `features/<dominio>/pages/`, los hooks junto a su feature y
+> `useAhora`, `ejecutarMutacion` y `avisos` en la capa compartida. `grep -rn "../../" src` no devuelve nada.
+> Las paginas de error (`PaginaError`, `NoEncontrada`) quedaron en `app/` porque las usa el router.
+
 **Cierre del Sprint 4:** tag `v1.0.0`, CHANGELOG completo y redeploy.
+
+> CHANGELOG actualizado en la seccion `[Sin publicar]`. El tag `v1.0.0` y el redeploy
+> quedan pendientes de tu decision (publicar cambia lo que ven los usuarios).
 
 ---
 

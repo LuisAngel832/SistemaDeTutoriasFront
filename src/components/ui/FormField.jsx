@@ -1,5 +1,5 @@
 import { Children, cloneElement, isValidElement } from 'react'
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './FormField.module.css'
 
 // Etiqueta + control + ayuda o error. Conecta el control con aria-describedby y aria-invalid.

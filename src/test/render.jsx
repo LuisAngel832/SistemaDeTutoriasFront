@@ -1,6 +1,22 @@
 import { render } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
+import { Toaster } from 'sonner'
 
-// Renderiza un componente dentro de un router en memoria (para Link, useNavigate, etc.).
-export const renderConRouter = (ui, { ruta = '/' } = {}) =>
-  render(<MemoryRouter initialEntries={[ruta]}>{ui}</MemoryRouter>)
+// Cliente aislado por prueba: sin reintentos ni cache entre casos.
+export const crearClientePrueba = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: { retry: false, gcTime: 0 },
+      mutations: { retry: false },
+    },
+  })
+
+// Renderiza un componente con los proveedores de la app (datos del servidor y router).
+export const renderConProveedores = (ui, { ruta = '/', client = crearClientePrueba() } = {}) =>
+  render(
+    <QueryClientProvider client={client}>
+      <MemoryRouter initialEntries={[ruta]}>{ui}</MemoryRouter>
+      <Toaster />
+    </QueryClientProvider>,
+  )

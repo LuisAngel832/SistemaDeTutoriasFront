@@ -1,4 +1,4 @@
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './Badge.module.css'
 
 // tone: info | success | danger | warning | neutral

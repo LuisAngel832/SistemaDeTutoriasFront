@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef } from 'react'
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './Modal.module.css'
 
 // Dialogo modal sobre <dialog> nativo: el navegador bloquea el resto de la pagina, mueve el

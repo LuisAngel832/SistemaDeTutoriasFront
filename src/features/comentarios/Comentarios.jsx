@@ -1,18 +1,18 @@
 import { useId, useState } from 'react'
-import { Alert, Button, EmptyState, Textarea } from '../../components/ui'
-import { useAuth } from '../auth/AuthContext'
-import useComentarios from '../../hooks/useComentarios'
-import { getInicial } from '../../utils/formatters'
+import { Alert, Button, EmptyState, Textarea } from '@/components/ui'
+import { useAuth } from '@/features/auth/AuthContext'
+import { useComentarios } from './useComentarios'
+import { avisar } from '@/utils/avisos'
+import { getInicial } from '@/utils/formatters'
 import styles from './Comentarios.module.css'
 
 // Comentarios de una tutoria (RF15).
 // modo: lectura (solo ver) | tutorado (puede publicar y borrar sus comentarios)
-const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
+export const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
   const { comentarios, isLoading, error, crear, eliminar } = useComentarios(idTutoria)
   const { matricula } = useAuth()
   const [texto, setTexto] = useState('')
   const [enviando, setEnviando] = useState(false)
-  const [resultado, setResultado] = useState(null)
   const [eliminandoId, setEliminandoId] = useState(null)
   const idCampo = useId()
   const idContador = useId()
@@ -22,20 +22,18 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
   const publicar = async (evento) => {
     evento.preventDefault()
     if (!texto.trim()) return
-    setResultado(null)
     setEnviando(true)
     const res = await crear(texto)
     setEnviando(false)
     if (res.ok) setTexto('')
-    setResultado({ tone: res.ok ? 'success' : 'error', texto: res.message })
+    avisar(res)
   }
 
   const borrar = async (idComentario) => {
-    setResultado(null)
     setEliminandoId(idComentario)
     const res = await eliminar(idComentario)
     setEliminandoId(null)
-    setResultado({ tone: res.ok ? 'success' : 'error', texto: res.message })
+    avisar(res)
   }
 
   return (
@@ -72,7 +70,6 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
         </form>
       ) : null}
 
-      {resultado ? <Alert tone={resultado.tone}>{resultado.texto}</Alert> : null}
       {error ? <Alert tone="error">{error}</Alert> : null}
 
       {isLoading ? (
@@ -127,5 +124,3 @@ const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
     </div>
   )
 }
-
-export default Comentarios

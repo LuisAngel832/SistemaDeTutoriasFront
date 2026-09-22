@@ -1,5 +1,5 @@
-import { IconCalendario, IconEdificio, IconPuerta, IconReloj } from '../../../components/ui/icons'
-import { formatFecha, formatRangoHora, SIN_DATO } from '../../../utils/formatters'
+import { IconCalendario, IconEdificio, IconPuerta, IconReloj } from '@/components/ui/icons'
+import { formatFecha, formatRangoHora, SIN_DATO } from '@/utils/formatters'
 import styles from './TutoriaInfoGrid.module.css'
 
 // Datos principales de una tutoria en las pantallas de detalle.

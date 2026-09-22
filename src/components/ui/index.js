@@ -1,4 +1,4 @@
-// Componentes base del sistema de diseno. Importa desde aqui: import { Button } from '../ui'
+// Componentes base del sistema de diseno. Importa desde aqui: import { Button } from '.'
 export { Alert } from './Alert'
 export { Badge } from './Badge'
 export { Button } from './Button'

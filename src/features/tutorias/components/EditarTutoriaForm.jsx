@@ -1,9 +1,11 @@
-import { useState } from 'react'
-import { Alert, Button, FormField, Input, Select } from '../../../components/ui'
-import { AULAS, EDIFICIOS } from '../../../constants/espacios'
-import { hoyLocalISO } from '../../../utils/fechas'
-import { formatHorario } from '../../../utils/formatters'
-import { buscarHorarioDeTutoria } from '../../../utils/tutoria'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { Alert, Button, FormField, Input, Select } from '@/components/ui'
+import { AULAS, EDIFICIOS } from '@/constants/espacios'
+import { editarTutoriaSchema } from '@/schemas/tutoria'
+import { hoyLocalISO } from '@/utils/fechas'
+import { formatHorario } from '@/utils/formatters'
+import { buscarHorarioDeTutoria } from '@/utils/tutoria'
 import styles from './EditarTutoriaForm.module.css'
 
 const valoresIniciales = (tutoria, horarios) => {
@@ -19,40 +21,34 @@ const valoresIniciales = (tutoria, horarios) => {
 // Edicion de horario, fecha y lugar de una tutoria programada.
 // onGuardar(payload) devuelve { ok, message }; si falla, el error se muestra en el formulario.
 export const EditarTutoriaForm = ({ tutoria, horarios, isSubmitting, onGuardar, onCancelar }) => {
-  const [valores, setValores] = useState(() => valoresIniciales(tutoria, horarios))
-  const [error, setError] = useState('')
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(editarTutoriaSchema),
+    defaultValues: valoresIniciales(tutoria, horarios),
+  })
 
-  const cambiar = (campo) => (evento) => {
-    setValores((actuales) => ({ ...actuales, [campo]: evento.target.value }))
-    setError('')
-  }
-
-  const enviar = async (evento) => {
-    evento.preventDefault()
-    // Se valida antes de convertir: Number('') es 0 y pasaria como numero valido.
-    if (!valores.idHorario || !valores.fecha || !valores.edificio || !valores.aula) {
-      setError('Completa todos los campos.')
-      return
-    }
-
-    const res = await onGuardar({
-      idHorario: Number(valores.idHorario),
-      fecha: valores.fecha,
-      edificio: Number(valores.edificio),
-      aula: Number(valores.aula),
-    })
-    if (!res.ok) setError(res.message)
-  }
+  const enviar = handleSubmit(async (datos) => {
+    const res = await onGuardar(datos)
+    if (!res.ok) setError('root', { message: res.message })
+  })
 
   return (
     <form className={styles.formulario} onSubmit={enviar} noValidate>
       <h2 className={styles.titulo}>Editar tutoría</h2>
 
-      {error ? <Alert tone="error">{error}</Alert> : null}
+      {errors.root ? <Alert tone="error">{errors.root.message}</Alert> : null}
 
       <div className={styles.grid}>
-        <FormField label="Horario en el que darás la tutoría" htmlFor="editar-horario">
-          <Select id="editar-horario" value={valores.idHorario} onChange={cambiar('idHorario')}>
+        <FormField
+          label="Horario en el que darás la tutoría"
+          htmlFor="editar-horario"
+          error={errors.idHorario?.message}
+        >
+          <Select id="editar-horario" {...register('idHorario')}>
             <option value="">Selecciona un horario</option>
             {horarios.map((horario) => (
               <option key={horario.idHorario} value={horario.idHorario}>
@@ -62,18 +58,20 @@ export const EditarTutoriaForm = ({ tutoria, horarios, isSubmitting, onGuardar, 
           </Select>
         </FormField>
 
-        <FormField label="Fecha en que se dará la tutoría" htmlFor="editar-fecha">
-          <Input
-            id="editar-fecha"
-            type="date"
-            min={hoyLocalISO()}
-            value={valores.fecha}
-            onChange={cambiar('fecha')}
-          />
+        <FormField
+          label="Fecha en que se dará la tutoría"
+          htmlFor="editar-fecha"
+          error={errors.fecha?.message}
+        >
+          <Input id="editar-fecha" type="date" min={hoyLocalISO()} {...register('fecha')} />
         </FormField>
 
-        <FormField label="Edificio donde se dará la tutoría" htmlFor="editar-edificio">
-          <Select id="editar-edificio" value={valores.edificio} onChange={cambiar('edificio')}>
+        <FormField
+          label="Edificio donde se dará la tutoría"
+          htmlFor="editar-edificio"
+          error={errors.edificio?.message}
+        >
+          <Select id="editar-edificio" {...register('edificio')}>
             <option value="">Selecciona el edificio</option>
             {EDIFICIOS.map((numero) => (
               <option key={numero} value={numero}>
@@ -83,8 +81,12 @@ export const EditarTutoriaForm = ({ tutoria, horarios, isSubmitting, onGuardar, 
           </Select>
         </FormField>
 
-        <FormField label="Aula donde se dará la tutoría" htmlFor="editar-aula">
-          <Select id="editar-aula" value={valores.aula} onChange={cambiar('aula')}>
+        <FormField
+          label="Aula donde se dará la tutoría"
+          htmlFor="editar-aula"
+          error={errors.aula?.message}
+        >
+          <Select id="editar-aula" {...register('aula')}>
             <option value="">Selecciona el aula</option>
             {AULAS.map((numero) => (
               <option key={numero} value={numero}>

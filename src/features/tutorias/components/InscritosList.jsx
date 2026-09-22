@@ -1,6 +1,6 @@
 import { useId } from 'react'
-import { Badge, Card, EmptyState } from '../../../components/ui'
-import { getInicial, SIN_DATO } from '../../../utils/formatters'
+import { Badge, Card, EmptyState } from '@/components/ui'
+import { getInicial, SIN_DATO } from '@/utils/formatters'
 import styles from './InscritosList.module.css'
 
 const asistencia = (inscrito, mostrarAsistencia) => {

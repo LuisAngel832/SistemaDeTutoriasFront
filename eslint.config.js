@@ -22,9 +22,8 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
     rules: {
-      // Patron comun de "cargar datos al montar" o sincronizar estado local
-      // con cambios de location. Se reporta pero no bloquea el build.
-      'react-hooks/set-state-in-effect': 'warn',
+      // Los datos del servidor se cargan con TanStack Query, no con efectos.
+      'react-hooks/set-state-in-effect': 'error',
     },
   },
   {

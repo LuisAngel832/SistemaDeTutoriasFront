@@ -1,15 +1,16 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
-import { AuthContext } from '../auth/AuthContext'
-import { respuestaOk, servidor, usarServidorMock } from '../../test/servidor'
-import Comentarios from './Comentarios'
+import { AuthContext } from '@/features/auth/AuthContext'
+import { renderConProveedores } from '@/test/render'
+import { respuestaOk, servidor, usarServidorMock } from '@/test/servidor'
+import { Comentarios } from './Comentarios'
 
 usarServidorMock()
 
 const renderComentarios = (props) =>
-  render(
+  renderConProveedores(
     <AuthContext.Provider value={{ matricula: '2001' }}>
       <Comentarios idTutoria={1} {...props} />
     </AuthContext.Provider>,
@@ -35,7 +36,7 @@ describe('Comentarios', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Eliminar mi comentario' }))
     await waitFor(() => expect(screen.queryByText('Mio')).not.toBeInTheDocument())
-    expect(screen.getByRole('status')).toHaveTextContent('Comentario eliminado')
+    expect(await screen.findByText('Comentario eliminado')).toBeInTheDocument()
   })
 
   it('en modo lectura no muestra el formulario ni botones de borrar', async () => {

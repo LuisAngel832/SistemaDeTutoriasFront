@@ -210,7 +210,7 @@ describe('EditarTutoriaForm', () => {
     )
 
     await userEvent.click(screen.getByRole('button', { name: 'Guardar cambios' }))
-    expect(screen.getByRole('alert')).toHaveTextContent('Completa todos los campos.')
+    expect(await screen.findByText('Elige el aula')).toBeInTheDocument()
     expect(onGuardar).not.toHaveBeenCalled()
 
     await userEvent.selectOptions(screen.getByLabelText('Aula donde se dará la tutoría'), '3')

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Outlet, ScrollRestoration, useMatches, useNavigation } from 'react-router-dom'
-import { AuthProvider } from '../features/auth/AuthProvider'
+import { AuthProvider } from '@/features/auth/AuthProvider'
+import { Providers } from './providers'
 import './app.css'
 
 const NOMBRE_APP = 'Sistema de Tutorías'
@@ -20,12 +21,14 @@ export const RaizApp = () => {
   useTituloDocumento()
 
   return (
-    <AuthProvider>
-      {navegacion.state !== 'idle' ? (
-        <div className="barra-navegacion" role="progressbar" aria-label="Cargando página" />
-      ) : null}
-      <Outlet />
-      <ScrollRestoration />
-    </AuthProvider>
+    <Providers>
+      <AuthProvider>
+        {navegacion.state !== 'idle' ? (
+          <div className="barra-navegacion" role="progressbar" aria-label="Cargando página" />
+        ) : null}
+        <Outlet />
+        <ScrollRestoration />
+      </AuthProvider>
+    </Providers>
   )
 }

@@ -1,4 +1,4 @@
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './EmptyState.module.css'
 
 export const EmptyState = ({ title, description, action, compact = false, className }) => (

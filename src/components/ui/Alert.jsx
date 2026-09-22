@@ -1,4 +1,4 @@
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './Alert.module.css'
 
 // Los errores y avisos se anuncian de inmediato (role="alert"); las confirmaciones e

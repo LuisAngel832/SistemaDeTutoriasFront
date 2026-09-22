@@ -1,6 +1,6 @@
-import { Badge } from '../../../components/ui'
-import { ESTADOS_TUTORIA } from '../../../constants/tutoria'
-import { normalizarEstado } from '../../../utils/tutoria'
+import { Badge } from '@/components/ui'
+import { ESTADOS_TUTORIA } from '@/constants/tutoria'
+import { normalizarEstado } from '@/utils/tutoria'
 
 const PRESENTACION = {
   [ESTADOS_TUTORIA.PROGRAMADA]: { tono: 'info', texto: 'Programada' },

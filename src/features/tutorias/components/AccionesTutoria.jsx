@@ -1,7 +1,7 @@
 import { useId, useState } from 'react'
-import { Button, Card, ConfirmDialog } from '../../../components/ui'
-import { MIN_MINUTOS_CANCELACION } from '../../../constants/tutoria'
-import { esProgramada } from '../../../utils/tutoria'
+import { Button, Card, ConfirmDialog } from '@/components/ui'
+import { MIN_MINUTOS_CANCELACION } from '@/constants/tutoria'
+import { esProgramada } from '@/utils/tutoria'
 import styles from './AccionesTutoria.module.css'
 
 // Acciones del tutor sobre una tutoria programada, con confirmacion.

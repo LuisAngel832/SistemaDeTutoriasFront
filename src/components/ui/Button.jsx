@@ -1,4 +1,4 @@
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './Button.module.css'
 import { Spinner } from './Spinner'
 
