@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
+import { Toaster } from 'sonner'
 
 // Cliente aislado por prueba: sin reintentos ni cache entre casos.
 export const crearClientePrueba = () =>
@@ -16,5 +17,6 @@ export const renderConProveedores = (ui, { ruta = '/', client = crearClientePrue
   render(
     <QueryClientProvider client={client}>
       <MemoryRouter initialEntries={[ruta]}>{ui}</MemoryRouter>
+      <Toaster />
     </QueryClientProvider>,
   )

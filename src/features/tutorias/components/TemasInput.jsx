@@ -1,8 +1,8 @@
 import { useId, useState } from 'react'
-import { Chip } from '../../../components/ui'
-import { MAX_CARACTERES_TEMA, MAX_TEMAS } from '../../../constants/tutoria'
-import { clases } from '../../../utils/clases'
-import { formatTema } from '../../../utils/formatters'
+import { Chip } from '@/components/ui'
+import { MAX_CARACTERES_TEMA, MAX_TEMAS } from '@/constants/tutoria'
+import { clases } from '@/utils/clases'
+import { formatTema } from '@/utils/formatters'
 import styles from './TemasInput.module.css'
 
 // Captura de temas de una tutoria (chips). Acepta temas como strings o como { idTema, tema }.

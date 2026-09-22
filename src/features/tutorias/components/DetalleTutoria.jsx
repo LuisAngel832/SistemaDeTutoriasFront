@@ -1,7 +1,7 @@
 import { useId } from 'react'
 import { Link } from 'react-router-dom'
-import { Alert, Card, Chip, Skeleton } from '../../../components/ui'
-import { formatTema } from '../../../utils/formatters'
+import { Alert, Card, Chip, Skeleton } from '@/components/ui'
+import { formatTema } from '@/utils/formatters'
 import { EstadoBadge } from './EstadoBadge'
 import styles from './DetalleTutoria.module.css'
 
@@ -9,11 +9,10 @@ const SIN_NOMBRE = 'Experiencia Educativa sin nombre'
 
 // Piezas compartidas por el detalle de tutoria del tutor y del tutorado.
 
-// back: enlace o boton para volver. notice: aviso sobre el contenido.
-export const DetalleTutoriaLayout = ({ back, notice, main, aside, footer }) => (
+// back: enlace o boton para volver.
+export const DetalleTutoriaLayout = ({ back, main, aside, footer }) => (
   <>
     <div className={styles.volver}>{back}</div>
-    {notice}
     <div className={styles.grid}>
       <Card as="article" padding="lg" className={styles.principal}>
         {main}

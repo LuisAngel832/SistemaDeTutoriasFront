@@ -1,4 +1,4 @@
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './Card.module.css'
 
 // padding: md | lg. `interactive` agrega el efecto de elevacion al pasar el cursor.

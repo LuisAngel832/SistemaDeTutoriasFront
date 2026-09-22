@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './Field.module.css'
 
 // Controles de formulario con el estilo del sistema. Aceptan todas las props nativas;

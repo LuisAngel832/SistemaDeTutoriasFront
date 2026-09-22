@@ -1,4 +1,4 @@
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './Skeleton.module.css'
 
 // Bloque de carga decorativo: el contenedor debe indicar aria-busy mientras carga.

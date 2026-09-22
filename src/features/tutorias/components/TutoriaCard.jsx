@@ -1,8 +1,8 @@
 import { useId } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Chip } from '../../../components/ui'
-import { clases } from '../../../utils/clases'
-import { formatFecha, formatRangoHora, formatTema, SIN_DATO } from '../../../utils/formatters'
+import { Button, Chip } from '@/components/ui'
+import { clases } from '@/utils/clases'
+import { formatFecha, formatRangoHora, formatTema, SIN_DATO } from '@/utils/formatters'
 import { EstadoBadge } from './EstadoBadge'
 import styles from './TutoriaCard.module.css'
 

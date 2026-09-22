@@ -11,6 +11,10 @@ proyecto sigue [Versionado Semantico](https://semver.org/lang/es/).
 
 - TanStack Query para los datos del servidor: cache entre pantallas, reintentos controlados
   e invalidacion automatica despues de cada operacion.
+- Validacion de formularios con react-hook-form y Zod: cada error se muestra junto a su campo
+  y el formulario se envia con Enter.
+- Avisos flotantes (sonner) para el resultado de las acciones: crear o eliminar un horario,
+  inscribirse, comentar, completar o cancelar una tutoria.
 - Sistema de diseno: tokens de color, sombras y radios, animaciones compartidas y componentes
   base reutilizables (botones, campos, alertas, dialogos, tarjetas).
 - Pruebas automatizadas con Vitest, Testing Library y MSW (se ejecutan en el CI).
@@ -34,6 +38,11 @@ proyecto sigue [Versionado Semantico](https://semver.org/lang/es/).
 - URLs nuevas: `/tutor/tutorias/nueva`, `/tutor/horarios`, `/tutor/tutorias/:id`,
   `/tutorado/inscripciones` y `/tutorado/tutorias/:id`. Las anteriores redirigen a estas.
 - Los listados ya no muestran el estado de carga despues de crear o eliminar un elemento.
+- Codigo organizado por features (`auth`, `tutorias`, `horarios`, `comentarios`, `tutor`,
+  `tutorado`) con el alias `@` para los imports; se elimina la carpeta `pages/` y los
+  imports relativos profundos.
+- La confirmacion de "tutoria creada" ya no abre una ventana modal: es un aviso con enlace
+  a "Mis tutorias".
 
 ### Corregido
 

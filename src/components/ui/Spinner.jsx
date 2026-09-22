@@ -1,4 +1,4 @@
-import { clases } from '../../utils/clases'
+import { clases } from '@/utils/clases'
 import styles from './Spinner.module.css'
 
 // Decorativo: quien lo usa debe comunicar el estado de carga con texto o aria-busy.

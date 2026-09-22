@@ -1,4 +1,4 @@
-import { nombreDeDia } from '../constants/horarios'
+import { nombreDeDia } from '@/constants/horarios'
 
 // Formateo de datos para mostrarlos en la interfaz.
 

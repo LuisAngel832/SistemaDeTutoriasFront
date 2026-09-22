@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Outlet, ScrollRestoration, useMatches, useNavigation } from 'react-router-dom'
-import { AuthProvider } from '../features/auth/AuthProvider'
+import { AuthProvider } from '@/features/auth/AuthProvider'
 import { Providers } from './providers'
 import './app.css'
 

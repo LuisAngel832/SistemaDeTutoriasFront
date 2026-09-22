@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
+import { Toaster } from 'sonner'
 import { crearQueryClient } from './queryClient'
 
 // Las herramientas de desarrollo no se incluyen en el bundle de produccion.
@@ -18,6 +19,8 @@ export const Providers = ({ client, children }) => {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
+      {/* Avisos de las acciones; sonner los anuncia a los lectores de pantalla. */}
+      <Toaster position="top-right" richColors closeButton toastOptions={{ duration: 5000 }} />
       {Devtools ? (
         <Suspense fallback={null}>
           <Devtools initialIsOpen={false} buttonPosition="bottom-left" />

@@ -1,3 +1,4 @@
+import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -16,6 +17,10 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    // '@' apunta a src/ para evitar imports relativos profundos.
+    resolve: {
+      alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+    },
     server: {
       proxy: {
         '/auth': proxyTarget,
@@ -36,7 +41,7 @@ export default defineConfig(({ mode }) => {
       coverage: {
         provider: 'v8',
         include: ['src/**/*.{js,jsx}'],
-        exclude: ['src/test/**', 'src/main.jsx', 'src/**/*.test.{js,jsx}'],
+        exclude: ['src/test/**', 'src/app/main.jsx', 'src/**/*.test.{js,jsx}'],
         reporter: ['text-summary', 'html'],
       },
     },
