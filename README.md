@@ -56,20 +56,25 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 - Diseno responsive con breakpoints para escritorio, tablet y movil.
 - Sidebar lateral colapsable (se recuerda la preferencia) y drawer con menu hamburguesa en
   pantallas pequenas.
-- Tema visual unificado (paleta azul/verde) con animaciones sutiles.
-- Soporte para `prefers-reduced-motion`.
+- Tema visual unificado con tokens de diseno (paleta azul/verde) y animaciones sutiles.
+- Accesibilidad: contraste AA, radios y dialogos nativos, mensajes anunciados a lectores de
+  pantalla y soporte para `prefers-reduced-motion`.
 
 ## Stack
 
-| Capa               | Tecnologia                                                                |
-| ------------------ | ------------------------------------------------------------------------- |
-| Build & dev server | [Vite](https://vitejs.dev/) 8                                             |
-| UI                 | [React](https://react.dev/) 19                                            |
-| Routing            | [react-router-dom](https://reactrouter.com/) 7                            |
-| Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh` |
-| Formato            | Prettier 3 + lint-staged (pre-commit) y commitlint (commit-msg)           |
-| Lenguaje           | JavaScript (JSX)                                                          |
-| Estilos            | CSS plano por componente y tipografia Montserrat (Fontsource)             |
+| Capa               | Tecnologia                                                                    |
+| ------------------ | ----------------------------------------------------------------------------- |
+| Build & dev server | [Vite](https://vitejs.dev/) 8                                                 |
+| UI                 | [React](https://react.dev/) 19                                                |
+| Routing            | [react-router-dom](https://reactrouter.com/) 7                                |
+| Datos del servidor | [TanStack Query](https://tanstack.com/query) 5 (cache, reintentos)            |
+| Formularios        | [react-hook-form](https://react-hook-form.com/) 7 + [Zod](https://zod.dev/) 4 |
+| Avisos             | [sonner](https://sonner.emilkowal.ski/) (toasts de las acciones)              |
+| Pruebas            | Vitest + Testing Library (jsdom) y MSW                                        |
+| Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh`     |
+| Formato            | Prettier 3 + lint-staged (pre-commit) y commitlint (commit-msg)               |
+| Lenguaje           | JavaScript (JSX)                                                              |
+| Estilos            | CSS por componente con tokens de diseno y tipografia Montserrat               |
 
 ## Requisitos
 
@@ -111,14 +116,17 @@ local esta listado en `.gitignore`.
 
 ## Scripts disponibles
 
-| Comando                | Descripcion                                                                                              |
-| ---------------------- | -------------------------------------------------------------------------------------------------------- |
-| `npm run dev`          | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
-| `npm run build`        | Compila a produccion en la carpeta `dist/`.                                                              |
-| `npm run preview`      | Sirve el `dist/` localmente para probar el build.                                                        |
-| `npm run lint`         | Ejecuta ESLint sobre todo el codigo.                                                                     |
-| `npm run format`       | Formatea todo el proyecto con Prettier.                                                                  |
-| `npm run format:check` | Verifica el formato sin modificar archivos (lo usa el CI).                                               |
+| Comando                 | Descripcion                                                                                              |
+| ----------------------- | -------------------------------------------------------------------------------------------------------- |
+| `npm run dev`           | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
+| `npm run build`         | Compila a produccion en la carpeta `dist/`.                                                              |
+| `npm run preview`       | Sirve el `dist/` localmente para probar el build.                                                        |
+| `npm run lint`          | Ejecuta ESLint sobre todo el codigo.                                                                     |
+| `npm run format`        | Formatea todo el proyecto con Prettier.                                                                  |
+| `npm run format:check`  | Verifica el formato sin modificar archivos (lo usa el CI).                                               |
+| `npm run test`          | Ejecuta las pruebas con Vitest en modo watch.                                                            |
+| `npm run test:run`      | Ejecuta las pruebas una sola vez (lo usa el CI).                                                         |
+| `npm run test:coverage` | Ejecuta las pruebas y genera el reporte de cobertura en `coverage/`.                                     |
 
 ## Calidad de codigo
 
@@ -126,7 +134,7 @@ local esta listado en `.gitignore`.
   en stage, y commitlint valida que el mensaje siga Conventional Commits. Se instalan solos
   con `npm install`.
 - **CI (GitHub Actions):** cada push y PR hacia `main` o `develop` corre lint, verificacion de
-  formato y build ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+  formato, pruebas y build ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 - **Dependabot** propone actualizaciones semanales de dependencias.
 - **git blame:** para omitir el commit de formato masivo ejecuta una vez
   `git config blame.ignoreRevsFile .git-blame-ignore-revs`.
@@ -180,72 +188,85 @@ Pasos:
 
 ## Estructura del proyecto
 
+Cada carpeta de `features/` reune la interfaz, los hooks y el estado de un dominio; lo que
+usan varias features vive en `components/`, `utils/` o `constants/`. Los imports entre
+carpetas usan el alias `@` (`@/components/ui`), definido en `vite.config.js` y `jsconfig.json`.
+
 ```
 src/
-  Routes/
-    AppRouter.jsx          # Configuracion de rutas y proteccion por rol
-    PrivateRoute.jsx       # Valida token y rol antes de renderizar
-  assets/css/components/   # CSS compartido (sidebar)
+  app/                     # Arranque, rutas y proveedores globales
+    main.jsx               # Punto de entrada (lo carga index.html)
+    router.jsx             # Rutas, carga diferida, redirecciones y paginas de error
+    RaizApp.jsx            # Raiz: sesion, titulo del documento y barra de navegacion
+    providers.jsx          # TanStack Query, avisos (sonner) y devtools en desarrollo
+    queryClient.js         # Configuracion de cache y reintentos
+    PaginaError.jsx        # Pantalla de error; NoEncontrada.jsx es el 404
+  api/                     # Cliente HTTP, servicios por recurso, mappers y claves de cache
   components/
-    Comentarios.jsx        # Comentarios de una tutoria (RF15)
-    layout/
-      AppLayout.jsx        # Estructura de las paginas privadas (sidebar + contenido)
-      Sidebar.jsx          # Navegacion lateral por rol
-      icons.jsx            # Iconos SVG de la navegacion
-    Tutor/
-      TemasInput.jsx       # Input de chips para temas (RF14)
-      VentanaEmerjente.jsx # Modal de resultado
-  constants/               # Roles, estados de tutoria, espacios y dias de la semana
-  hooks/
-    useAhora.js            # Hora actual que se refresca periodicamente
-    useAutentificacion.jsx # Login, signup y logout
-    useComentarios.jsx     # CRUD de comentarios sobre una tutoria
-    useCrearTutoria.jsx    # Estado y submit de crear tutoria
-    useHorarios.jsx        # CRUD de horarios del tutor
-    useMisTutorias.jsx     # Tutorias del tutor autenticado
-    useTutoriaDetalleTutor.jsx     # Detalle, edicion, cancelar, completar, temas
-    useTutoriaDetalleTutorado.jsx  # Detalle + inscripcion + cancelacion
-    useTutoriasExplorar.jsx        # Listado de tutorias disponibles
-    useTutoriasTutorado.jsx        # Inscripciones del tutorado
-  pages/
-    LogIn/                 # Pantalla de inicio de sesion
-    Registro/              # Pantalla de registro
-    Tutor/
-      Home.jsx             # Mis tutorias (tutor)
-      AgregarHorario/
-      CrearTutoria/
-      TutoriaDetalle/      # Detalle de tutoria del tutor
-    Tutorado/
-      Home.jsx             # Explorar tutorias
-      MisTutorias.jsx
-      TutoriaDetalle.jsx
+    layout/                # AppLayout (sidebar + contenido), Sidebar y Pagina
+    ui/                    # Componentes base: Button, Card, FormField, Modal, Alert... (CSS Modules)
+  constants/               # Rutas, roles, estados de tutoria, espacios y dias de la semana
+  features/
+    auth/                  # AuthProvider, useAuth, guards, storage, JWT y pages/ (login y registro)
+    comentarios/           # Comentarios de una tutoria (RF15) y su hook
+    horarios/              # ListaHorarios y useHorarios (CRUD de horarios del tutor)
+    tutorias/
+      components/          # TutoriaCard, TutoriaInfoGrid, TemasInput, InscritosList, acciones
+      hooks/               # Listados, detalle, inscripcion y creacion de tutorias
+    tutor/pages/           # Mis tutorias, crear tutoria, horarios y detalle
+    tutorado/pages/        # Explorar tutorias, mis inscripciones y detalle
+  schemas/                 # Validacion de los formularios con Zod (auth, horario, tutoria)
+  styles/
+    tokens.css             # Colores, sombras y radios (unica fuente de valores de diseno)
+    animations.css         # Animaciones compartidas y reduccion de movimiento
+    global.css             # Estilos base del documento
+  test/                    # Setup de Vitest, servidor MSW y helpers de render
   utils/
+    avisos.js              # Muestra { ok, message } como toast
+    ejecutarMutacion.js    # Ejecuta una mutacion y devuelve { ok, message }
     fechas.js              # Fechas en hora local y tiempo restante
     formatters.js          # Formato de fechas, horas, temas e iniciales
-    sesion.js              # Datos de sesion guardados en localStorage
     tutoria.js             # Reglas de dominio (estado, horario de una tutoria)
 ```
 
 ## Rutas principales
 
-| Ruta                        | Rol      | Pantalla                                             |
-| --------------------------- | -------- | ---------------------------------------------------- |
-| `/login`                    | publico  | Inicio de sesion                                     |
-| `/registro`                 | publico  | Registro                                             |
-| `/tutor/home`               | TUTOR    | Mis tutorias                                         |
-| `/tutor/crear`              | TUTOR    | Crear tutoria                                        |
-| `/tutor/agregar-horario`    | TUTOR    | Gestionar horarios                                   |
-| `/tutor/tutoria/:id`        | TUTOR    | Detalle de tutoria (editar, cancelar, ver inscritos) |
-| `/tutorado/home`            | TUTORADO | Explorar tutorias                                    |
-| `/tutorado/tutorias`        | TUTORADO | Mis inscripciones                                    |
-| `/tutorado/infoTutoria/:id` | TUTORADO | Detalle de tutoria (inscribirse, cancelar, comentar) |
+Las rutas se definen en [`src/app/router.jsx`](src/app/router.jsx) y sus URLs en
+[`src/constants/routes.js`](src/constants/routes.js). Cada pagina se descarga solo al visitarla.
 
-`PrivateRoute` redirige a `/login` si no hay token o el rol no corresponde.
+| Ruta                      | Rol          | Pantalla                                             |
+| ------------------------- | ------------ | ---------------------------------------------------- |
+| `/login`                  | publico      | Inicio de sesion                                     |
+| `/registro`               | publico      | Registro                                             |
+| `/tutor/home`             | TUTOR, ADMIN | Mis tutorias                                         |
+| `/tutor/tutorias/nueva`   | TUTOR, ADMIN | Crear tutoria                                        |
+| `/tutor/horarios`         | TUTOR, ADMIN | Gestionar horarios                                   |
+| `/tutor/tutorias/:id`     | TUTOR, ADMIN | Detalle de tutoria (editar, cancelar, ver inscritos) |
+| `/tutorado/home`          | TUTORADO     | Explorar tutorias                                    |
+| `/tutorado/inscripciones` | TUTORADO     | Mis inscripciones                                    |
+| `/tutorado/tutorias/:id`  | TUTORADO     | Detalle de tutoria (inscribirse, cancelar, comentar) |
+
+- `RequireRole` redirige a `/login` si no hay sesion (y vuelve a la ruta pedida despues del
+  login) o a la pantalla inicial del usuario si su rol no corresponde.
+- Con sesion activa, `/login` y `/registro` redirigen al inicio del rol.
+- Las URLs anteriores (`/tutor/crear`, `/tutor/agregar-horario`, `/tutor/tutoria/:id`,
+  `/tutorado/tutorias`, `/tutorado/infoTutoria/:id`) redirigen a las nuevas.
+- Las rutas desconocidas muestran una pagina 404 y los errores inesperados una pagina de error
+  con opcion de reintentar.
 
 ## Integracion con el backend
 
 El backend espera autenticacion JWT en el header `Authorization: Bearer <token>`.
-El front lee el token de `localStorage` (clave `token`) despues del login.
+
+- **Cliente HTTP** ([`src/api/client.js`](src/api/client.js)): todas las llamadas pasan por
+  aqui. Agrega el token, aplica un timeout de 15 s, convierte los errores en `ApiError` con el
+  mensaje del backend y cancela peticiones al desmontar las pantallas.
+- **Servicios y mappers** (`src/api/*.js`): un servicio por recurso; `mappers.js` adapta los
+  DTOs del backend a la forma que usan las pantallas.
+- **Sesion** ([`src/features/auth`](src/features/auth)): `AuthProvider` guarda token, rol,
+  matricula y nombre (en `localStorage`, claves `token`, `rol`, `matricula` y `nombre`) y
+  los expone con `useAuth()`. La sesion se cierra y se avisa al usuario cuando el token vence
+  (segun su `exp`) o el backend responde `401`.
 
 Endpoints consumidos:
 

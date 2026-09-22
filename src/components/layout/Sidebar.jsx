@@ -1,6 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
-import useAutentificacion from '../../hooks/useAutentificacion'
-import { getIniciales } from '../../utils/formatters'
+import { useAuth } from '@/features/auth/AuthContext'
+import { getIniciales } from '@/utils/formatters'
 import {
   IconClose,
   IconCollapse,
@@ -10,7 +10,7 @@ import {
   IconLogout,
   IconMisTutorias,
   IconTutorias,
-} from './icons'
+} from '@/components/ui/icons'
 
 const iconsByName = {
   tutorias: IconTutorias,
@@ -20,7 +20,7 @@ const iconsByName = {
   misTutorias: IconMisTutorias,
 }
 
-const Sidebar = ({
+export const Sidebar = ({
   items,
   brandTo,
   seccion,
@@ -32,7 +32,7 @@ const Sidebar = ({
   mobileOpen,
   onCloseMobile,
 }) => {
-  const { logout } = useAutentificacion()
+  const { logout } = useAuth()
 
   const nombreVisible = nombre || 'Usuario'
   const resumenUsuario = [nombre, matricula, rol].filter(Boolean).join(' - ')
@@ -41,20 +41,20 @@ const Sidebar = ({
     <aside
       id="app-sidebar"
       className={`app-sidebar${mobileOpen ? ' open' : ''}`}
-      aria-label="Navegacion principal"
+      aria-label="Navegación principal"
     >
       <div className="sidebar-brand-row">
         <Link to={brandTo} className="sidebar-brand" onClick={onCloseMobile}>
           <span className="sidebar-brand-dot" aria-hidden="true" />
-          <span className="sidebar-brand-text">Sistema de Tutorias</span>
+          <span className="sidebar-brand-text">Sistema de Tutorías</span>
         </Link>
 
         <button
           type="button"
           className="sidebar-collapse-btn"
           onClick={onToggleCollapse}
-          aria-label={collapsed ? 'Expandir menu' : 'Colapsar menu'}
-          title={collapsed ? 'Expandir menu' : 'Colapsar menu'}
+          aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
+          title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
         >
           <IconCollapse collapsed={collapsed} />
         </button>
@@ -63,7 +63,7 @@ const Sidebar = ({
           type="button"
           className="sidebar-close-btn"
           onClick={onCloseMobile}
-          aria-label="Cerrar menu"
+          aria-label="Cerrar menú"
         >
           <IconClose />
         </button>
@@ -102,7 +102,7 @@ const Sidebar = ({
               {nombreVisible}
             </span>
             {matricula ? (
-              <span className="sidebar-user-matricula">Matricula: {matricula}</span>
+              <span className="sidebar-user-matricula">Matrícula: {matricula}</span>
             ) : null}
             {rol ? <span className="sidebar-user-role">{rol}</span> : null}
           </span>
@@ -112,14 +112,12 @@ const Sidebar = ({
           type="button"
           className="sidebar-logout"
           onClick={logout}
-          title={collapsed ? 'Cerrar sesion' : undefined}
+          title={collapsed ? 'Cerrar sesión' : undefined}
         >
           <IconLogout />
-          <span>Cerrar sesion</span>
+          <span>Cerrar sesión</span>
         </button>
       </div>
     </aside>
   )
 }
-
-export default Sidebar

@@ -1,5 +1,5 @@
-import { DIAS_SEMANA } from '../constants/horarios'
-import { ESTADO_CLASS, ESTADOS_TUTORIA } from '../constants/tutoria'
+import { DIAS_SEMANA } from '@/constants/horarios'
+import { ESTADO_CLASS, ESTADOS_TUTORIA } from '@/constants/tutoria'
 import { combinarFechaHora, yaInicio } from './fechas'
 import { formatHora } from './formatters'
 

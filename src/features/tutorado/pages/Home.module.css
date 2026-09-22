@@ -1,0 +1,34 @@
+.buscador {
+  position: relative;
+  flex: 0 1 320px;
+  min-width: 260px;
+}
+
+.icono {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  display: inline-flex;
+  color: var(--color-texto-tenue);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.campo {
+  height: 42px;
+  padding-left: 2.5rem;
+  font-size: 0.92rem;
+}
+
+.conteo {
+  margin: -0.25rem 0 0;
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .buscador {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}

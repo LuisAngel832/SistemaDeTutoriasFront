@@ -213,32 +213,32 @@ checklist manual completo en produccion.
 
 ### PR 2.1 — `test/setup-vitest`
 
-- [ ] Instalar `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`,
+- [x] Instalar `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`,
       `@testing-library/user-event`, `@vitest/coverage-v8`, `msw`.
-- [ ] Configurar `test` en `vite.config.js` (`environment: 'jsdom'`, `setupFiles`,
+- [x] Configurar `test` en `vite.config.js` (`environment: 'jsdom'`, `setupFiles`,
       `css: false`) y crear `src/test/setup.js`.
-- [ ] Helper `src/test/render.jsx` que envuelve con `MemoryRouter` (y despues con los
+- [x] Helper `src/test/render.jsx` que envuelve con `MemoryRouter` (y despues con los
       providers de auth y query).
-- [ ] Scripts: `"test": "vitest"`, `"test:run": "vitest run"`,
+- [x] Scripts: `"test": "vitest"`, `"test:run": "vitest run"`,
       `"test:coverage": "vitest run --coverage"`.
-- [ ] Pruebas de `utils/formatters.js` y `utils/fechas.js` usando `vi.useFakeTimers()` y
+- [x] Pruebas de `utils/formatters.js` y `utils/fechas.js` usando `vi.useFakeTimers()` y
       `TZ=America/Mexico_City` para cubrir el caso de la fecha UTC.
-- [ ] Agregar `npm run test:run` al CI.
+- [x] Agregar `npm run test:run` al CI.
 
 **Criterios de aceptacion:** cobertura de `utils/` ≥ 90 %; CI ejecuta las pruebas.
 
 ### PR 2.2 — `refactor/api-client`
 
-- [ ] `src/api/client.js`: `request()`, `api.get/post/put/patch/delete`, clase `ApiError`
+- [x] `src/api/client.js`: `request()`, `api.get/post/put/patch/delete`, clase `ApiError`
       (`message`, `status`, `data`), manejo de red caida, cuerpo vacio y `success: false`.
-- [ ] Inyeccion de dependencias para evitar acoplar el cliente a la sesion:
+- [x] Inyeccion de dependencias para evitar acoplar el cliente a la sesion:
       `configureApi({ getToken, onUnauthorized })`.
-- [ ] Timeout con `AbortController` (15 s) y soporte de `signal` externo.
-- [ ] Servicios por recurso: `src/api/auth.js`, `tutorias.js`, `horarios.js`, `materias.js`,
+- [x] Timeout con `AbortController` (15 s) y soporte de `signal` externo.
+- [x] Servicios por recurso: `src/api/auth.js`, `tutorias.js`, `horarios.js`, `materias.js`,
       `temas.js`, `asistencia.js`, `comentarios.js`.
-- [ ] `src/api/mappers.js`: `mapHorario`, `mapTutoria`, `mapInscripcion`, `mapTema`,
+- [x] `src/api/mappers.js`: `mapHorario`, `mapTutoria`, `mapInscripcion`, `mapTema`,
       `mapComentario` con todos los fallbacks de ids que hoy estan dispersos.
-- [ ] Pruebas con MSW: respuesta ok, 400 con `message`, 401 dispara `onUnauthorized`, 500 sin
+- [x] Pruebas con MSW: respuesta ok, 400 con `message`, 401 dispara `onUnauthorized`, 500 sin
       cuerpo, red caida, timeout. Pruebas unitarias de cada mapper.
 
 **Criterios de aceptacion:** el cliente y los mappers tienen pruebas; todavia no se modifica
@@ -248,52 +248,56 @@ ningun hook (PR sin cambios visibles).
 
 Cada hook conserva su API publica; las paginas no cambian.
 
-- [ ] **2.3a Horarios y creacion:** `useHorarios`, `useCrearTutoria` (usa `horariosApi`,
+- [x] **2.3a Horarios y creacion:** `useHorarios`, `useCrearTutoria` (usa `horariosApi`,
       `materiasApi`, `tutoriasApi`).
-- [ ] **2.3b Tutor:** `useMisTutorias`, `useTutoriaDetalleTutor`.
-- [ ] **2.3c Tutorado y comentarios:** `useTutoriasExplorar`, `useTutoriasTutorado`,
+- [x] **2.3b Tutor:** `useMisTutorias`, `useTutoriaDetalleTutor`.
+- [x] **2.3c Tutorado y comentarios:** `useTutoriasExplorar`, `useTutoriasTutorado`,
       `useTutoriaDetalleTutorado`, `useComentarios`. `MisTutorias.jsx` usa `mapInscripcion`
       en lugar de su `normalizar` local.
-- [ ] Contrato uniforme en todas las mutaciones: `Promise<{ ok, message, data? }>`.
-- [ ] Cancelar peticiones al desmontar o al cambiar `:id` con `AbortController`.
+- [x] Contrato uniforme en todas las mutaciones: `Promise<{ ok, message, data? }>`.
+- [x] Cancelar peticiones al desmontar o al cambiar `:id` con `AbortController`.
 
 **Criterios de aceptacion:** `grep -rn "BASE_URL\|getAuthHeaders" src/hooks` sin resultados;
 checklist manual completo sin regresiones.
 
+> Implementado con un helper interno `useRecurso` (carga, cancelacion, `recargar` y `refrescar` sin parpadeo) que se reemplaza por TanStack Query en el PR 4.1.
+
 ### PR 2.4 — `feat/auth-context`
 
-- [ ] `src/features/auth/storage.js`: `STORAGE_KEYS` y funciones `leerSesion`,
+- [x] `src/features/auth/storage.js`: `STORAGE_KEYS` y funciones `leerSesion`,
       `guardarSesion`, `limpiarSesion`.
-- [ ] `src/features/auth/jwt.js`: `decodificarToken`, `tokenExpirado(token, margenSeg = 30)`.
-- [ ] `src/features/auth/AuthContext.jsx`: `AuthProvider` con estado
+- [x] `src/features/auth/jwt.js`: `decodificarToken`, `tokenExpirado(token, margenSeg = 30)`.
+- [x] `src/features/auth/AuthContext.jsx`: `AuthProvider` con estado
       `{ token, rol, matricula, nombre }`, `isAuthenticated`, `login`, `registro`, `logout`,
       `actualizarNombre`. Escucha el evento `storage` para sincronizar pestanas.
-- [ ] `useAuth()` reemplaza a `useAutentificacion`; `login`/`registro` devuelven
+- [x] `useAuth()` reemplaza a `useAutentificacion`; `login`/`registro` devuelven
       `{ ok, message }` en vez de recibir `setError`.
-- [ ] Al montar el provider, llamar `configureApi({ getToken, onUnauthorized })`;
+- [x] Al montar el provider, llamar `configureApi({ getToken, onUnauthorized })`;
       `onUnauthorized` limpia sesion y navega a `/login` con `state: { expired: true }`.
-- [ ] Al cargar la app, si el token esta expirado, cerrar sesion antes de renderizar rutas.
-- [ ] `LogIn` muestra "Tu sesion expiro, vuelve a iniciar sesion" cuando aplica y redirige a
+- [x] Al cargar la app, si el token esta expirado, cerrar sesion antes de renderizar rutas.
+- [x] `LogIn` muestra "Tu sesion expiro, vuelve a iniciar sesion" cuando aplica y redirige a
       `location.state.from` tras un login exitoso.
-- [ ] Eliminar `src/utils/sesion.js` y todos los `localStorage.getItem('token'|'rol'|...)`
+- [x] Eliminar `src/utils/sesion.js` y todos los `localStorage.getItem('token'|'rol'|...)`
       fuera de `storage.js` (`AppRouter`, `PrivateRoute`, `Comentarios`, `AppLayout`,
       `Tutor/Home`).
-- [ ] Pruebas: login ok/error, token expirado al cargar, 401 en una peticion, redireccion a
+- [x] Pruebas: login ok/error, token expirado al cargar, 401 en una peticion, redireccion a
       `from`.
 
 **Criterios de aceptacion:** `grep -rn "localStorage" src` solo aparece en
 `features/auth/storage.js` y en la preferencia del sidebar; con un token vencido el usuario
 llega a `/login` con el aviso.
 
+> El contexto quedo dividido en `AuthContext.js` (contexto y `useAuth`) y `AuthProvider.jsx` por la regla de Fast Refresh. Al cerrar sesion no se navega: `RequireRole` redirige a `/login` y solo recuerda la pagina si el cierre no fue voluntario (evita competir con la carga diferida de la pagina de login).
+
 ### PR 2.5 — `refactor/router-anidado`
 
-- [ ] Migrar a `createBrowserRouter` + `RouterProvider` en `src/app/router.jsx`.
-- [ ] `src/constants/routes.js` con todas las rutas y helpers
+- [x] Migrar a `createBrowserRouter` + `RouterProvider` en `src/app/router.jsx`.
+- [x] `src/constants/routes.js` con todas las rutas y helpers
       (`ROUTES.tutor.detalle(id)`).
-- [ ] `RequireRole` con `<Outlet />` (reemplaza `PrivateRoute`).
-- [ ] `AppLayout` como layout route con `<Outlet />`; las paginas dejan de envolverse en
+- [x] `RequireRole` con `<Outlet />` (reemplaza `PrivateRoute`).
+- [x] `AppLayout` como layout route con `<Outlet />`; las paginas dejan de envolverse en
       `<AppLayout>` (el `className` por pagina pasa al contenedor raiz de cada pagina).
-- [ ] Nuevas URLs y redirecciones desde las antiguas:
+- [x] Nuevas URLs y redirecciones desde las antiguas:
 
   | Antes                       | Despues                   |
   | --------------------------- | ------------------------- |
@@ -303,15 +307,17 @@ llega a `/login` con el aviso.
   | `/tutorado/infoTutoria/:id` | `/tutorado/tutorias/:id`  |
   | `/tutorado/tutorias`        | `/tutorado/inscripciones` |
 
-- [ ] `lazy` por ruta y `HydrateFallback`/`Suspense` con un loader de pagina.
-- [ ] `NotFoundPage` para `*` y `errorElement` con una pagina de error amigable
+- [x] `lazy` por ruta y `HydrateFallback`/`Suspense` con un loader de pagina.
+- [x] `NotFoundPage` para `*` y `errorElement` con una pagina de error amigable
       (boton "Reintentar" y "Ir al inicio").
-- [ ] Hook `useDocumentTitle(titulo)` en cada pagina (`"Mis tutorias · Sistema de Tutorias"`).
-- [ ] Actualizar la tabla de rutas del README y el menu de `AppLayout`.
-- [ ] Pruebas: acceso por rol, redireccion de URLs antiguas, 404.
+- [x] Hook `useDocumentTitle(titulo)` en cada pagina (`"Mis tutorias · Sistema de Tutorias"`).
+- [x] Actualizar la tabla de rutas del README y el menu de `AppLayout`.
+- [x] Pruebas: acceso por rol, redireccion de URLs antiguas, 404.
 
 **Criterios de aceptacion:** `npm run build` genera un chunk por pagina; recargar cualquier URL
 en Render funciona; las URLs antiguas redirigen.
+
+> El titulo del documento se define una sola vez con `handle.titulo` en cada ruta (tambien lo usa la barra superior movil) en lugar de un hook por pagina. Al separar las paginas en chunks aparecio una dependencia oculta de CSS (Registro usaba `Login_respon.css` sin importarlo); se corrigio y se detecto con la comparacion de capturas.
 
 **Cierre del Sprint 2:** tag `v0.3.0` y redeploy.
 
@@ -325,75 +331,85 @@ en Render funciona; las URLs antiguas redirigen.
 
 ### PR 3.1 — `style/design-tokens` (mecanico)
 
-- [ ] `src/styles/tokens.css`: colores (primario, texto, muted, bordes, fondos, exito, alerta,
+- [x] `src/styles/tokens.css`: colores (primario, texto, muted, bordes, fondos, exito, alerta,
       peligro), tipografia, espaciado, radios, sombras, z-index, duraciones y breakpoints
       documentados en comentarios.
-- [ ] `src/styles/animations.css`: `fade-in`, `shimmer`, `spin`, `pulse` (reemplazan los 28
+- [x] `src/styles/animations.css`: `fade-in`, `shimmer`, `spin`, `pulse` (reemplazan los 28
       `@keyframes` actuales) y regla global de `prefers-reduced-motion`.
-- [ ] `src/styles/global.css` (renombre de `index.css`) importando tokens y animaciones.
-- [ ] Reemplazar hex por `var(--...)` en todos los CSS, **un commit por carpeta** para facilitar
+- [x] `src/styles/global.css` (renombre de `index.css`) importando tokens y animaciones.
+- [x] Reemplazar hex por `var(--...)` en todos los CSS, **un commit por carpeta** para facilitar
       la revision.
-- [ ] Oscurecer el gris de texto secundario (`#8a93a3`) hasta cumplir contraste 4.5:1.
-- [ ] Unir los CSS responsive (`Login_respon.css`, `Registro_respon.css`,
+- [x] Oscurecer el gris de texto secundario (`#8a93a3`) hasta cumplir contraste 4.5:1.
+- [x] Unir los CSS responsive (`Login_respon.css`, `Registro_respon.css`,
       `agregarHorarioR.css`, `crearTutoriaR.css`) dentro de su archivo principal.
 
 **Criterios de aceptacion:** `grep -rEo "#[0-9a-fA-F]{6}" src --include=*.css` solo devuelve
 resultados en `tokens.css`; comparacion con capturas del Sprint 0 sin diferencias salvo el
 ajuste de contraste.
 
+> Verificado con capturas antes/despues: la diferencia maxima fue 0.17 % (solo el gris de apoyo).
+
 ### PR 3.2 — `feat/componentes-ui`
 
 Todos con **CSS Modules** (`Button.module.css`) y exportados desde `src/components/ui/index.js`.
 
-- [ ] `Button` (variantes `primary | secondary | ghost | danger`, tamanos, `loading`,
+- [x] `Button` (variantes `primary | secondary | ghost | danger`, tamanos, `loading`,
       `fullWidth`, soporte `as={Link}`).
-- [ ] `Card`, `Badge`, `Chip` (con boton de quitar opcional).
-- [ ] `Input`, `Select`, `Textarea`, `FormField` (label, ayuda, error, `aria-describedby`,
+- [x] `Card`, `Badge`, `Chip` (con boton de quitar opcional).
+- [x] `Input`, `Select`, `Textarea`, `FormField` (label, ayuda, error, `aria-describedby`,
       `aria-invalid`), `RadioGroup` basado en `<input type="radio">`.
-- [ ] `Alert` (`role="alert"` para error, `aria-live="polite"` para exito/info).
-- [ ] `Skeleton`, `Spinner`, `EmptyState`.
-- [ ] `Modal` sobre `<dialog>` nativo (foco inicial, Escape, retorno del foco) y
+- [x] `Alert` (`role="alert"` para error, `aria-live="polite"` para exito/info).
+- [x] `Skeleton`, `Spinner`, `EmptyState`.
+- [x] `Modal` sobre `<dialog>` nativo (foco inicial, Escape, retorno del foco) y
       `ConfirmDialog`.
-- [ ] Iconos: agregar a `components/layout/icons.jsx` (o adoptar `lucide-react`) los de
+- [x] Iconos: agregar a `components/layout/icons.jsx` (o adoptar `lucide-react`) los de
       calendario, reloj, edificio, puerta y busqueda para reemplazar emojis.
-- [ ] Instalar `eslint-plugin-jsx-a11y` (config `recommended`).
-- [ ] Pruebas: `Button` (loading deshabilita), `Modal` (Escape y foco), `Alert` (roles),
+- [x] Instalar `eslint-plugin-jsx-a11y` (config `recommended`).
+- [x] Pruebas: `Button` (loading deshabilita), `Modal` (Escape y foco), `Alert` (roles),
       `RadioGroup` (flechas).
+
+> Se uso `eslint-plugin-jsx-a11y-x` (fork mantenido) porque `eslint-plugin-jsx-a11y` aun no admite ESLint 10. `Modal` atiende Escape en `keydown` ademas del evento `cancel`, que no todos los navegadores disparan igual.
 
 ### PR 3.3 — `refactor/componentes-de-dominio`
 
-- [ ] `EstadoBadge` (usa `ESTADO_CLASS`).
-- [ ] `TutoriaCard` con `variant="tutor" | "explorar" | "inscripcion"` (reemplaza las 3
+- [x] `EstadoBadge` (usa `ESTADO_CLASS`).
+- [x] `TutoriaCard` con `variant="tutor" | "explorar" | "inscripcion"` (reemplaza las 3
       tarjetas).
-- [ ] `TutoriaInfoGrid` (fecha, horario, edificio, aula con iconos SVG).
-- [ ] `TemasInput` unificado con prop `compact` (reemplaza `TemaQuickInput`).
-- [ ] `InscritosList`, `AccionesTutoriaCard`, `EditarTutoriaForm`.
-- [ ] `AuthLayout` (panel de marca compartido por Login y Registro).
-- [ ] Mover `Comentarios` a `src/features/comentarios/`.
+- [x] `TutoriaInfoGrid` (fecha, horario, edificio, aula con iconos SVG).
+- [x] `TemasInput` unificado con prop `compact` (reemplaza `TemaQuickInput`).
+- [x] `InscritosList`, `AccionesTutoriaCard`, `EditarTutoriaForm`.
+- [x] `AuthLayout` (panel de marca compartido por Login y Registro).
+- [x] Mover `Comentarios` a `src/features/comentarios/`.
+
+> Se agregaron ademas componentes compartidos por los dos detalles (DetalleTutoriaLayout, EncabezadoTutoria, SeccionTutoria, ListaTemas) y `PanelInscripcion` para el tutorado.
 
 ### PR 3.4 — `refactor/paginas-con-ui` (3 PRs)
 
-- [ ] **3.4a Auth:** `LogIn`, `Registro` sobre `AuthLayout` + componentes `ui/`.
-- [ ] **3.4b Tutor:** `Home`, `CrearTutoria`, `AgregarHorario`, `TutoriaDetalle`
+- [x] **3.4a Auth:** `LogIn`, `Registro` sobre `AuthLayout` + componentes `ui/`.
+- [x] **3.4b Tutor:** `Home`, `CrearTutoria`, `AgregarHorario`, `TutoriaDetalle`
       (objetivo: < 150 lineas).
-- [ ] **3.4c Tutorado:** `Home`, `MisTutorias`, `TutoriaDetalle`.
-- [ ] Borrar los estilos por pagina que queden sin uso y quitar `style={{...}}` inline.
-- [ ] Quitar de la UI el aviso tecnico del issue #8 del backend (dejarlo en un
+- [x] **3.4c Tutorado:** `Home`, `MisTutorias`, `TutoriaDetalle`.
+- [x] Borrar los estilos por pagina que queden sin uso y quitar `style={{...}}` inline.
+- [x] Quitar de la UI el aviso tecnico del issue #8 del backend (dejarlo en un
       `console.warn` solo en desarrollo, si aun aplica).
 
 **Criterios de aceptacion:** CSS total de `src/` reducido al menos 40 % (hoy ~5,800 lineas);
 ningun archivo de pagina supera 200 lineas.
 
+> CSS: 5,800 -> 3,004 lineas (-48 %). Paginas: ninguna supera 180 lineas; el detalle del tutor bajo de 571 a 172 (la meta de 150 quedo cerca). Al separar las paginas en chunks aparecio una dependencia oculta de CSS entre Registro y Login, corregida en el PR 2.5.
+
 ### PR 3.5 — `a11y/accesibilidad-y-textos`
 
-- [ ] Reemplazar `VentanaEmerjente` por `Modal` y borrar el componente.
-- [ ] Feedback y errores con `Alert`; contenedores en carga con `aria-busy`.
-- [ ] Selector de rol (Registro) y de dia (Horarios) con `RadioGroup`.
-- [ ] Revisar el nombre accesible de las tarjetas-enlace.
-- [ ] **Ortografia:** corregir acentos en todos los textos visibles (Tutorías, Contraseña,
+- [x] Reemplazar `VentanaEmerjente` por `Modal` y borrar el componente.
+- [x] Feedback y errores con `Alert`; contenedores en carga con `aria-busy`.
+- [x] Selector de rol (Registro) y de dia (Horarios) con `RadioGroup`.
+- [x] Revisar el nombre accesible de las tarjetas-enlace.
+- [x] **Ortografia:** corregir acentos en todos los textos visibles (Tutorías, Contraseña,
       Matrícula, Sesión, Día, Miércoles...). Mantener sin acento los valores que se envian al
       backend (p. ej. `dia`) salvo que el backend lo acepte.
-- [ ] Revision con Lighthouse y axe DevTools en cada pantalla: accesibilidad ≥ 95.
+- [x] Revision con Lighthouse y axe DevTools en cada pantalla: accesibilidad ≥ 95.
+
+> La auditoria se hizo con axe-core (mismo motor que axe DevTools y que la seccion de accesibilidad de Lighthouse) sobre las 10 pantallas: 0 hallazgos con las reglas WCAG 2.1 A/AA y de buenas practicas. Ademas se corrigio el contraste del verde de las acciones principales (2.9:1 -> 4.7:1).
 
 **Cierre del Sprint 3:** comparar capturas con las del Sprint 0, tag `v0.4.0` y redeploy.
 
@@ -405,43 +421,47 @@ ningun archivo de pagina supera 200 lineas.
 **Esfuerzo estimado:** 8–10 dias.
 **Entregable:** `v1.0.0`.
 
-### PR 4.1 — `feat/tanstack-query` (2–3 PRs)
+### PR 4.1 — `feat/tanstack-query` (2–3 PRs) ✅
 
-- [ ] Instalar `@tanstack/react-query` y `@tanstack/react-query-devtools` (solo dev).
-- [ ] `src/app/providers.jsx` con `QueryClientProvider` (`staleTime: 30s`, `retry: 1`, sin
+- [x] Instalar `@tanstack/react-query` y `@tanstack/react-query-devtools` (solo dev).
+- [x] `src/app/providers.jsx` con `QueryClientProvider` (`staleTime: 30s`, `retry: 1`, sin
       reintento en 4xx).
-- [ ] `src/api/queryKeys.js` (fabrica de keys: `tutoriaKeys.all`, `.mias()`, `.detalle(id)`...).
-- [ ] Queries: `useMisTutorias`, `useTutoriasDisponibles`, `useInscripciones`, `useHorarios`,
+- [x] `src/api/queryKeys.js` (fabrica de keys: `tutoriaKeys.all`, `.mias()`, `.detalle(id)`...).
+- [x] Queries: `useMisTutorias`, `useTutoriasDisponibles`, `useInscripciones`, `useHorarios`,
       `useMaterias`, `useTutoria(id)`, `useInscritos(id)`, `useComentarios(id)`.
-- [ ] Mutaciones con invalidacion: crear/editar/cancelar/completar tutoria, crear/eliminar
+- [x] Mutaciones con invalidacion: crear/editar/cancelar/completar tutoria, crear/eliminar
       horario, agregar/quitar tema, inscribirse/cancelar, crear/eliminar comentario.
-- [ ] `isPending` por mutacion (cada boton muestra su propio estado de carga).
-- [ ] Borrar el estado manual `isLoading/error/data` de los hooks migrados.
-- [ ] Regresar `react-hooks/set-state-in-effect` a `error` en `eslint.config.js`.
-- [ ] Actualizar el helper de tests para incluir `QueryClientProvider`.
+- [x] `isPending` por mutacion (cada boton muestra su propio estado de carga).
+- [x] Borrar el estado manual `isLoading/error/data` de los hooks migrados.
+- [x] Regresar `react-hooks/set-state-in-effect` a `error` en `eslint.config.js`.
+- [x] Actualizar el helper de tests para incluir `QueryClientProvider`.
 
 **Criterios de aceptacion:** 0 warnings de lint; volver de un detalle a la lista no muestra
 skeleton; al inscribirse, "Mis inscripciones" se actualiza sin recargar.
 
-### PR 4.2 — `feat/formularios-zod` (2 PRs)
+### PR 4.2 — `feat/formularios-zod` (2 PRs) ✅
 
-- [ ] Instalar `react-hook-form`, `zod`, `@hookform/resolvers`, `sonner`.
-- [ ] Esquemas en `src/schemas/`: `loginSchema`, `registroSchema` (correo, matricula con
+- [x] Instalar `react-hook-form`, `zod`, `@hookform/resolvers`, `sonner`.
+- [x] Esquemas en `src/schemas/`: `loginSchema`, `registroSchema` (correo, matricula con
       formato institucional, contrasena ≥ 8), `horarioSchema` (fin > inicio),
       `tutoriaSchema` (fecha ≥ hoy, campos requeridos, temas ≤ 10).
-- [ ] Integrar `FormField` con `react-hook-form` (errores por campo).
-- [ ] Migrar Login, Registro, Crear tutoria, Horarios y Editar tutoria; todos con `<form onSubmit>`
+- [x] Integrar `FormField` con `react-hook-form` (errores por campo).
+- [x] Migrar Login, Registro, Crear tutoria, Horarios y Editar tutoria; todos con `<form onSubmit>`
       y boton `type="submit"` (Enter envia).
-- [ ] `Toaster` de `sonner` en `providers.jsx`; los resultados de mutaciones se muestran como
+- [x] `Toaster` de `sonner` en `providers.jsx`; los resultados de mutaciones se muestran como
       toast en vez de modal.
-- [ ] Pruebas de cada esquema y de un formulario completo (crear tutoria).
+- [x] Pruebas de cada esquema y de un formulario completo (crear tutoria).
 
-### PR 4.3 — `refactor/estructura-por-features` (mecanico)
+> Hecho. Los esquemas viven en `src/schemas/` (`auth.js`, `horario.js`, `tutoria.js`) y los selects se convierten a numero con `transform(Number)`.
+> Los avisos de las acciones (crear/eliminar horario, inscribirse, comentarios, acciones del tutor) son toasts de `sonner`;
+> los errores de validacion siguen junto a su campo y los de carga como `Alert` en la pantalla.
+
+### PR 4.3 — `refactor/estructura-por-features` (mecanico) ✅
 
 Solo mover archivos con `git mv` y actualizar imports: **sin cambios de logica**.
 
-- [ ] Alias `@` → `src` en `vite.config.js` y `jsconfig.json` (autocompletado en el editor).
-- [ ] Mover a la estructura objetivo:
+- [x] Alias `@` → `src` en `vite.config.js` y `jsconfig.json` (autocompletado en el editor).
+- [x] Mover a la estructura objetivo:
   ```
   src/
     app/          main.jsx, App.jsx, providers.jsx, router.jsx
@@ -460,15 +480,22 @@ Solo mover archivos con `git mv` y actualizar imports: **sin cambios de logica**
     utils/
     test/
   ```
-- [ ] Hooks sin JSX con extension `.js`; named exports en todo excepto paginas.
-- [ ] Reemplazar imports relativos profundos por `@/...`.
-- [ ] Borrar carpetas vacias (`Routes/`, `pages/`, `hooks/`).
-- [ ] Actualizar la estructura en README.
+- [x] Hooks sin JSX con extension `.js`; named exports en todo excepto paginas.
+- [x] Reemplazar imports relativos profundos por `@/...`.
+- [x] Borrar carpetas vacias (`Routes/`, `pages/`, `hooks/`).
+- [x] Actualizar la estructura en README.
 
 **Criterios de aceptacion:** `grep -rn "\.\./\.\./" src` sin resultados; build, lint, tests y
 checklist manual en verde.
 
+> Hecho. Las paginas viven en `features/<dominio>/pages/`, los hooks junto a su feature y
+> `useAhora`, `ejecutarMutacion` y `avisos` en la capa compartida. `grep -rn "../../" src` no devuelve nada.
+> Las paginas de error (`PaginaError`, `NoEncontrada`) quedaron en `app/` porque las usa el router.
+
 **Cierre del Sprint 4:** tag `v1.0.0`, CHANGELOG completo y redeploy.
+
+> CHANGELOG actualizado en la seccion `[Sin publicar]`. El tag `v1.0.0` y el redeploy
+> quedan pendientes de tu decision (publicar cambia lo que ven los usuarios).
 
 ---
 
