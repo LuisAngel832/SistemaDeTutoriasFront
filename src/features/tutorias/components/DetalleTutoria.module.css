@@ -1,0 +1,133 @@
+.volver {
+  display: flex;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.principal {
+  min-width: 0;
+}
+
+.lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.skeleton {
+  border-radius: var(--radio-xl);
+}
+
+.encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-divisor);
+}
+
+.titulos {
+  min-width: 0;
+}
+
+.titulo {
+  margin: 0;
+  color: var(--color-texto);
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.tutor {
+  margin: 0.35rem 0 0;
+  color: var(--color-texto-suave);
+  font-size: 0.95rem;
+}
+
+.tutorEtiqueta {
+  margin-right: 0.25rem;
+  color: var(--color-texto-tenue);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.seccion {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-divisor);
+}
+
+.seccionTitulo {
+  margin: 0 0 0.65rem;
+  color: var(--color-texto-secundario);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.seccionDescripcion {
+  margin: -0.35rem 0 0.75rem;
+  color: var(--color-texto-suave);
+  font-size: 0.88rem;
+}
+
+.temas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sinTemas {
+  margin: 0;
+  color: var(--color-texto-tenue);
+  font-size: 0.85rem;
+}
+
+.error {
+  align-items: center;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.errorEnlace {
+  margin-top: 0.6rem;
+  color: var(--color-primario);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.errorEnlace:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .titulo {
+    font-size: 1.3rem;
+  }
+
+  .encabezado {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

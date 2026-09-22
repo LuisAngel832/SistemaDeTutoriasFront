@@ -1,0 +1,32 @@
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.etiqueta {
+  color: var(--color-texto-secundario);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  /* Las etiquetas descriptivas son largas: deben poder partirse. */
+  overflow-wrap: anywhere;
+}
+
+.ayuda,
+.error {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.ayuda {
+  color: var(--color-texto-tenue);
+}
+
+.error {
+  color: var(--color-peligro-texto);
+  font-weight: 500;
+}
