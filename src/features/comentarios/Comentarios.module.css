@@ -45,6 +45,11 @@
   list-style: none;
 }
 
+.columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
 .comentario {
   display: flex;
   align-items: flex-start;
@@ -62,20 +67,6 @@
 .comentario:hover {
   border-color: var(--color-borde);
   box-shadow: 0 2px 8px rgba(15, 30, 60, 0.04);
-}
-
-.avatar {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-primario-oscuro) 100%);
-  color: var(--color-texto-inverso);
-  font-size: 0.95rem;
-  font-weight: 600;
 }
 
 .cuerpo {

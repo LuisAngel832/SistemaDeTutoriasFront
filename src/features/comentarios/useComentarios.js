@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { comentariosApi } from '@/api/legacy/comentarios'
-import { clavesComentarios } from '@/api/legacy/queryKeys'
+import { comentariosApi } from '@/api/comentarios'
+import { clavesComentarios } from '@/api/queryKeys'
 import { ejecutarMutacion } from '@/utils/ejecutarMutacion'
 
 export const useComentarios = (idTutoria) => {
@@ -14,8 +14,8 @@ export const useComentarios = (idTutoria) => {
     enabled: Boolean(idTutoria),
   })
 
-  const crearComentario = useMutation({
-    mutationFn: (comentario) => comentariosApi.crear({ idTutoria, comentario }),
+  const publicarComentario = useMutation({
+    mutationFn: (comentario) => comentariosApi.publicar(idTutoria, comentario),
     onSuccess: invalidar,
   })
   const eliminarComentario = useMutation({
@@ -26,16 +26,16 @@ export const useComentarios = (idTutoria) => {
   const crear = async (comentario) => {
     const texto = (comentario || '').trim()
     if (!texto) return { ok: false, message: 'El comentario no puede estar vacío' }
-    return ejecutarMutacion(crearComentario, texto, 'Comentario publicado')
+    return ejecutarMutacion(publicarComentario, texto, 'Comentario publicado.')
   }
 
   const eliminar = async (idComentario) => {
     if (!idComentario) return { ok: false, message: 'Comentario inválido' }
-    return ejecutarMutacion(eliminarComentario, idComentario, 'Comentario eliminado')
+    return ejecutarMutacion(eliminarComentario, idComentario, 'Comentario eliminado.')
   }
 
   return {
-    comentarios: data ?? [],
+    comentarios: Array.isArray(data) ? data : [],
     isLoading: isPending,
     error: error?.message ?? '',
     crear,

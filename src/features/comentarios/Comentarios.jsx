@@ -1,16 +1,21 @@
 import { useId, useState } from 'react'
-import { Alert, Button, EmptyState, Textarea } from '@/components/ui'
-import { useAuth } from '@/features/auth/AuthContext'
+import { Alert, Avatar, Button, EmptyState, Textarea } from '@/components/ui'
+import { MAX_CARACTERES_COMENTARIO } from '@/constants/tutoria'
 import { useComentarios } from './useComentarios'
 import { avisar } from '@/utils/avisos'
-import { getInicial } from '@/utils/formatters'
+import { clases } from '@/utils/clases'
 import styles from './Comentarios.module.css'
 
-// Comentarios de una tutoria (RF15).
+// Comentarios y sugerencias de los tutorados de una tutoria (RN-16).
 // modo: lectura (solo ver) | tutorado (puede publicar y borrar sus comentarios)
-export const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) => {
+// columnas: muestra los comentarios en rejilla (detalle del tutor).
+export const Comentarios = ({
+  idTutoria,
+  modo = 'lectura',
+  columnas = false,
+  maxLength = MAX_CARACTERES_COMENTARIO,
+}) => {
   const { comentarios, isLoading, error, crear, eliminar } = useComentarios(idTutoria)
-  const { matricula } = useAuth()
   const [texto, setTexto] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [eliminandoId, setEliminandoId] = useState(null)
@@ -41,7 +46,7 @@ export const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) =>
       {puedeEscribir ? (
         <form className={styles.formulario} onSubmit={publicar}>
           <label htmlFor={idCampo} className={styles.etiqueta}>
-            Tema u observación que quieres compartir con el tutor
+            Tema u observación para el tutor
           </label>
           <Textarea
             id={idCampo}
@@ -84,20 +89,18 @@ export const Comentarios = ({ idTutoria, modo = 'lectura', maxLength = 280 }) =>
           }
         />
       ) : (
-        <ul className={styles.lista}>
+        <ul className={clases(styles.lista, columnas && styles.columnas)}>
           {comentarios.map((comentario) => {
-            const esMio = comentario.matricula != null && comentario.matricula === matricula
-            const autor = comentario.nombre || comentario.matricula || 'Tutorado'
+            const esMio = Boolean(comentario.esMio)
+            const autor = comentario.nombreCompleto || comentario.matricula || 'Tutorado'
 
             return (
               <li key={comentario.idComentario} className={styles.comentario}>
-                <span className={styles.avatar} aria-hidden="true">
-                  {getInicial(autor)}
-                </span>
+                <Avatar nombre={autor} una />
                 <div className={styles.cuerpo}>
                   <p className={styles.autor}>
                     {autor}
-                    {esMio ? <span className={styles.propio}>Tu</span> : null}
+                    {esMio ? <span className={styles.propio}>Tú</span> : null}
                   </p>
                   <p className={styles.texto}>{comentario.comentario}</p>
                 </div>

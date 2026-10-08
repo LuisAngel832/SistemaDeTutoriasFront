@@ -37,18 +37,53 @@ export const EncabezadoTutoria = ({ tutoria }) => (
   </header>
 )
 
-export const SeccionTutoria = ({ title, description, children }) => {
+// `accion`: enlace o texto a la derecha del titulo ("Historial de asistencia →").
+export const SeccionTutoria = ({ title, description, accion, children }) => {
   const idTitulo = useId()
   return (
     <section className={styles.seccion} aria-labelledby={idTitulo}>
-      <h2 className={styles.seccionTitulo} id={idTitulo}>
-        {title}
-      </h2>
+      <div className={styles.seccionEncabezado}>
+        <h2 className={styles.seccionTitulo} id={idTitulo}>
+          {title}
+        </h2>
+        {accion ? <div className={styles.seccionAccion}>{accion}</div> : null}
+      </div>
       {description ? <p className={styles.seccionDescripcion}>{description}</p> : null}
       {children}
     </section>
   )
 }
+
+// Encabezado del detalle: nombre de la EE, un dato debajo ("IMPARTE Rocío Hernández Aguilar"
+// o "EXPERIENCIA EDUCATIVA NRC 48215") y la insignia de estado.
+export const EncabezadoDetalle = ({ titulo, etiqueta, detalle, insignia }) => (
+  <header className={styles.encabezado}>
+    <div className={styles.titulos}>
+      <h1 className={styles.titulo}>{titulo || SIN_NOMBRE}</h1>
+      {detalle ? (
+        <p className={styles.tutor}>
+          {etiqueta ? <span className={styles.tutorEtiqueta}>{etiqueta}</span> : null} {detalle}
+        </p>
+      ) : null}
+    </div>
+    {insignia}
+  </header>
+)
+
+// Datos en mosaicos de dos columnas: [{ etiqueta, valor, Icono }].
+export const DatosDetalle = ({ datos }) => (
+  <dl className={styles.datos}>
+    {datos.map(({ etiqueta, valor, Icono }) => (
+      <div key={etiqueta} className={styles.dato}>
+        <span className={styles.datoIcono} aria-hidden="true">
+          <Icono />
+        </span>
+        <dt className={styles.datoEtiqueta}>{etiqueta}</dt>
+        <dd className={styles.datoValor}>{valor}</dd>
+      </div>
+    ))}
+  </dl>
+)
 
 export const ListaTemas = ({ temas = [], emptyMessage = 'No se registraron temas.' }) =>
   temas.length ? (

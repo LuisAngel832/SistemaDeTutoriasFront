@@ -2,28 +2,32 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
-import { AuthContext } from '@/features/auth/AuthContext'
 import { renderConProveedores } from '@/test/render'
 import { respuestaOk, servidor, usarServidorMock } from '@/test/servidor'
 import { Comentarios } from './Comentarios'
 
 usarServidorMock()
 
-const renderComentarios = (props) =>
-  renderConProveedores(
-    <AuthContext.Provider value={{ matricula: '2001' }}>
-      <Comentarios idTutoria={1} {...props} />
-    </AuthContext.Provider>,
-  )
+const comentario = (idComentario, texto, cambios = {}) => ({
+  idComentario,
+  matricula: 'S23011873',
+  nombreCompleto: 'Diego Ramírez Soto',
+  comentario: texto,
+  fechaComentario: '2026-10-04T19:22:00-06:00',
+  esMio: false,
+  ...cambios,
+})
+
+const renderComentarios = (props) => renderConProveedores(<Comentarios idTutoria={7} {...props} />)
 
 describe('Comentarios', () => {
-  it('reconoce los comentarios propios (matricula numerica del backend) y permite borrarlos', async () => {
+  it('marca los comentarios propios con "Tú" y permite borrarlos', async () => {
     let comentarios = [
-      { idComentario: 1, idTutoria: 1, matricula: 2001, nombre: 'Luis Perez', comentario: 'Mio' },
-      { idComentario: 2, idTutoria: 1, matricula: 2002, nombre: 'Maria Soto', comentario: 'Ajeno' },
+      comentario(1, 'Mio', { nombreCompleto: 'Valeria Mendoza Cruz', esMio: true }),
+      comentario(2, 'Ajeno'),
     ]
     servidor.use(
-      http.get('*/comentarios/tutoria/1', () => HttpResponse.json(respuestaOk(comentarios))),
+      http.get('*/tutorias/7/comentarios', () => HttpResponse.json(respuestaOk(comentarios))),
       http.delete('*/comentarios/1', () => {
         comentarios = comentarios.filter((c) => c.idComentario !== 1)
         return HttpResponse.json(respuestaOk(null, 'Comentario eliminado.'))
@@ -32,17 +36,18 @@ describe('Comentarios', () => {
     renderComentarios({ modo: 'tutorado' })
 
     expect(await screen.findByText('Mio')).toBeInTheDocument()
+    expect(screen.getByText('Tú')).toBeInTheDocument()
     expect(screen.getAllByRole('button', { name: 'Eliminar mi comentario' })).toHaveLength(1)
 
     await userEvent.click(screen.getByRole('button', { name: 'Eliminar mi comentario' }))
     await waitFor(() => expect(screen.queryByText('Mio')).not.toBeInTheDocument())
-    expect(await screen.findByText('Comentario eliminado')).toBeInTheDocument()
+    expect(await screen.findByText('Comentario eliminado.')).toBeInTheDocument()
   })
 
   it('en modo lectura no muestra el formulario ni botones de borrar', async () => {
     servidor.use(
-      http.get('*/comentarios/tutoria/1', () =>
-        HttpResponse.json(respuestaOk([{ idComentario: 1, matricula: 2001, comentario: 'Hola' }])),
+      http.get('*/tutorias/7/comentarios', () =>
+        HttpResponse.json(respuestaOk([comentario(1, 'Hola', { esMio: true })])),
       ),
     )
     renderComentarios({ modo: 'lectura' })
@@ -52,27 +57,27 @@ describe('Comentarios', () => {
     expect(screen.queryByRole('button')).not.toBeInTheDocument()
   })
 
-  it('publica un comentario y limpia el campo', async () => {
-    let publicado = null
+  it('publica un comentario, cuenta los caracteres y limpia el campo', async () => {
+    let cuerpo = null
     servidor.use(
-      http.get('*/comentarios/tutoria/1', () =>
-        HttpResponse.json(respuestaOk(publicado ? [publicado] : [])),
+      http.get('*/tutorias/7/comentarios', () =>
+        HttpResponse.json(respuestaOk(cuerpo ? [comentario(3, cuerpo.comentario)] : [])),
       ),
-      http.post('*/comentarios', async ({ request }) => {
-        const cuerpo = await request.json()
-        publicado = { idComentario: 9, matricula: 2001, nombre: 'Luis', ...cuerpo }
-        return HttpResponse.json(respuestaOk(null))
+      http.post('*/tutorias/7/comentarios', async ({ request }) => {
+        cuerpo = await request.json()
+        return HttpResponse.json(respuestaOk(comentario(3, cuerpo.comentario)))
       }),
     )
     renderComentarios({ modo: 'tutorado' })
 
-    const campo = await screen.findByLabelText(/Tema u observación/)
-    await userEvent.type(campo, 'Ver depreciaciones')
-    expect(screen.getByText('18/280 caracteres')).toBeInTheDocument()
+    const campo = await screen.findByLabelText('Tema u observación para el tutor')
+    expect(screen.getByText('0/255 caracteres')).toBeInTheDocument()
+    await userEvent.type(campo, 'Repasar índices')
+    expect(screen.getByText('15/255 caracteres')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Publicar comentario' }))
 
-    expect(await screen.findByText('Ver depreciaciones')).toBeInTheDocument()
+    expect(await screen.findByText('Repasar índices')).toBeInTheDocument()
+    expect(cuerpo).toEqual({ comentario: 'Repasar índices' })
     expect(campo).toHaveValue('')
-    expect(publicado).toMatchObject({ idTutoria: 1, comentario: 'Ver depreciaciones' })
   })
 })

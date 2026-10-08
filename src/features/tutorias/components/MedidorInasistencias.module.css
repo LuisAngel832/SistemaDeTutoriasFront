@@ -1,0 +1,57 @@
+.medidor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.etiqueta {
+  color: var(--color-texto-tenue);
+  font-size: 0.8rem;
+}
+
+.cifra {
+  color: var(--color-texto);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.textoAviso {
+  color: var(--color-alerta-texto);
+}
+
+.textoBaja {
+  color: var(--color-peligro-texto);
+}
+
+.segmentos {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+  gap: 4px;
+}
+
+.segmento {
+  height: 6px;
+  border-radius: var(--radio-pill);
+  background-color: var(--color-borde-suave);
+}
+
+.ocupado {
+  background-color: var(--color-limite);
+}
+
+.limite {
+  border: 1px dashed var(--color-peligro-texto);
+  background-color: transparent;
+}
+
+.baja {
+  background-color: var(--color-peligro-texto);
+}
