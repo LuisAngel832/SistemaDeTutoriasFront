@@ -91,6 +91,20 @@ describe('errores del backend', () => {
 
     const error = await capturarError(api.post('/auth/signup', {}, { auth: false }))
     expect(error.message).toBe('Error de validación: El correo no tiene un formato válido')
+    expect(error.errores).toEqual({ correo: 'El correo no tiene un formato válido' })
+  })
+
+  it('no expone errores de campo en los errores de negocio', async () => {
+    servidor.use(
+      http.post('*/inscripciones', () =>
+        HttpResponse.json(respuestaError('La tutoría ya no tiene lugares disponibles.'), {
+          status: 400,
+        }),
+      ),
+    )
+
+    const error = await capturarError(api.post('/inscripciones', { idTutoria: 1 }))
+    expect(error.errores).toEqual({})
   })
 
   it('trata success: false como error aunque el status sea 200', async () => {

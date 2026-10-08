@@ -13,12 +13,20 @@ export const MENSAJES_ERROR = {
   generico: 'Ocurrió un error inesperado',
 }
 
+// En los errores de validacion `data` es un mapa { campo: 'mensaje' }; `errores` lo expone para
+// mostrar cada mensaje debajo de su campo (vacio en los demas errores).
+const erroresDeCampo = (data) => {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return {}
+  return Object.fromEntries(Object.entries(data).filter(([, valor]) => typeof valor === 'string'))
+}
+
 export class ApiError extends Error {
   constructor(message, { status = 0, data = null } = {}) {
     super(message)
     this.name = 'ApiError'
     this.status = status
     this.data = data
+    this.errores = erroresDeCampo(data?.data)
   }
 }
 

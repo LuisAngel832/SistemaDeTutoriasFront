@@ -1,6 +1,53 @@
-// Calculos de fechas en hora local del navegador.
+// Calculos de fechas. Las reglas del negocio usan la zona de Mexico (igual que el backend);
+// las funciones del modelo anterior trabajan en hora local del navegador.
 
 const MS_POR_MINUTO = 60_000
+const MS_POR_DIA = 24 * 60 * MS_POR_MINUTO
+
+export const ZONA_NEGOCIO = 'America/Mexico_City'
+
+// en-CA formatea como "YYYY-MM-DD".
+const formatoISO = new Intl.DateTimeFormat('en-CA', {
+  timeZone: ZONA_NEGOCIO,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+})
+
+// Fecha "YYYY-MM-DD" de un instante en la zona de Mexico.
+export const fechaEnMexico = (instante = new Date()) => {
+  const date = instante instanceof Date ? instante : new Date(instante)
+  return Number.isNaN(date.getTime()) ? null : formatoISO.format(date)
+}
+
+// "YYYY-MM-DD" -> Date a mediodia UTC: se lee con getUTC* sin que la zona del navegador
+// mueva el dia.
+export const leerFecha = (fecha) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(fecha ?? ''))) return null
+  const date = new Date(`${fecha}T12:00:00Z`)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
+export const sumarDias = (fecha, dias) => {
+  const date = leerFecha(fecha)
+  return date ? new Date(date.getTime() + dias * MS_POR_DIA).toISOString().slice(0, 10) : null
+}
+
+// "hoy" o "mañana" respecto a `hoy` (fecha en la zona de Mexico); null para otros dias.
+export const diaRelativo = (fecha, hoy = fechaEnMexico()) => {
+  if (!fecha || !hoy) return null
+  if (fecha === hoy) return 'hoy'
+  if (fecha === sumarDias(hoy, 1)) return 'mañana'
+  return null
+}
+
+// Inicio del periodo escolar que contiene la fecha: febrero-julio o agosto-enero.
+export const inicioDePeriodo = (fecha = fechaEnMexico()) => {
+  const [anio, mes] = String(fecha).split('-').map(Number)
+  if (mes >= 8) return `${anio}-08-01`
+  if (mes >= 2) return `${anio}-02-01`
+  return `${anio - 1}-08-01`
+}
 
 // Fecha de hoy en formato "YYYY-MM-DD" segun la zona horaria local.
 // toISOString() devuelve UTC: en Mexico, despues de las 18:00 ya seria "manana".
