@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { horariosApi } from '@/api/horarios'
-import { clavesHorarios } from '@/api/queryKeys'
+import { horariosApi } from '@/api/legacy/horarios'
+import { clavesHorarios } from '@/api/legacy/queryKeys'
 
 export const useHorarios = () => {
   const queryClient = useQueryClient()

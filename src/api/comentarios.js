@@ -1,12 +1,12 @@
 import { api } from './client'
-import { mapComentario, mapLista } from './mappers'
 
+// Comentarios de los tutorados por tutoria:
+// { idComentario, matricula, nombreCompleto, comentario, fechaComentario, esMio }.
 export const comentariosApi = {
-  deTutoria: async (idTutoria, opciones) =>
-    mapLista(await api.get(`/comentarios/tutoria/${idTutoria}`, opciones), mapComentario),
+  deTutoria: (idTutoria, opciones) => api.get(`/tutorias/${idTutoria}/comentarios`, opciones),
 
-  crear: ({ idTutoria, comentario }) =>
-    api.post('/comentarios', { idTutoria: Number(idTutoria), comentario }),
+  publicar: (idTutoria, comentario) =>
+    api.post(`/tutorias/${idTutoria}/comentarios`, { comentario }),
 
   eliminar: (idComentario) => api.delete(`/comentarios/${idComentario}`),
 }

@@ -1,25 +1,32 @@
-import { api } from './client'
-import { mapLista, mapTutoria } from './mappers'
+import { api, conParametros } from './client'
 
 export const tutoriasApi = {
-  misTutorias: async (opciones) =>
-    mapLista(await api.get('/tutoria/mis-tutorias', opciones), mapTutoria),
+  // Explorar (tutorado). filtros: { q, dia, soloConLugar, ocultarChoques }.
+  explorar: ({ q, dia, soloConLugar, ocultarChoques } = {}, opciones) =>
+    api.get(conParametros('/tutorias', { q, dia, soloConLugar, ocultarChoques }), opciones),
 
-  disponibles: async (opciones) =>
-    mapLista(await api.get('/tutoria/disponibles', opciones), mapTutoria),
+  // Detalle con horarios y temas, proximaSesion, esDueno y panelTutorado.
+  detalle: (idTutoria, opciones) => api.get(`/tutorias/${idTutoria}`, opciones),
 
-  detalle: async (id, opciones) => {
-    const tutoria = await api.get(`/tutoria/${id}`, opciones)
-    return tutoria ? mapTutoria(tutoria) : null
-  },
+  // Tutorias del tutor autenticado. estado: ACTIVA (default) | INACTIVA | TODAS.
+  mias: ({ estado } = {}, opciones) =>
+    api.get(conParametros('/tutorias/mis-tutorias', { estado }), opciones),
 
-  // payload: { idHorario, fecha, edificio, aula, nrc, temas: string[] }
-  crear: (payload) => api.post('/tutoria', payload),
+  // payload: { idMateria, edificio, aula, horarios: [{ dia, horaInicio, horaFin, temas }] }
+  crear: (payload) => api.post('/tutorias', payload),
 
-  // payload: { idHorario, fecha, edificio, aula }
-  actualizar: (id, payload) => api.put(`/tutoria/${id}`, payload),
+  // payload: { edificio, aula, horarios: [{ idHorario?, dia, horaInicio, horaFin, temas }] }
+  actualizar: (idTutoria, payload) => api.put(`/tutorias/${idTutoria}`, payload),
 
-  cancelar: (id) => api.delete(`/tutoria/${id}`),
+  desactivar: (idTutoria) => api.patch(`/tutorias/${idTutoria}/estado`, { estado: 'INACTIVA' }),
 
-  completar: (id) => api.put(`/tutoria/completar/${id}`),
+  // { cupo, inscritos: [{ matricula, nombreCompleto, correo, inasistencias, enRiesgo, ... }] }
+  inscritos: (idTutoria, opciones) => api.get(`/tutorias/${idTutoria}/inscritos`, opciones),
+
+  // Sesiones registradas mas las virtuales de los proximos `dias` (0-28).
+  sesiones: (idTutoria, { dias } = {}, opciones) =>
+    api.get(conParametros(`/tutorias/${idTutoria}/sesiones`, { dias }), opciones),
+
+  historialAsistencia: (idTutoria, opciones) =>
+    api.get(`/tutorias/${idTutoria}/historial-asistencia`, opciones),
 }

@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { asistenciaApi } from '@/api/asistencia'
-import { clavesAsistencia, clavesTutorias } from '@/api/queryKeys'
-import { temasApi } from '@/api/temas'
-import { tutoriasApi } from '@/api/tutorias'
+import { asistenciaApi } from '@/api/legacy/asistencia'
+import { clavesAsistencia, clavesTutorias } from '@/api/legacy/queryKeys'
+import { temasApi } from '@/api/legacy/temas'
+import { tutoriasApi } from '@/api/legacy/tutorias'
 import { ejecutarMutacion } from '@/utils/ejecutarMutacion'
 
 export const useTutoriaDetalleTutor = (id) => {

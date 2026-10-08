@@ -1,4 +1,4 @@
-import { api } from './client'
+import { api } from '../client'
 import { mapInscripcion, mapInscrito, mapLista } from './mappers'
 
 // El backend llama "asistencia" a la inscripcion de un tutorado en una tutoria.

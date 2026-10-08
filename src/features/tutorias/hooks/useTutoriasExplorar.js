@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { clavesTutorias } from '@/api/queryKeys'
-import { tutoriasApi } from '@/api/tutorias'
+import { clavesTutorias } from '@/api/legacy/queryKeys'
+import { tutoriasApi } from '@/api/legacy/tutorias'
 
 export const useTutoriasExplorar = () => {
   const { data, isPending, error, refetch } = useQuery({

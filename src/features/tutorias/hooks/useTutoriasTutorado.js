@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { asistenciaApi } from '@/api/asistencia'
-import { clavesAsistencia } from '@/api/queryKeys'
+import { asistenciaApi } from '@/api/legacy/asistencia'
+import { clavesAsistencia } from '@/api/legacy/queryKeys'
 
 // Inscripciones del tutorado, ya normalizadas por mapInscripcion.
 export const useTutoriasTutorado = () => {

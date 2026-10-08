@@ -1,4 +1,4 @@
-import { api } from './client'
+import { api } from '../client'
 import { mapHorario, mapLista } from './mappers'
 
 export const horariosApi = {

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { comentariosApi } from '@/api/comentarios'
-import { clavesComentarios } from '@/api/queryKeys'
+import { comentariosApi } from '@/api/legacy/comentarios'
+import { clavesComentarios } from '@/api/legacy/queryKeys'
 import { ejecutarMutacion } from '@/utils/ejecutarMutacion'
 
 export const useComentarios = (idTutoria) => {

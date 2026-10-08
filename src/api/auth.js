@@ -1,9 +1,13 @@
 import { api } from './client'
 
+// Respuesta del login: { registroPendiente: false, token, usuario } o, en el primer acceso,
+// { registroPendiente: true, tokenRegistro, perfil }.
 export const authApi = {
-  // Devuelve { token, rol }.
-  iniciarSesion: ({ matricula, pwd }) =>
-    api.post('/auth/signin', { matricula, pwd }, { auth: false }),
+  microsoft: (idToken) => api.post('/auth/microsoft', { idToken }, { auth: false }),
 
-  registrarse: (usuario) => api.post('/auth/signup', usuario, { auth: false }),
+  google: (idToken) => api.post('/auth/google', { idToken }, { auth: false }),
+
+  // Nombre y correo salen del tokenRegistro; el body solo trae matricula y rol.
+  completarRegistro: ({ tokenRegistro, matricula, rol }) =>
+    api.post('/auth/registro', { tokenRegistro, matricula, rol }, { auth: false }),
 }

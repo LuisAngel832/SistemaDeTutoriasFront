@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { horariosApi } from '@/api/horarios'
-import { materiasApi } from '@/api/materias'
-import { clavesHorarios, clavesMaterias, clavesTutorias } from '@/api/queryKeys'
-import { tutoriasApi } from '@/api/tutorias'
+import { horariosApi } from '@/api/legacy/horarios'
+import { materiasApi } from '@/api/legacy/materias'
+import { clavesHorarios, clavesMaterias, clavesTutorias } from '@/api/legacy/queryKeys'
+import { tutoriasApi } from '@/api/legacy/tutorias'
 import { ejecutarMutacion } from '@/utils/ejecutarMutacion'
 
 const MENSAJE_EXITO = 'La tutoría quedó programada y ya es visible para los tutorados.'

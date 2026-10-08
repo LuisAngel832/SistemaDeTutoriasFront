@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { authApi } from '@/api/auth'
+import { authApi } from '@/api/legacy/auth'
 import { configureApi } from '@/api/client'
 import { HOME_POR_ROL, normalizarRol } from '@/constants/roles'
 import { ROUTES } from '@/constants/routes'

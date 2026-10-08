@@ -120,6 +120,18 @@ export async function request(
   return cuerpo?.data ?? null
 }
 
+// Agrega query params omitiendo los vacios: conParametros('/tutorias', { q: 'web', dia: '' })
+// -> '/tutorias?q=web'. Los booleanos se envian solo cuando son true.
+export const conParametros = (path, parametros = {}) => {
+  const query = new URLSearchParams()
+  for (const [clave, valor] of Object.entries(parametros)) {
+    if (valor == null || valor === '' || valor === false) continue
+    query.append(clave, String(valor))
+  }
+  const texto = query.toString()
+  return texto ? `${path}?${texto}` : path
+}
+
 export const api = {
   get: (path, opciones) => request(path, { ...opciones, method: 'GET' }),
   post: (path, body, opciones) => request(path, { ...opciones, method: 'POST', body }),
