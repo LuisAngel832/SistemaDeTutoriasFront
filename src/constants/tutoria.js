@@ -48,21 +48,3 @@ export const MI_ASISTENCIA = {
 
 // Por debajo de este porcentaje la asistencia de una tutoria se marca con un aviso (pantalla 15).
 export const UMBRAL_ASISTENCIA_BAJA = 80
-
-// --- Modelo anterior (se elimina al terminar la migracion) ---
-
-export const ESTADOS_TUTORIA = {
-  PROGRAMADA: 'PROGRAMADA',
-  COMPLETADA: 'COMPLETADA',
-  CANCELADA: 'CANCELADA',
-}
-
-// Clase CSS asociada a cada estado (badges de las tarjetas y detalles).
-export const ESTADO_CLASS = {
-  [ESTADOS_TUTORIA.PROGRAMADA]: 'programada',
-  [ESTADOS_TUTORIA.COMPLETADA]: 'completada',
-  [ESTADOS_TUTORIA.CANCELADA]: 'cancelada',
-}
-
-// Regla del backend: no se puede cancelar con menos de 15 minutos de anticipacion.
-export const MIN_MINUTOS_CANCELACION = MINUTOS_LIMITE_CANCELACION

@@ -20,19 +20,3 @@ export const buscarDia = (dia) => DIAS_HABILES.find((item) => item.key === sinAc
 
 // Posicion del dia en la semana, para ordenar horarios de lunes a viernes.
 export const ordenDeDia = (dia) => buscarDia(dia)?.indice ?? 99
-
-// --- Modelo anterior (se elimina al terminar la migracion) ---
-
-export const DIAS_SEMANA = [
-  { key: 'LUNES', short: 'LUN', label: 'Lunes', nombre: 'Lunes', indice: 1 },
-  { key: 'MARTES', short: 'MAR', label: 'Martes', nombre: 'Martes', indice: 2 },
-  { key: 'MIERCOLES', short: 'MIE', label: 'Miercoles', nombre: 'Miércoles', indice: 3 },
-  { key: 'JUEVES', short: 'JUE', label: 'Jueves', nombre: 'Jueves', indice: 4 },
-  { key: 'VIERNES', short: 'VIE', label: 'Viernes', nombre: 'Viernes', indice: 5 },
-  { key: 'SABADO', short: 'SAB', label: 'Sabado', nombre: 'Sábado', indice: 6 },
-  { key: 'DOMINGO', short: 'DOM', label: 'Domingo', nombre: 'Domingo', indice: 0 },
-]
-
-// Nombre para mostrar del dia que envia el backend ("Miercoles" -> "Miércoles").
-export const nombreDeDia = (dia) =>
-  DIAS_SEMANA.find((item) => sinAcentos(item.label) === sinAcentos(dia))?.nombre ?? dia

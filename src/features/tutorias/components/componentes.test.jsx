@@ -1,72 +1,102 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
-import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
-import { AccionesTutoria } from './AccionesTutoria'
-import { EditarTutoriaForm } from './EditarTutoriaForm'
-import { EstadoBadge } from './EstadoBadge'
-import { InscritosList } from './InscritosList'
+import { cupo, detalleTutoria } from '@/test/fixtures'
+import { BadgeEstado } from './BadgeEstado'
+import { BarraCupo } from './BarraCupo'
+import { HorariosSemana } from './HorariosSemana'
+import { HorariosYTemas } from './HorariosYTemas'
+import { MedidorInasistencias } from './MedidorInasistencias'
 import { TemasInput } from './TemasInput'
-import { TutoriaCard } from './TutoriaCard'
-import { TutoriaInfoGrid } from './TutoriaInfoGrid'
 
-const tutoria = {
-  id: 1,
-  materia: 'Contabilidad Financiera',
-  nombreTutor: 'Ana Garcia Lopez',
-  fecha: '2026-09-21',
-  horaInicio: '10:00:00',
-  horaFin: '12:00:00',
-  edificio: 1,
-  aula: 5,
-  estado: 'PROGRAMADA',
-  temas: [{ idTema: 3, tema: 'Balance general' }],
-}
+describe('BadgeEstado', () => {
+  it('muestra el texto de cada estado y el valor crudo si no lo conoce', () => {
+    const { rerender } = render(<BadgeEstado tipo="sesion" estado="LISTA_ABIERTA" />)
+    expect(screen.getByText('Lista abierta')).toBeInTheDocument()
 
-const conRouter = (ui) => render(<MemoryRouter>{ui}</MemoryRouter>)
+    rerender(<BadgeEstado tipo="inscripcion" estado="BAJA_AUTOMATICA" />)
+    expect(screen.getByText('Baja automática')).toBeInTheDocument()
 
-describe('EstadoBadge', () => {
-  it('muestra el estado con texto legible', () => {
-    render(<EstadoBadge estado="COMPLETADA" />)
-    expect(screen.getByText('Completada')).toBeInTheDocument()
+    rerender(<BadgeEstado tipo="tutoria" estado="OTRO" />)
+    expect(screen.getByText('OTRO')).toBeInTheDocument()
   })
 })
 
-describe('TutoriaCard', () => {
-  it('variante tutor: el titulo es el enlace al detalle', () => {
-    conRouter(<TutoriaCard tutoria={tutoria} to="/tutor/tutorias/1" />)
-    const tarjeta = screen.getByRole('article', { name: 'Contabilidad Financiera' })
-    expect(within(tarjeta).getByRole('link', { name: 'Contabilidad Financiera' })).toHaveAttribute(
-      'href',
-      '/tutor/tutorias/1',
-    )
-    expect(within(tarjeta).getByText('Programada')).toBeInTheDocument()
-    expect(within(tarjeta).getByText('Balance general')).toBeInTheDocument()
+describe('BarraCupo', () => {
+  it('describe la ocupacion para lectores de pantalla', () => {
+    render(<BarraCupo cupo={cupo(6)} />)
+    const barra = screen.getByRole('meter', { name: 'Cupo: 6 de 7 lugares ocupados' })
+    expect(barra).toHaveAttribute('aria-valuenow', '6')
+    expect(screen.getByText('6 de 7')).toBeInTheDocument()
   })
 
-  it('variante explorar: boton de detalle descrito por el titulo', () => {
-    conRouter(<TutoriaCard tutoria={tutoria} to="/tutorado/tutorias/1" variant="explorar" />)
-    const enlace = screen.getByRole('link', { name: /Ver detalle e inscribirme/ })
-    expect(enlace).toHaveAttribute('href', '/tutorado/tutorias/1')
-    expect(enlace).toHaveAccessibleDescription('Contabilidad Financiera')
-    expect(screen.getByText('Imparte Ana Garcia Lopez')).toBeInTheDocument()
-  })
-
-  it('variante inscripcion sin datos muestra un aviso', () => {
-    conRouter(<TutoriaCard tutoria={{ idAsistencia: 4 }} variant="inscripcion" />)
-    expect(screen.getByText('Inscripción sin detalles')).toBeInTheDocument()
+  it('en la variante mini muestra la cifra compacta', () => {
+    render(<BarraCupo cupo={cupo(7)} variante="mini" />)
+    expect(screen.getByText('7/7')).toBeInTheDocument()
   })
 })
 
-describe('TutoriaInfoGrid', () => {
-  it('presenta los datos como lista de definiciones', () => {
-    render(<TutoriaInfoGrid tutoria={tutoria} />)
-    expect(screen.getByText('Fecha').closest('div')).toHaveTextContent(
-      'lunes, 21 de septiembre de 2026',
+describe('MedidorInasistencias', () => {
+  it('muestra las permitidas o, con baja, el total', () => {
+    const { rerender } = render(<MedidorInasistencias inasistencias={1} />)
+    expect(screen.getByText('1 de 2 permitidas')).toBeInTheDocument()
+    expect(screen.getByRole('meter')).toHaveAttribute('aria-valuemax', '3')
+
+    rerender(<MedidorInasistencias inasistencias={3} />)
+    expect(screen.getByText('3 inasistencias')).toBeInTheDocument()
+  })
+})
+
+describe('HorariosSemana', () => {
+  it('ordena de lunes a viernes y nombra el dia completo', () => {
+    render(
+      <HorariosSemana
+        horarios={[
+          { dia: 'MIERCOLES', horaInicio: '10:00', horaFin: '12:00' },
+          { dia: 'LUNES', horaInicio: '08:00', horaFin: '10:00' },
+        ]}
+      />,
     )
-    expect(screen.getByText('Horario').closest('div')).toHaveTextContent('10:00 – 12:00')
-    expect(screen.getByText('Aula').closest('div')).toHaveTextContent('5')
+    const filas = screen.getAllByRole('listitem')
+    expect(filas[0]).toHaveTextContent('Lunes')
+    expect(filas[0]).toHaveTextContent('08:00 – 10:00')
+    expect(filas[1]).toHaveTextContent('Miércoles')
+  })
+})
+
+describe('HorariosYTemas', () => {
+  const { horarios } = detalleTutoria()
+
+  it('muestra los temas de cada horario en solo lectura', () => {
+    render(<HorariosYTemas horarios={horarios} />)
+    expect(screen.getByRole('list', { name: 'Temas del lunes' })).toBeInTheDocument()
+    expect(screen.getByText('Montículos')).toBeInTheDocument()
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
+
+  it('en modo editable agrega y quita temas por horario', async () => {
+    const onAgregarTema = vi.fn().mockResolvedValue({ ok: true })
+    const onQuitarTema = vi.fn()
+    render(
+      <HorariosYTemas
+        horarios={horarios}
+        editable
+        onAgregarTema={onAgregarTema}
+        onQuitarTema={onQuitarTema}
+      />,
+    )
+
+    const campo = screen.getByRole('textbox', { name: 'Tema nuevo para el miércoles' })
+    await userEvent.type(campo, 'Grafos{Enter}')
+    expect(onAgregarTema).toHaveBeenCalledWith(horarios[1], 'Grafos')
+    expect(campo).toHaveValue('')
+
+    const lunes = screen.getByRole('list', { name: 'Temas del lunes' })
+    await userEvent.click(
+      within(lunes).getByRole('button', { name: 'Quitar el tema Recursividad' }),
+    )
+    expect(onQuitarTema).toHaveBeenCalledWith(horarios[0].temas[2], horarios[0])
   })
 })
 
@@ -97,124 +127,10 @@ describe('TemasInput', () => {
     expect(screen.queryByText('Costos')).not.toBeInTheDocument()
   })
 
-  it('respeta el maximo de temas y de caracteres', async () => {
+  it('respeta el maximo de temas y cuenta los caracteres', async () => {
     render(<Controlado inicial={['Uno', 'Dos']} max={2} maxCaracteres={5} />)
     expect(screen.getByRole('textbox', { name: 'Tema nuevo' })).toBeDisabled()
     expect(screen.getByText('2/2 temas')).toBeInTheDocument()
-  })
-
-  it('en modo compacto solo permite quitar los temas indicados', () => {
-    render(
-      <TemasInput
-        compact
-        temas={[
-          { idTema: 1, tema: 'Guardado' },
-          { idTema: null, tema: 'Sin id' },
-        ]}
-        onAdd={vi.fn()}
-        onRemove={vi.fn()}
-        canRemove={(tema) => Boolean(tema.idTema)}
-      />,
-    )
-    expect(screen.getByRole('button', { name: 'Agregar tema' })).toBeDisabled()
-    expect(screen.getByRole('button', { name: 'Quitar tema Guardado' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Quitar tema Sin id' })).not.toBeInTheDocument()
-  })
-})
-
-describe('InscritosList', () => {
-  const inscritos = [
-    { idAsistencia: 1, matricula: '2001', nombre: 'Luis Perez', asistio: true },
-    { idAsistencia: 2, matricula: '2002', nombre: 'Maria Soto', asistio: false },
-  ]
-
-  it('muestra pendiente antes de la sesion y la asistencia despues', () => {
-    const { rerender } = render(<InscritosList inscritos={inscritos} mostrarAsistencia={false} />)
-    expect(screen.getAllByText('Pendiente')).toHaveLength(2)
-
-    rerender(<InscritosList inscritos={inscritos} mostrarAsistencia />)
-    expect(screen.getByText('Asistió')).toBeInTheDocument()
-    expect(screen.getByText('No asistió')).toBeInTheDocument()
-  })
-})
-
-describe('AccionesTutoria', () => {
-  it('pide confirmacion antes de cancelar', async () => {
-    const onCancelar = vi.fn().mockResolvedValue({ ok: true })
-    render(
-      <AccionesTutoria
-        tutoria={tutoria}
-        puedeCompletar={false}
-        puedeCancelar
-        isSubmitting={false}
-        onCompletar={vi.fn()}
-        onCancelar={onCancelar}
-      />,
-    )
-
-    const completar = screen.getByRole('button', { name: 'Marcar como completada' })
-    expect(completar).toBeDisabled()
-    expect(completar).toHaveAccessibleDescription(/cuando inicie la sesión/)
-
-    await userEvent.click(screen.getByRole('button', { name: 'Cancelar tutoría' }))
-    expect(onCancelar).not.toHaveBeenCalled()
-
-    await userEvent.click(screen.getByRole('button', { name: 'Sí, cancelar' }))
-    expect(onCancelar).toHaveBeenCalledTimes(1)
-  })
-
-  it('en una tutoria finalizada solo informa el estado', () => {
-    render(<AccionesTutoria tutoria={{ ...tutoria, estado: 'CANCELADA' }} />)
-    expect(screen.getByText(/Esta tutoría está cancelada/)).toBeInTheDocument()
-    expect(screen.queryByRole('button')).not.toBeInTheDocument()
-  })
-})
-
-describe('EditarTutoriaForm', () => {
-  const horarios = [{ idHorario: 7, dia: 'Lunes', horaInicio: '10:00:00', horaFin: '12:00:00' }]
-
-  it('precarga los datos actuales y envia el payload numerico', async () => {
-    const onGuardar = vi.fn().mockResolvedValue({ ok: true })
-    render(
-      <EditarTutoriaForm
-        tutoria={tutoria}
-        horarios={horarios}
-        isSubmitting={false}
-        onGuardar={onGuardar}
-        onCancelar={vi.fn()}
-      />,
-    )
-
-    expect(screen.getByLabelText('Horario en el que darás la tutoría')).toHaveValue('7')
-    expect(screen.getByLabelText('Aula donde se dará la tutoría')).toHaveValue('5')
-
-    await userEvent.click(screen.getByRole('button', { name: 'Guardar cambios' }))
-    expect(onGuardar).toHaveBeenCalledWith({
-      idHorario: 7,
-      fecha: '2026-09-21',
-      edificio: 1,
-      aula: 5,
-    })
-  })
-
-  it('muestra el error de validacion o del backend', async () => {
-    const onGuardar = vi.fn().mockResolvedValue({ ok: false, message: 'El horario no existe' })
-    render(
-      <EditarTutoriaForm
-        tutoria={{ ...tutoria, aula: null }}
-        horarios={horarios}
-        isSubmitting={false}
-        onGuardar={onGuardar}
-        onCancelar={vi.fn()}
-      />,
-    )
-
-    await userEvent.click(screen.getByRole('button', { name: 'Guardar cambios' }))
-    expect(await screen.findByText('Elige el aula')).toBeInTheDocument()
-    expect(onGuardar).not.toHaveBeenCalled()
-
-    await userEvent.selectOptions(screen.getByLabelText('Aula donde se dará la tutoría'), '3')
-    await userEvent.click(screen.getByRole('button', { name: 'Guardar cambios' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent('El horario no existe')
+    expect(screen.getByText('0/5 caracteres')).toBeInTheDocument()
   })
 })

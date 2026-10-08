@@ -1,8 +1,6 @@
 import { useId } from 'react'
 import { Link } from 'react-router-dom'
-import { Alert, Card, Chip, Skeleton } from '@/components/ui'
-import { formatTema } from '@/utils/formatters'
-import { EstadoBadge } from './EstadoBadge'
+import { Alert, Card, Skeleton } from '@/components/ui'
 import styles from './DetalleTutoria.module.css'
 
 const SIN_NOMBRE = 'Experiencia Educativa sin nombre'
@@ -21,20 +19,6 @@ export const DetalleTutoriaLayout = ({ back, main, aside, footer }) => (
     </div>
     {footer}
   </>
-)
-
-export const EncabezadoTutoria = ({ tutoria }) => (
-  <header className={styles.encabezado}>
-    <div className={styles.titulos}>
-      <h1 className={styles.titulo}>{tutoria.materia || SIN_NOMBRE}</h1>
-      {tutoria.nombreTutor ? (
-        <p className={styles.tutor}>
-          <span className={styles.tutorEtiqueta}>Imparte</span> {tutoria.nombreTutor}
-        </p>
-      ) : null}
-    </div>
-    <EstadoBadge estado={tutoria.estado} />
-  </header>
 )
 
 // `accion`: enlace o texto a la derecha del titulo ("Historial de asistencia →").
@@ -84,19 +68,6 @@ export const DatosDetalle = ({ datos }) => (
     ))}
   </dl>
 )
-
-export const ListaTemas = ({ temas = [], emptyMessage = 'No se registraron temas.' }) =>
-  temas.length ? (
-    <ul className={styles.temas}>
-      {temas.map((tema, indice) => (
-        <li key={tema.idTema ?? `${formatTema(tema)}-${indice}`}>
-          <Chip tone="primary">{formatTema(tema)}</Chip>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p className={styles.sinTemas}>{emptyMessage}</p>
-  )
 
 export const DetalleCargando = ({ back }) => (
   <>

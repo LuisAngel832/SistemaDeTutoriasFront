@@ -150,21 +150,6 @@
   font-size: 0.88rem;
 }
 
-.temas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.sinTemas {
-  margin: 0;
-  color: var(--color-texto-tenue);
-  font-size: 0.85rem;
-}
-
 .error {
   align-items: center;
   padding: 1.5rem;

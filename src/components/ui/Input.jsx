@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { clases } from '@/utils/clases'
 import styles from './Field.module.css'
 
@@ -32,27 +31,3 @@ export const Textarea = ({ invalid, className, ...props }) => (
     {...props}
   />
 )
-
-export const PasswordInput = ({ invalid, className, ...props }) => {
-  const [visible, setVisible] = useState(false)
-
-  return (
-    <div className={styles.conAccion}>
-      <input
-        type={visible ? 'text' : 'password'}
-        className={clases(styles.control, className)}
-        aria-invalid={invalid || undefined}
-        {...props}
-      />
-      <button
-        type="button"
-        className={styles.accion}
-        onClick={() => setVisible((actual) => !actual)}
-        aria-pressed={visible}
-        aria-controls={props.id}
-      >
-        {visible ? 'Ocultar' : 'Mostrar'}
-      </button>
-    </div>
-  )
-}

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { completarRegistroSchema } from './auth'
-import { horarioSchema } from './horario'
-import { crearTutoriaSchema, editarTutoriaSchema } from './tutoria'
+import { materiaSchema } from './materia'
+import { aPayloadTutoria, formularioTutoriaSchema } from './tutoria'
 
 const mensajes = (resultado) => resultado.error.issues.map((issue) => issue.message)
 const porCampo = (resultado) =>
@@ -26,62 +26,112 @@ describe('completarRegistroSchema', () => {
   })
 })
 
-describe('horarioSchema', () => {
-  it('pide que la hora final sea mayor que la de inicio', () => {
+describe('formularioTutoriaSchema', () => {
+  const horario = (cambios = {}) => ({
+    idHorario: null,
+    dia: 'MARTES',
+    horaInicio: '08:00',
+    horaFin: '10:00',
+    temas: [],
+    ...cambios,
+  })
+  const valido = (horarios = [horario()]) => ({
+    idMateria: '13',
+    edificio: '1',
+    aula: '10',
+    horarios,
+  })
+
+  it('convierte las selecciones a numeros', () => {
+    const resultado = formularioTutoriaSchema.safeParse(valido())
+    expect(resultado.data).toMatchObject({ idMateria: 13, edificio: 1, aula: 10 })
+  })
+
+  it('exige los campos, al menos un horario y solo dias habiles', () => {
     expect(
-      horarioSchema.safeParse({ dia: 'Lunes', horaInicio: '10:00', horaFin: '12:00' }).success,
+      porCampo(
+        formularioTutoriaSchema.safeParse({
+          idMateria: '',
+          edificio: '',
+          aula: '',
+          horarios: [horario({ dia: 'SABADO' })],
+        }),
+      ),
+    ).toMatchObject({
+      idMateria: 'Elige la Experiencia Educativa',
+      edificio: 'Elige el edificio',
+      aula: 'Elige el aula',
+      'horarios.0.dia': 'Elige el día',
+    })
+    expect(mensajes(formularioTutoriaSchema.safeParse(valido([])))).toContain(
+      'Agrega al menos un horario',
+    )
+  })
+
+  it('pide que la hora de fin sea posterior y que los temas no se repitan', () => {
+    expect(
+      porCampo(
+        formularioTutoriaSchema.safeParse(
+          valido([horario({ horaInicio: '10:00', horaFin: '08:00', temas: ['VLAN', 'vlan'] })]),
+        ),
+      ),
+    ).toEqual({
+      'horarios.0.horaFin': 'La hora de fin debe ser posterior a la de inicio',
+      'horarios.0.temas': 'Hay temas repetidos en este horario',
+    })
+  })
+
+  it('detecta traslapes del mismo dia pero acepta horarios contiguos', () => {
+    expect(
+      porCampo(
+        formularioTutoriaSchema.safeParse(
+          valido([horario(), horario({ horaInicio: '09:00', horaFin: '11:00' })]),
+        ),
+      ),
+    ).toEqual({ 'horarios.1.horaInicio': 'Se traslapa con el horario 1' })
+    expect(
+      formularioTutoriaSchema.safeParse(
+        valido([horario(), horario({ horaInicio: '10:00', horaFin: '12:00' })]),
+      ).success,
     ).toBe(true)
-    expect(
-      porCampo(horarioSchema.safeParse({ dia: 'Lunes', horaInicio: '12:00', horaFin: '10:00' })),
-    ).toEqual({ horaFin: 'La hora final debe ser mayor que la hora de inicio' })
+  })
+
+  it('arma el body de crear y de editar', () => {
+    const datos = formularioTutoriaSchema.parse(
+      valido([horario({ idHorario: 31, temas: ['OSI'] }), horario({ dia: 'VIERNES' })]),
+    )
+    expect(aPayloadTutoria(datos)).toEqual({
+      idMateria: 13,
+      edificio: 1,
+      aula: 10,
+      horarios: [
+        { dia: 'MARTES', horaInicio: '08:00', horaFin: '10:00', temas: ['OSI'] },
+        { dia: 'VIERNES', horaInicio: '08:00', horaFin: '10:00', temas: [] },
+      ],
+    })
+    expect(aPayloadTutoria(datos, { editar: true }).horarios[0]).toEqual({
+      idHorario: 31,
+      dia: 'MARTES',
+      horaInicio: '08:00',
+      horaFin: '10:00',
+      temas: ['OSI'],
+    })
+    expect(aPayloadTutoria(datos, { editar: true })).not.toHaveProperty('idMateria')
   })
 })
 
-describe('esquemas de tutoria', () => {
-  it('convierte las selecciones a numeros', () => {
-    const resultado = crearTutoriaSchema.safeParse({
-      nrc: '12345',
-      idHorario: '2',
-      fecha: '2030-01-01',
-      edificio: '1',
-      aula: '5',
-      temas: ['Costos'],
+describe('materiaSchema', () => {
+  it('valida nombre y NRC y convierte el NRC a numero', () => {
+    expect(materiaSchema.parse({ nombre: ' Redes ', nrc: '52310' })).toEqual({
+      nombre: 'Redes',
+      nrc: 52310,
     })
-    expect(resultado.data).toEqual({
-      nrc: 12345,
-      idHorario: 2,
-      fecha: '2030-01-01',
-      edificio: 1,
-      aula: 5,
-      temas: ['Costos'],
+    expect(porCampo(materiaSchema.safeParse({ nombre: '', nrc: '52a' }))).toEqual({
+      nombre: 'Escribe el nombre de la Experiencia Educativa',
+      nrc: 'El NRC solo lleva números',
     })
-  })
-
-  it('exige cada campo y rechaza fechas pasadas', () => {
-    const resultado = crearTutoriaSchema.safeParse({
-      nrc: '',
-      idHorario: '',
-      fecha: '2000-01-01',
-      edificio: '',
-      aula: '',
-      temas: [],
-    })
-    expect(porCampo(resultado)).toEqual({
-      nrc: 'Elige la Experiencia Educativa',
-      idHorario: 'Elige el horario',
-      fecha: 'La fecha no puede ser anterior a hoy',
-      edificio: 'Elige el edificio',
-      aula: 'Elige el aula',
-    })
-  })
-
-  it('editarTutoriaSchema no pide la Experiencia Educativa', () => {
-    const resultado = editarTutoriaSchema.safeParse({
-      idHorario: '3',
-      fecha: '2030-02-02',
-      edificio: '2',
-      aula: '9',
-    })
-    expect(resultado.data).toEqual({ idHorario: 3, fecha: '2030-02-02', edificio: 2, aula: 9 })
+    expect(mensajes(materiaSchema.safeParse({ nombre: 'Redes', nrc: '0' }))).toContain(
+      'El NRC debe ser mayor que cero',
+    )
   })
 })

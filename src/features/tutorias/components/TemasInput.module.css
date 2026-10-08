@@ -95,12 +95,6 @@
   list-style: none;
 }
 
-.vacio {
-  margin: 0;
-  color: var(--color-texto-tenue);
-  font-size: 0.85rem;
-}
-
 .meta {
   display: flex;
   flex-wrap: wrap;
@@ -134,33 +128,13 @@
   font-weight: 600;
 }
 
-/* Version compacta (detalle de tutoria) */
-.compacto .fila {
-  width: 400px;
-  max-width: 100%;
-}
-
-.compacto .campo {
-  height: 36px;
-  padding: 0 0.75rem;
-  font-size: 0.88rem;
-}
-
-.compacto .agregar {
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-
 @media (max-width: 480px) {
-  .temas:not(.compacto) .fila {
+  .fila {
     flex-wrap: wrap;
   }
 
-  .temas:not(.compacto) .campo,
-  .temas:not(.compacto) .agregar {
+  .campo,
+  .agregar {
     flex: 1 1 100%;
   }
 
