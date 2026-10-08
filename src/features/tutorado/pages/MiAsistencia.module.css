@@ -1,0 +1,208 @@
+.tablaContenedor {
+  overflow-x: auto;
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.tabla th {
+  padding: 0.65rem 0.9rem;
+  border-bottom: 1px solid var(--color-borde-suave);
+  background-color: var(--color-fondo-suave);
+  color: var(--color-texto-tenue);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.tabla td {
+  padding: 0.7rem 0.9rem;
+  color: var(--color-texto);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tabla tbody tr + tr td {
+  border-top: 1px solid var(--color-divisor);
+}
+
+.filaFalta td {
+  background-color: var(--color-peligro-suave);
+}
+
+.asistio,
+.falto,
+.neutra {
+  font-weight: 600;
+}
+
+.asistio {
+  color: var(--color-exito-texto);
+}
+
+.falto {
+  color: var(--color-peligro-texto);
+}
+
+.neutra {
+  color: var(--color-texto-tenue);
+  font-weight: 400;
+}
+
+.asistio svg,
+.falto svg {
+  width: 14px;
+  height: 14px;
+  margin-right: 0.35rem;
+  vertical-align: -2px;
+}
+
+.verTodas {
+  margin-top: 0.75rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-primario);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.verTodas:hover {
+  text-decoration: underline;
+}
+
+.verTodas:focus-visible {
+  outline: var(--contorno-foco);
+  outline-offset: 2px;
+}
+
+.vacio {
+  margin: 0;
+  color: var(--color-texto-tenue);
+  font-size: 0.88rem;
+}
+
+/* Columna lateral */
+.lateralTitulo {
+  margin: 0 0 0.85rem;
+  color: var(--color-texto);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.cifra {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin: 0 0 0.6rem;
+  color: var(--color-texto-secundario);
+  font-size: 0.88rem;
+}
+
+.cifra strong {
+  color: var(--color-texto);
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.cifra .cifraAviso {
+  color: var(--color-limite);
+}
+
+.aviso {
+  margin: 0.9rem 0;
+}
+
+.conteos {
+  margin: 0;
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+}
+
+.conteos div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.conteos div + div {
+  border-top: 1px solid var(--color-divisor);
+}
+
+.conteos dt {
+  color: var(--color-texto-secundario);
+}
+
+.conteos dd {
+  margin: 0;
+  color: var(--color-texto);
+  font-weight: 700;
+}
+
+.conteos .positivo {
+  color: var(--color-exito-texto);
+}
+
+.conteos .negativo {
+  color: var(--color-peligro-texto);
+}
+
+.proxima {
+  border-color: var(--color-primario-borde);
+  background-color: var(--color-primario-tenue);
+}
+
+.proximaEtiqueta {
+  margin: 0;
+  color: var(--color-primario-texto);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.proximaFecha {
+  margin: 0.25rem 0 0.15rem;
+  color: var(--color-texto);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.proximaDetalle {
+  margin: 0;
+  color: var(--color-texto-secundario);
+  font-size: 0.85rem;
+}
+
+.recordatorio {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.75rem 0 0;
+  color: var(--color-primario-texto);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.recordatorio svg {
+  width: 16px;
+  height: 16px;
+}
+
+.texto {
+  margin: 0 0 0.9rem;
+  color: var(--color-texto-suave);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}

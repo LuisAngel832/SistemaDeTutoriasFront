@@ -1,0 +1,79 @@
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.titulo {
+  margin: 0;
+  color: var(--color-texto);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.descripcion {
+  margin: 0.35rem 0 1rem;
+  color: var(--color-texto-suave);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.dias {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.dia {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 0.35rem 0.5rem;
+  align-items: center;
+}
+
+.nombre {
+  align-self: start;
+  padding-top: 0.35rem;
+  color: var(--color-texto-secundario);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.nombre abbr {
+  text-decoration: none;
+}
+
+.entrada {
+  grid-column: 2;
+  margin: 0;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-sm);
+  background-color: var(--color-fondo-suave);
+  color: var(--color-texto-secundario);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.esta {
+  border: 1px dashed var(--color-exito);
+  background-color: var(--color-exito-suave);
+  color: var(--color-exito-texto);
+  font-weight: 600;
+}
+
+.choque {
+  border-color: var(--color-peligro-borde);
+  background-color: var(--color-peligro-suave);
+  color: var(--color-peligro-texto);
+  font-weight: 600;
+}
+
+.libre {
+  border-style: dashed;
+  background-color: transparent;
+  color: var(--color-texto-tenue);
+}

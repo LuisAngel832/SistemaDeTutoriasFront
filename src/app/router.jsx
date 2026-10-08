@@ -110,6 +110,11 @@ export const rutas = [
                     handle: { titulo: 'Detalle de tutoría' },
                     lazy: pagina(() => import('@/features/tutorado/pages/TutoriaDetalle')),
                   },
+                  {
+                    path: ROUTES.tutorado.asistencia(':idTutoria'),
+                    handle: { titulo: 'Mi asistencia' },
+                    lazy: pagina(() => import('@/features/tutorado/pages/MiAsistencia')),
+                  },
                 ],
               },
             ],

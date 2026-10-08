@@ -1,26 +1,56 @@
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { EncabezadoPagina, GridTarjetas, Pagina } from '@/components/layout/Pagina'
-import { Alert, Button, EmptyState, Input, Skeleton } from '@/components/ui'
+import { Alert, Button, Card, EmptyState, Input, Skeleton } from '@/components/ui'
 import { IconBuscar } from '@/components/ui/icons'
+import { DIAS_HABILES } from '@/constants/horarios'
 import { ROUTES } from '@/constants/routes'
-import { TutoriaCard } from '@/features/tutorias/components/TutoriaCard'
-import { useTutoriasExplorar } from '@/features/tutorias/hooks/useTutoriasExplorar'
+import { TarjetaExplorar } from '@/features/tutorado/components/TarjetaExplorar'
+import { useExplorarTutorias } from '@/features/tutorado/hooks/useExplorarTutorias'
+import { clases } from '@/utils/clases'
+import { pluralizar } from '@/utils/formatters'
 import styles from './Home.module.css'
 
-const TutoradoHome = () => {
-  const { tutorias, isLoading, error } = useTutoriasExplorar()
-  const [busqueda, setBusqueda] = useState('')
+const ESPERA_BUSQUEDA_MS = 300
 
-  const filtradas = useMemo(() => {
-    const texto = busqueda.trim().toLowerCase()
-    if (!texto) return tutorias
-    return tutorias.filter(
-      (tutoria) =>
-        tutoria.materia?.toLowerCase().includes(texto) ||
-        tutoria.nombreTutor?.toLowerCase().includes(texto),
-    )
-  }, [tutorias, busqueda])
+// Pantalla 03. Los filtros viven en la URL (?q=&dia=&lugar=1&choques=1) para conservarlos al
+// volver del detalle.
+const ExplorarTutorias = () => {
+  const [parametros, setParametros] = useSearchParams()
+  const q = parametros.get('q') ?? ''
+  const dia = parametros.get('dia') ?? ''
+  const soloConLugar = parametros.get('lugar') === '1'
+  const ocultarChoques = parametros.get('choques') === '1'
+
+  const filtros = useMemo(
+    () => ({ q, dia, soloConLugar, ocultarChoques }),
+    [q, dia, soloConLugar, ocultarChoques],
+  )
+  const { tutorias, isLoading, actualizando, error } = useExplorarTutorias(filtros)
+
+  const cambiar = useCallback(
+    (clave, valor) =>
+      setParametros(
+        (actuales) => {
+          const nuevos = new URLSearchParams(actuales)
+          if (valor) nuevos.set(clave, valor)
+          else nuevos.delete(clave)
+          return nuevos
+        },
+        { replace: true },
+      ),
+    [setParametros],
+  )
+
+  // La busqueda se envia cuando se deja de escribir.
+  const [busqueda, setBusqueda] = useState(q)
+  useEffect(() => {
+    if (busqueda.trim() === q) return undefined
+    const id = setTimeout(() => cambiar('q', busqueda.trim()), ESPERA_BUSQUEDA_MS)
+    return () => clearTimeout(id)
+  }, [busqueda, q, cambiar])
+
+  const hayFiltros = Boolean(q || dia || soloConLugar || ocultarChoques)
 
   const buscador = (
     <div className={styles.buscador}>
@@ -29,10 +59,9 @@ const TutoradoHome = () => {
       </span>
       <Input
         type="search"
-        id="buscar-tutoria"
         className={styles.campo}
-        aria-label="Buscar tutorías por Experiencia Educativa o por nombre del tutor"
-        placeholder="Buscar por Experiencia Educativa o nombre del tutor…"
+        aria-label="Buscar por Experiencia Educativa o tutor"
+        placeholder="Buscar Experiencia Educativa o tutor…"
         value={busqueda}
         onChange={(evento) => setBusqueda(evento.target.value)}
       />
@@ -40,49 +69,96 @@ const TutoradoHome = () => {
   )
 
   return (
-    <Pagina aria-busy={isLoading}>
+    <Pagina aria-busy={isLoading || actualizando}>
       <EncabezadoPagina
         title="Explorar tutorías"
-        subtitle="Encuentra una tutoría disponible e inscríbete con un clic."
+        subtitle="Encuentra una tutoría con lugar disponible e inscríbete a todos sus horarios."
         action={buscador}
       />
+
+      <Card className={styles.filtros}>
+        <div className={styles.dias} role="group" aria-label="Filtrar por día">
+          <span className={styles.etiqueta} aria-hidden="true">
+            Día
+          </span>
+          <button
+            type="button"
+            className={clases(styles.dia, !dia && styles.diaActivo)}
+            aria-pressed={!dia}
+            onClick={() => cambiar('dia', '')}
+          >
+            Todos
+          </button>
+          {DIAS_HABILES.map((opcion) => (
+            <button
+              key={opcion.key}
+              type="button"
+              className={clases(styles.dia, dia === opcion.key && styles.diaActivo)}
+              aria-pressed={dia === opcion.key}
+              aria-label={opcion.nombre}
+              onClick={() => cambiar('dia', dia === opcion.key ? '' : opcion.key)}
+            >
+              {opcion.abreviado}
+            </button>
+          ))}
+        </div>
+
+        <div className={styles.casillas}>
+          <label className={styles.casilla}>
+            <input
+              type="checkbox"
+              checked={soloConLugar}
+              onChange={(evento) => cambiar('lugar', evento.target.checked ? '1' : '')}
+            />
+            Solo con lugares disponibles
+          </label>
+          <label className={styles.casilla}>
+            <input
+              type="checkbox"
+              checked={ocultarChoques}
+              onChange={(evento) => cambiar('choques', evento.target.checked ? '1' : '')}
+            />
+            Ocultar las que se cruzan con mis horarios
+          </label>
+        </div>
+      </Card>
 
       {error ? <Alert tone="error">{error}</Alert> : null}
 
       {isLoading ? (
         <GridTarjetas>
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
+          <Skeleton height={300} />
+          <Skeleton height={300} />
+          <Skeleton height={300} />
         </GridTarjetas>
       ) : tutorias.length === 0 && !error ? (
-        <EmptyState
-          title="No hay tutorías disponibles"
-          description="Vuelve más tarde o revisa tus inscripciones actuales."
-          action={
-            <Button as={Link} to={ROUTES.tutorado.inscripciones} variant="brand">
-              Ver mis tutorías
-            </Button>
-          }
-        />
-      ) : filtradas.length === 0 ? (
-        <EmptyState
-          title="Sin resultados"
-          description={`No encontramos tutorías que coincidan con "${busqueda}".`}
-        />
+        hayFiltros ? (
+          <EmptyState
+            title="Sin resultados"
+            description="No hay tutorías que coincidan con los filtros. Prueba con otros."
+          />
+        ) : (
+          <EmptyState
+            title="No hay tutorías disponibles"
+            description="Vuelve más tarde o revisa tus inscripciones actuales."
+            action={
+              <Button as={Link} to={ROUTES.tutorado.inscripciones} variant="brand">
+                Ver mis tutorías
+              </Button>
+            }
+          />
+        )
       ) : (
         <>
           <p className={styles.conteo} role="status">
-            {filtradas.length} tutoría{filtradas.length === 1 ? '' : 's'}
-            {busqueda ? ` para "${busqueda}"` : ' disponibles'}
+            {pluralizar(tutorias.length, 'tutoría disponible', 'tutorías disponibles')}
           </p>
-          <GridTarjetas>
-            {filtradas.map((tutoria) => (
-              <TutoriaCard
-                key={tutoria.id}
+          <GridTarjetas className={styles.rejilla}>
+            {tutorias.map((tutoria) => (
+              <TarjetaExplorar
+                key={tutoria.idTutoria}
                 tutoria={tutoria}
-                variant="explorar"
-                to={ROUTES.tutorado.detalle(tutoria.id)}
+                desde={parametros.toString()}
               />
             ))}
           </GridTarjetas>
@@ -92,4 +168,4 @@ const TutoradoHome = () => {
   )
 }
 
-export default TutoradoHome
+export default ExplorarTutorias
