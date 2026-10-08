@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { CargandoPagina } from '@/components/layout/CargandoPagina'
-import { ROLES_TUTOR, ROLES_TUTORADO } from '@/constants/roles'
+import { ROLES_ADMIN, ROLES_TUTOR, ROLES_TUTORADO } from '@/constants/roles'
 import { ROUTES } from '@/constants/routes'
 import {
   RedireccionInicio,
@@ -122,6 +122,32 @@ export const rutas = [
                     path: ROUTES.tutorado.asistencia(':idTutoria'),
                     handle: { titulo: 'Mi asistencia' },
                     lazy: pagina(() => import('@/features/tutorado/pages/MiAsistencia')),
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        element: <RequireRole roles={ROLES_ADMIN} />,
+        children: [
+          {
+            element: <AppLayout />,
+            children: [
+              {
+                errorElement: <PaginaError />,
+                children: [
+                  {
+                    path: ROUTES.admin.inicio,
+                    handle: { titulo: 'Tutorías de la facultad' },
+                    lazy: pagina(() => import('@/features/admin/pages/TutoriasFacultad')),
+                  },
+                  {
+                    path: ROUTES.admin.experiencias,
+                    handle: { titulo: 'Experiencias Educativas' },
+                    lazy: pagina(() => import('@/features/admin/pages/ExperienciasEducativas')),
                   },
                 ],
               },

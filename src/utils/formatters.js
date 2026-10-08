@@ -62,6 +62,12 @@ export const formatFechaLarga = (fecha, { anio = false, mayuscula = true } = {})
   return mayuscula ? capitalizar(texto) : texto
 }
 
+// Nombre del mes de una fecha ("agosto").
+export const formatMes = (fecha) => {
+  const p = partesDeFecha(fecha)
+  return p ? MESES[p.mes] : SIN_DATO
+}
+
 // "26 de agosto de 2026"
 export const formatFechaCompleta = (fecha) => {
   const p = partesDeFecha(fecha)

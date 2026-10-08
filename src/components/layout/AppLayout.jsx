@@ -25,6 +25,14 @@ const MENU_POR_ROL = {
       { to: ROUTES.tutorado.inscripciones, label: 'Mis tutorías', icon: 'misTutorias' },
     ],
   },
+  [ROLES.ADMIN]: {
+    seccion: 'Panel de administración',
+    brandTo: ROUTES.admin.inicio,
+    items: [
+      { to: ROUTES.admin.inicio, label: 'Tutorías', icon: 'cuadricula' },
+      { to: ROUTES.admin.experiencias, label: 'Experiencias Educativas', icon: 'tutorias' },
+    ],
+  },
 }
 
 const STORAGE_KEY = 'sidebarCollapsed'
@@ -48,8 +56,7 @@ export const AppLayout = () => {
   const [menuAbiertoEn, setMenuAbiertoEn] = useState(null)
   const mobileOpen = menuAbiertoEn === location.pathname
 
-  // El admin usa las pantallas del tutor, asi que comparte su menu.
-  const menu = MENU_POR_ROL[rol === ROLES.ADMIN ? ROLES.TUTOR : rol] ?? MENU_POR_ROL[ROLES.TUTORADO]
+  const menu = MENU_POR_ROL[rol] ?? MENU_POR_ROL[ROLES.TUTORADO]
   const titulo = matches.findLast((match) => match.handle?.titulo)?.handle.titulo
 
   const abrirMenu = () => setMenuAbiertoEn(location.pathname)

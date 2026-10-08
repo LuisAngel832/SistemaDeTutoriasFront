@@ -7,14 +7,14 @@ export const ROLES = {
   ADMIN: 'admin',
 }
 
-// El admin no tiene panel propio: usa las pantallas del tutor.
-export const ROLES_TUTOR = [ROLES.TUTOR, ROLES.ADMIN]
+export const ROLES_TUTOR = [ROLES.TUTOR]
 export const ROLES_TUTORADO = [ROLES.TUTORADO]
+export const ROLES_ADMIN = [ROLES.ADMIN]
 
 // Pantalla inicial de cada rol despues de iniciar sesion.
 export const HOME_POR_ROL = {
   [ROLES.TUTOR]: ROUTES.tutor.inicio,
-  [ROLES.ADMIN]: ROUTES.tutor.inicio,
+  [ROLES.ADMIN]: ROUTES.admin.inicio,
   [ROLES.TUTORADO]: ROUTES.tutorado.inicio,
 }
 

@@ -65,13 +65,13 @@ describe('router', () => {
     await esperarRuta(router, nueva)
   })
 
-  it('permite al admin entrar a las pantallas del tutor', async () => {
-    iniciarSesionComo('admin', '3001')
-    const router = renderRuta('/tutor/historial')
+  it('lleva al admin a su propio panel', async () => {
+    iniciarSesionComo('admin', '25480')
+    const router = renderRuta('/')
 
-    await esperarRuta(router, '/tutor/historial')
+    await esperarRuta(router, '/administracion/tutorias')
     expect(
-      await screen.findByRole('heading', { name: 'Historial de asistencia', level: 1 }),
+      await screen.findByRole('heading', { name: 'Tutorías de la facultad', level: 1 }),
     ).toBeInTheDocument()
   })
 
