@@ -20,7 +20,7 @@ export const Providers = ({ client, children }) => {
     <QueryClientProvider client={queryClient}>
       {children}
       {/* Avisos de las acciones; sonner los anuncia a los lectores de pantalla. */}
-      <Toaster position="top-right" richColors closeButton toastOptions={{ duration: 5000 }} />
+      <Toaster position="bottom-right" richColors closeButton toastOptions={{ duration: 5000 }} />
       {Devtools ? (
         <Suspense fallback={null}>
           <Devtools initialIsOpen={false} buttonPosition="bottom-left" />

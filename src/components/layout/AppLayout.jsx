@@ -4,6 +4,7 @@ import { Sidebar } from './Sidebar'
 import { ROLES } from '@/constants/roles'
 import { ROUTES } from '@/constants/routes'
 import { useAuth } from '@/features/auth/AuthContext'
+import { useUsuarioActual } from '@/features/auth/useUsuarioActual'
 import './sidebar.css'
 
 const MENU_POR_ROL = {
@@ -41,6 +42,7 @@ export const AppLayout = () => {
   const location = useLocation()
   const matches = useMatches()
   const { nombre, matricula, rol } = useAuth()
+  useUsuarioActual()
   const [collapsed, setCollapsed] = useState(leerPreferenciaColapsado)
   // El menu movil queda abierto solo en la ruta donde se abrio: al navegar se cierra solo.
   const [menuAbiertoEn, setMenuAbiertoEn] = useState(null)
