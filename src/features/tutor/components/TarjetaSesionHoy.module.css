@@ -1,0 +1,110 @@
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.2rem 1.25rem;
+}
+
+.abierta {
+  border-color: var(--color-alerta-borde);
+  box-shadow: 0 0 0 1px var(--color-alerta-borde);
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.hora {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-texto);
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.hora svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-primario);
+}
+
+.titulo {
+  margin: 0;
+  color: var(--color-texto);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.detalle {
+  margin: -0.35rem 0 0;
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+}
+
+.marcados {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.marcadosTexto {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-texto-tenue);
+  font-size: 0.8rem;
+}
+
+.marcadosTexto strong {
+  color: var(--color-texto);
+}
+
+.pista {
+  overflow: hidden;
+  height: 6px;
+  border-radius: var(--radio-pill);
+  background-color: var(--color-borde-suave);
+}
+
+.pista span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--color-exito);
+}
+
+.aviso {
+  margin: 0;
+  color: var(--color-alerta-texto);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.nota {
+  display: flex;
+  gap: 0.45rem;
+  margin: 0;
+  color: var(--color-texto-secundario);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.nota svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.35rem;
+}

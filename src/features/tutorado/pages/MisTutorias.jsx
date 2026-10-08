@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import { Link } from 'react-router-dom'
-import { EncabezadoPagina, GridTarjetas, Pagina } from '@/components/layout/Pagina'
+import { EncabezadoPagina, GridTarjetas, Pagina, SeccionPagina } from '@/components/layout/Pagina'
 import { Alert, Badge, Button, Card, Chip, EmptyState, Skeleton } from '@/components/ui'
 import { IconCalendario, IconCampana } from '@/components/ui/icons'
 import { ROUTES } from '@/constants/routes'
@@ -61,7 +61,7 @@ const MisTutorias = () => {
         <>
           {proximaSesion ? <ProximaSesion sesion={proximaSesion} /> : null}
 
-          <Seccion titulo="Inscripciones activas" cantidad={activas.length}>
+          <SeccionPagina titulo="Inscripciones activas" cantidad={activas.length}>
             {activas.length ? (
               <GridTarjetas>
                 {activas.map((item) => (
@@ -79,33 +79,20 @@ const MisTutorias = () => {
                 }
               />
             )}
-          </Seccion>
+          </SeccionPagina>
 
           {anteriores.length ? (
-            <Seccion titulo="Inscripciones anteriores" cantidad={anteriores.length}>
+            <SeccionPagina titulo="Inscripciones anteriores" cantidad={anteriores.length}>
               <Card as="ul" className={styles.anteriores}>
                 {anteriores.map((item) => (
                   <FilaAnterior key={item.tutoria.idTutoria} item={item} />
                 ))}
               </Card>
-            </Seccion>
+            </SeccionPagina>
           ) : null}
         </>
       )}
     </Pagina>
-  )
-}
-
-const Seccion = ({ titulo, cantidad, children }) => {
-  const idTitulo = useId()
-  return (
-    <section className={styles.seccion} aria-labelledby={idTitulo}>
-      <h2 className={styles.seccionTitulo} id={idTitulo}>
-        {titulo}
-        <span className={styles.cantidad}>{cantidad}</span>
-      </h2>
-      {children}
-    </section>
   )
 }
 

@@ -1,0 +1,64 @@
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.2rem 1.25rem;
+}
+
+.encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.titulo {
+  margin: 0;
+  color: var(--color-texto);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.nrc {
+  margin: -0.45rem 0 0;
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+}
+
+.riesgo {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--color-alerta-borde);
+  border-radius: var(--radio-sm);
+  background-color: var(--color-alerta-suave);
+  color: var(--color-alerta-texto);
+  font-size: 0.82rem;
+}
+
+.riesgo svg {
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+}
+
+.proxima {
+  margin: 0;
+  color: var(--color-texto-secundario);
+  font-size: 0.85rem;
+}
+
+.enlace {
+  margin-top: auto;
+  padding-top: 0.25rem;
+  color: var(--color-primario);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.enlace:hover {
+  text-decoration: underline;
+}

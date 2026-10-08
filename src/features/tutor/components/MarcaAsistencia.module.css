@@ -1,0 +1,93 @@
+.grupo {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 3px;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  background-color: var(--color-superficie);
+}
+
+.oculto {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.opcion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radio-sm);
+  color: var(--color-texto-secundario);
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.opcion:hover {
+  background-color: var(--color-fondo-hover);
+  color: var(--color-texto);
+}
+
+.opcion:has(.input:focus-visible) {
+  outline: var(--contorno-foco);
+  outline-offset: 1px;
+}
+
+.grupo:disabled .opcion {
+  cursor: wait;
+  opacity: 0.75;
+}
+
+.opcion svg,
+.fija svg {
+  width: 14px;
+  height: 14px;
+}
+
+.asistio,
+.asistio:hover {
+  background-color: var(--color-exito);
+  color: var(--color-texto-inverso);
+}
+
+.falto,
+.falto:hover {
+  background-color: var(--color-peligro);
+  color: var(--color-texto-inverso);
+}
+
+.fija {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-texto-tenue);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.textoAsistio {
+  color: var(--color-exito-texto);
+}
+
+.textoFalto {
+  color: var(--color-peligro-texto);
+}

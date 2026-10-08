@@ -6,7 +6,6 @@ export const ROUTES = {
   tutor: {
     inicio: '/tutor/home',
     nuevaTutoria: '/tutor/tutorias/nueva',
-    horarios: '/tutor/horarios',
     detalle: (id) => `/tutor/tutorias/${id}`,
     editar: (id) => `/tutor/tutorias/${id}/editar`,
     paseDeLista: (idSesion) => `/tutor/sesiones/${idSesion}/lista`,

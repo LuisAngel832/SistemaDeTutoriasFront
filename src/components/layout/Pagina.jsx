@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { clases } from '@/utils/clases'
 import styles from './Pagina.module.css'
 
@@ -42,3 +43,20 @@ export const PanelFormulario = ({ title, subtitle, icon, children }) => (
     {children}
   </section>
 )
+
+// Seccion de una pagina con titulo y, opcionalmente, un contador ("Sesiones de hoy 2").
+export const SeccionPagina = ({ titulo, cantidad, accion, children }) => {
+  const idTitulo = useId()
+  return (
+    <section className={styles.seccion} aria-labelledby={idTitulo}>
+      <div className={styles.seccionEncabezado}>
+        <h2 className={styles.seccionTitulo} id={idTitulo}>
+          {titulo}
+          {cantidad != null ? <span className={styles.cantidad}>{cantidad}</span> : null}
+        </h2>
+        {accion}
+      </div>
+      {children}
+    </section>
+  )
+}

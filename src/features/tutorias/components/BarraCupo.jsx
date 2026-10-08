@@ -4,7 +4,8 @@ import styles from './BarraCupo.module.css'
 
 // Ocupacion de una tutoria: "Cupo · 4 de 7" con una barra azul, naranja cuando queda un lugar
 // y roja cuando esta llena.
-// variante: completa (etiqueta arriba) | mini (barra y "4/7" en linea, para tablas).
+// variante: completa (etiqueta arriba) | mini (barra y "4/7" en linea, para tablas) |
+// barra (solo la barra, cuando la cifra ya se muestra en otro lugar).
 export const BarraCupo = ({ cupo, etiqueta = 'Cupo', variante = 'completa', texto, className }) => {
   const tono = tonoCupo(cupo)
   const ocupados = cupo?.ocupados ?? 0
@@ -26,6 +27,8 @@ export const BarraCupo = ({ cupo, etiqueta = 'Cupo', variante = 'completa', text
       />
     </div>
   )
+
+  if (variante === 'barra') return <div className={className}>{barra}</div>
 
   if (variante === 'mini') {
     return (

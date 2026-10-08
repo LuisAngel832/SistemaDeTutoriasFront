@@ -5,8 +5,9 @@ import {
   IconClose,
   IconCollapse,
   IconCrear,
+  IconCuadricula,
   IconExplorar,
-  IconHorario,
+  IconHistorial,
   IconLogout,
   IconMisTutorias,
   IconTutorias,
@@ -15,9 +16,10 @@ import {
 const iconsByName = {
   tutorias: IconTutorias,
   crear: IconCrear,
-  horario: IconHorario,
+  historial: IconHistorial,
   explorar: IconExplorar,
   misTutorias: IconMisTutorias,
+  cuadricula: IconCuadricula,
 }
 
 export const Sidebar = ({

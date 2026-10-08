@@ -1,0 +1,25 @@
+.sinCerrarTexto {
+  margin: 0.15rem 0 0.5rem;
+}
+
+.sinCerrar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sinCerrar li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.sinCerrar a {
+  color: inherit;
+  font-weight: 700;
+}

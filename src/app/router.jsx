@@ -66,18 +66,26 @@ export const rutas = [
                     lazy: pagina(() => import('@/features/tutor/pages/CrearTutoria/CrearTutoria')),
                   },
                   {
-                    path: ROUTES.tutor.horarios,
-                    handle: { titulo: 'Mis horarios' },
-                    lazy: pagina(
-                      () => import('@/features/tutor/pages/AgregarHorario/AgregarHorario'),
-                    ),
-                  },
-                  {
                     path: ROUTES.tutor.detalle(':id'),
                     handle: { titulo: 'Detalle de tutoría' },
                     lazy: pagina(
                       () => import('@/features/tutor/pages/TutoriaDetalle/TutoriaDetalle'),
                     ),
+                  },
+                  {
+                    path: ROUTES.tutor.editar(':id'),
+                    handle: { titulo: 'Editar tutoría' },
+                    lazy: pagina(() => import('@/features/tutor/pages/EditarTutoria')),
+                  },
+                  {
+                    path: ROUTES.tutor.paseDeLista(':idSesion'),
+                    handle: { titulo: 'Pase de lista' },
+                    lazy: pagina(() => import('@/features/tutor/pages/PaseDeLista')),
+                  },
+                  {
+                    path: ROUTES.tutor.historial(),
+                    handle: { titulo: 'Historial de asistencia' },
+                    lazy: pagina(() => import('@/features/tutor/pages/HistorialAsistencia')),
                   },
                 ],
               },
@@ -124,7 +132,9 @@ export const rutas = [
 
       // URLs anteriores
       { path: '/tutor/crear', element: <Navigate to={ROUTES.tutor.nuevaTutoria} replace /> },
-      { path: '/tutor/agregar-horario', element: <Navigate to={ROUTES.tutor.horarios} replace /> },
+      // La disponibilidad del tutor ya no existe: los horarios son parte de cada tutoria.
+      { path: '/tutor/horarios', element: <Navigate to={ROUTES.tutor.inicio} replace /> },
+      { path: '/tutor/agregar-horario', element: <Navigate to={ROUTES.tutor.inicio} replace /> },
       { path: '/tutor/tutoria/:id', element: <RedirigirDetalle destino={ROUTES.tutor.detalle} /> },
       {
         path: '/tutorado/infoTutoria/:id',

@@ -47,7 +47,8 @@ describe('router', () => {
 
   it.each([
     ['/tutor/crear', '/tutor/tutorias/nueva'],
-    ['/tutor/agregar-horario', '/tutor/horarios'],
+    ['/tutor/agregar-horario', '/tutor/home'],
+    ['/tutor/horarios', '/tutor/home'],
     ['/tutor/tutoria/7', '/tutor/tutorias/7'],
   ])('redirige la URL antigua %s a %s', async (antigua, nueva) => {
     iniciarSesionComo('tutor')
@@ -66,10 +67,12 @@ describe('router', () => {
 
   it('permite al admin entrar a las pantallas del tutor', async () => {
     iniciarSesionComo('admin', '3001')
-    const router = renderRuta('/tutor/horarios')
+    const router = renderRuta('/tutor/historial')
 
-    await esperarRuta(router, '/tutor/horarios')
-    expect(await screen.findByRole('heading', { name: /Crear horario/ })).toBeInTheDocument()
+    await esperarRuta(router, '/tutor/historial')
+    expect(
+      await screen.findByRole('heading', { name: 'Historial de asistencia', level: 1 }),
+    ).toBeInTheDocument()
   })
 
   it('muestra la pagina 404 en rutas desconocidas', async () => {

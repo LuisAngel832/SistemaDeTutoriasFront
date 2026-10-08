@@ -14,7 +14,7 @@ const MENU_POR_ROL = {
     items: [
       { to: ROUTES.tutor.inicio, label: 'Mis tutorías', icon: 'tutorias', end: true },
       { to: ROUTES.tutor.nuevaTutoria, label: 'Crear tutoría', icon: 'crear' },
-      { to: ROUTES.tutor.horarios, label: 'Crear horario', icon: 'horario' },
+      { to: ROUTES.tutor.historial(), label: 'Historial de asistencia', icon: 'historial' },
     ],
   },
   [ROLES.TUTORADO]: {

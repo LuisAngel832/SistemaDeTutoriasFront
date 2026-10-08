@@ -81,6 +81,40 @@
   font-size: 1.6rem;
 }
 
+.seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.seccionEncabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.seccionTitulo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--color-texto);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.cantidad {
+  padding: 0.05rem 0.45rem;
+  border-radius: var(--radio-pill);
+  background-color: var(--color-primario-suave);
+  color: var(--color-primario-texto);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
 @media (max-width: 720px) {
   .form {
     padding: 1.5rem 0.75rem;
