@@ -7,8 +7,22 @@ proyecto sigue [Versionado Semantico](https://semver.org/lang/es/).
 
 ## [Sin publicar]
 
+> Requiere el backend con la API nueva (`TutoriasBackend/docs/API.md`): este front ya no
+> funciona con la API anterior.
+
 ### Agregado
 
+- Nuevo modelo de tutorias (mockups de escritorio del 5 oct 2026): tutorias recurrentes con
+  horarios semanales y temas por horario, inscripciones, sesiones, pase de lista e historial.
+- Inicio de sesion con Microsoft y Google (MSAL y Google Identity Services) y registro en el
+  primer acceso con matricula y rol.
+- Tutorado: explorar con filtros, panel de inscripcion con sus seis estados, "Tu semana",
+  Mis tutorias con la proxima sesion y Mi asistencia con historial, comentarios y baja.
+- Tutor: sesiones de hoy (abrir pase de lista, cancelar, listas sin cerrar), crear y editar
+  tutorias con varios horarios, detalle con temas en linea y desactivar, pase de lista con
+  cierre y bajas automaticas, e historial de asistencia en matriz.
+- Panel de administracion: tutorias de la facultad con indicadores, desactivar y cierre de
+  periodo, y catalogo de Experiencias Educativas.
 - TanStack Query para los datos del servidor: cache entre pantallas, reintentos controlados
   e invalidacion automatica despues de cada operacion.
 - Validacion de formularios con react-hook-form y Zod: cada error se muestra junto a su campo
@@ -30,6 +44,10 @@ proyecto sigue [Versionado Semantico](https://semver.org/lang/es/).
 
 ### Cambiado
 
+- El proxy de desarrollo apunta por defecto al backend de Render y reenvia los recursos de la
+  API nueva.
+- El administrador tiene su propio panel en lugar de usar el del tutor.
+- Los avisos flotantes aparecen abajo a la derecha.
 - Interfaz unificada: todas las pantallas usan los mismos componentes; los emojis decorativos
   se reemplazan por iconos SVG y los textos llevan acentuacion correcta.
 - Accesibilidad: contraste AA en textos y botones, radios nativos para elegir rol y dia,
@@ -56,6 +74,8 @@ proyecto sigue [Versionado Semantico](https://semver.org/lang/es/).
 
 ### Eliminado
 
+- Login y registro con contrasena, horarios de disponibilidad del tutor ("Mis horarios") y
+  la tutoria de una sola fecha, con su capa de API, componentes y utilidades.
 - Archivos sin uso del template de Vite.
 
 ## [0.1.0]

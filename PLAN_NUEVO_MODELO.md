@@ -115,30 +115,33 @@ Todo el acceso a la API vive en `src/api/`: si el backend se desvia del contrato
 
 Objetivo: rama, configuracion y piezas base, sin cambiar pantallas.
 
-- [ ] Crear `feat/nuevo-modelo` desde `refactor/estructura-por-features`.
-- [ ] `vite.config.js`: el proxy apunta por defecto a `https://tutoriasbe.onrender.com` (se puede
+- [x] Crear `feat/nuevo-modelo` desde `refactor/estructura-por-features`.
+- [x] `vite.config.js`: el proxy apunta por defecto a `https://tutoriasbe.onrender.com` (se puede
       cambiar con `VITE_BACKEND_URL`) y cubre los prefijos nuevos: `/auth`, `/usuarios`,
       `/materias`, `/catalogos`, `/tutorias`, `/horarios`, `/temas`, `/inscripciones`, `/sesiones`,
       `/comentarios` y `/admin`. Se quitan `/materia`, `/horario`, `/tutoria` y `/asistencia`.
-- [ ] `.env.example`, `.env.production` y `render.yaml`: `VITE_BACKEND_URL` con la URL de Render y
+- [x] `.env.example`, `.env.production` y `render.yaml`: `VITE_BACKEND_URL` con la URL de Render y
       las variables `VITE_MICROSOFT_CLIENT_ID`, `VITE_MICROSOFT_TENANT_ID` y `VITE_GOOGLE_CLIENT_ID`
       (los Client IDs son publicos; quedan vacios hasta recibirlos).
-- [ ] Dependencias: `@azure/msal-browser` y `@react-oauth/google`.
-- [ ] Constantes del dominio (`constants/tutoria.js`, `constants/horarios.js`): cupo de 7,
+- [x] Dependencias: `@azure/msal-browser` y `@react-oauth/google`.
+- [x] Constantes del dominio (`constants/tutoria.js`, `constants/horarios.js`): cupo de 7,
       2 inasistencias permitidas, 15 minutos para cancelar, 10 temas de 60 caracteres y comentarios
       de 255; estados de tutoria, horario, inscripcion, sesion, panel del tutorado y `miAsistencia`;
       dias `LUNES` a `VIERNES` con sus etiquetas (`LUN`, `Lunes`).
-- [ ] Formateadores (`utils/formatters.js`, `utils/fechas.js`): rango de horas, dias de los
+- [x] Formateadores (`utils/formatters.js`, `utils/fechas.js`): rango de horas, dias de los
       horarios ("Lunes y miércoles", "Lun y mié"), lugar ("Edificio 2 · Aula 7" y "E2 · Aula 7"),
       fechas cortas y largas ("Mié 7 oct", "miércoles 7 de octubre"), fechas relativas en la zona de
       Mexico ("hoy", "mañana"), lugares disponibles ("3 lugares", "Último lugar", "Llena") e inicio
       del periodo escolar.
-- [ ] `ApiError` expone `errores` (mapa `campo → mensaje`) para mostrar el error bajo su campo.
+- [x] `ApiError` expone `errores` (mapa `campo → mensaje`) para mostrar el error bajo su campo.
 
 **Pruebas:** formateadores, fechas en la zona de Mexico, inicio de periodo y `ApiError.errores`.
 
 **Commits:** `build: apuntar el proxy de desarrollo al backend de render`,
 `feat: agregar constantes y formateadores del nuevo modelo`.
+
+> Hecho. El proxy usa una sola expresion (`^/(auth|usuarios|...)(/|?|$)`) que exige el
+> segmento completo: asi `/administracion` no se confunde con `/admin`.
 
 ---
 
@@ -146,10 +149,10 @@ Objetivo: rama, configuracion y piezas base, sin cambiar pantallas.
 
 Objetivo: todo el contrato de `API.md` disponible y probado antes de tocar pantallas.
 
-- [ ] Mover `auth.js`, `tutorias.js`, `asistencia.js`, `horarios.js`, `materias.js`, `temas.js`,
+- [x] Mover `auth.js`, `tutorias.js`, `asistencia.js`, `horarios.js`, `materias.js`, `temas.js`,
       `comentarios.js`, `mappers.js` y `queryKeys.js` a `src/api/legacy/` (solo `git mv` e imports).
       `client.js` se queda en `src/api/`.
-- [ ] Modulos nuevos en `src/api/`:
+- [x] Modulos nuevos en `src/api/`:
 
   | Modulo             | Funciones                                                                                                          | Endpoints                                                |
   | ------------------ | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
@@ -164,15 +167,15 @@ Objetivo: todo el contrato de `API.md` disponible y probado antes de tocar panta
   | `comentarios.js`   | `deTutoria`, `publicar`, `eliminar`                                                                                | `/tutorias/{id}/comentarios`, `DELETE /comentarios/{id}` |
   | `admin.js`         | `resumen`, `tutorias`, `tutores`, `cerrarPeriodo`                                                                  | `/admin/**`                                              |
 
-- [ ] `queryKeys.js` nuevo, con una raiz por dominio (`tutorias`, `inscripciones`, `sesiones`,
+- [x] `queryKeys.js` nuevo, con una raiz por dominio (`tutorias`, `inscripciones`, `sesiones`,
       `comentarios`, `materias`, `catalogos`, `usuario`, `admin`) para invalidar por grupo.
-- [ ] Fixtures en `src/test/fixtures/` con los ejemplos de `API.md` (incluidos los ajustes del
+- [x] Fixtures en `src/test/fixtures/` con los ejemplos de `API.md` (incluidos los ajustes del
       contrato).
 
 **Pruebas:** cada funcion arma bien la ruta, los query params y el body.
 
-**Commits:** `refactor(api): mover la capa del modelo anterior a legacy`,
-`feat(api): agregar el cliente del nuevo contrato`.
+**Commits:** `feat(api): agregar el cliente del nuevo contrato` (incluye el movimiento a
+`legacy/`, que se borro en la Fase 6).
 
 ---
 
@@ -180,39 +183,42 @@ Objetivo: todo el contrato de `API.md` disponible y probado antes de tocar panta
 
 Pantallas 01 y 02, sesion y barra lateral.
 
-- [ ] **Proveedores** (`features/auth/proveedores/`):
+- [x] **Proveedores** (`features/auth/proveedores/`):
   - Microsoft: `PublicClientApplication` de MSAL (`initialize()` y `loginPopup` con
     `openid profile email`); devuelve `idToken`. Usa una pagina de redireccion en blanco para el
     popup (`public/redirect.html`), segun la guia de la version instalada de MSAL.
   - Google: `GoogleOAuthProvider` y `GoogleLogin`; devuelve `credential`.
   - Ambos se cargan solo en la pantalla de login, que ya es lazy.
-- [ ] **AuthProvider:**
+- [x] **AuthProvider:**
   - `entrarConProveedor(proveedor, idToken)`: si `registroPendiente`, guarda
     `{ tokenRegistro, perfil }` en `sessionStorage` (vence a los 15 minutos) y manda a `/registro`;
     si no, guarda la sesion `{ token, rol, matricula, nombre, correo }`.
   - `completarRegistro({ matricula, rol })`.
   - Se quitan `login`, `registro` y `actualizarNombre`. `storage.js` agrega `correo`.
-- [ ] **01 Iniciar sesion:** tarjeta dividida (`AuthLayout`) con "Bienvenido de vuelta" y sus 3
+- [x] **01 Iniciar sesion:** tarjeta dividida (`AuthLayout`) con "Bienvenido de vuelta" y sus 3
       beneficios, "Continuar con Microsoft", boton de Google, aviso "¿Es tu primera vez?" y la nota
       de correos. Los errores del backend (dominio no permitido, token invalido) van en un `Alert`.
       Se conserva el aviso de sesion expirada.
-- [ ] **02 Completar registro:** pasos del panel izquierdo ("Cuenta de Microsoft verificada",
+- [x] **02 Completar registro:** pasos del panel izquierdo ("Cuenta de Microsoft verificada",
       "Matrícula y rol", "Entrar a tu panel"); tarjeta con iniciales, nombre, correo e insignia del
       proveedor; matricula (zod acepta `zS…` y `s…` y la normaliza a `S` + 8 digitos); rol en tarjetas
       ("Tutorado · Quiero inscribirme a tutorías", "Tutor · Quiero impartir tutorías"); "Crear cuenta y
       continuar"; "¿No es tu cuenta? Entrar con otra" descarta el registro pendiente. La matricula
       duplicada se muestra bajo el campo. Si el `tokenRegistro` vencio, vuelve al login con aviso.
-- [ ] **Guardas:** `/registro` solo con registro pendiente.
-- [ ] **Layout:** menu de cada rol (se completa conforme llegan sus pantallas); tarjeta de usuario
+- [x] **Guardas:** `/registro` solo con registro pendiente.
+- [x] **Layout:** menu de cada rol (se completa conforme llegan sus pantallas); tarjeta de usuario
       con iniciales, nombre, "Matrícula: …" y rol; datos frescos con `GET /usuarios/me`.
-- [ ] Toaster abajo a la derecha, como el aviso de la pantalla 07.
+- [x] Toaster abajo a la derecha, como el aviso de la pantalla 07.
 
 **Pruebas:** usuario registrado, registro pendiente, error de dominio, matricula duplicada,
 `tokenRegistro` vencido, esquema de matricula y guardas.
 
 **Commits:** `feat(auth): iniciar sesion con microsoft y google`,
-`feat(auth): completar el registro en el primer acceso`,
 `feat(layout): mostrar los datos del usuario en la barra lateral`.
+
+> Hecho. MSAL v5 exige que la pagina de redireccion del popup llame a
+> `broadcastResponseToMainFrame()`, asi que `redirect.html` es una entrada de Vite (no un
+> archivo de `public/`) con `src/app/redirect.js`.
 
 ---
 
@@ -220,71 +226,72 @@ Pantallas 01 y 02, sesion y barra lateral.
 
 ### 3.1 Componentes compartidos
 
-- [ ] `BarraCupo`, `HorariosSemana` (chips de dia con su horario), `Lugar`, `MedidorInasistencias`,
+- [x] `BarraCupo`, `HorariosSemana` (chips de dia con su horario), `Lugar`, `MedidorInasistencias`,
       `Avatar`, `EstadoBadge` (por tipo de estado) e iconos nuevos
       (ver [Componentes compartidos](#componentes-compartidos)).
 
 ### 3.2 Explorar tutorias (03)
 
-- [ ] `GET /tutorias` con `q` (buscador con espera de 300 ms), `dia` (chips Todos y Lun a Vie),
+- [x] `GET /tutorias` con `q` (buscador con espera de 300 ms), `dia` (chips Todos y Lun a Vie),
       `soloConLugar` y `ocultarChoques` (casillas). Los filtros viven en la URL para conservarlos al
       volver del detalle.
-- [ ] Conteo "8 tutorías disponibles".
-- [ ] Tarjeta: titulo, "Imparte …", insignia de lugares (verde "3 LUGARES", ambar "ÚLTIMO LUGAR",
+- [x] Conteo "8 tutorías disponibles".
+- [x] Tarjeta: titulo, "Imparte …", insignia de lugares (verde "3 LUGARES", ambar "ÚLTIMO LUGAR",
       roja "LLENA"), horarios, lugar y barra de cupo (azul; naranja con 6 de 7; roja llena).
-- [ ] Aviso ambar de choque ("Se cruza con tu horario. El jueves choca con Bases de Datos (16:00 –
+- [x] Aviso ambar de choque ("Se cruza con tu horario. El jueves choca con Bases de Datos (16:00 –
       18:00).").
-- [ ] Boton verde "Ver detalle e inscribirme →", o "Ver detalle" en contorno si esta llena o
+- [x] Boton verde "Ver detalle e inscribirme →", o "Ver detalle" en contorno si esta llena o
       tiene choque.
-- [ ] Estados de carga, vacio y error.
+- [x] Estados de carga, vacio y error.
 
 ### 3.3 Detalle (04), confirmar inscripcion (05) y estados del panel (06)
 
-- [ ] `GET /tutorias/{id}`, `GET /tutorias/{id}/comentarios` y `GET /inscripciones/semana`.
-- [ ] Encabezado ("IMPARTE", insignia ACTIVA o INACTIVA) y 4 datos: "Experiencia Educativa ·
+- [x] `GET /tutorias/{id}`, `GET /tutorias/{id}/comentarios` y `GET /inscripciones/semana`.
+- [x] Encabezado ("IMPARTE", insignia ACTIVA o INACTIVA) y 4 datos: "Experiencia Educativa ·
       NRC 48215", lugar, "Horarios por semana · 2 sesiones de 2 horas" y proxima sesion.
-- [ ] Horarios y temas.
-- [ ] Comentarios: solo lectura con "Inscríbete para sugerir temas…"; con inscripcion activa se
+- [x] Horarios y temas.
+- [x] Comentarios: solo lectura con "Inscríbete para sugerir temas…"; con inscripcion activa se
       muestra el formulario.
-- [ ] Panel derecho segun `panelTutorado.estado`:
+- [x] Panel derecho segun `panelTutorado.estado`:
   - `CON_LUGAR`: cupo, beneficios y "Inscribirme".
   - `INSCRIPCION_ACTIVA`: proxima sesion, recordatorio, inasistencias y "Darme de baja".
   - `CHOQUE_HORARIO`: aviso con el detalle de `choques` y "Revisar mis tutorías".
   - `LLENA`: aviso de tutoria llena.
   - `NO_ACTIVA`: aviso y "Explorar otras tutorías".
   - `BAJA_AUTOMATICA`: fecha de la baja, inasistencias y "Explorar otras tutorías".
-- [ ] "Tu semana": une la semana del tutorado con los horarios de esta tutoria ("Esta tutoría" con
+- [x] "Tu semana": une la semana del tutorado con los horarios de esta tutoria ("Esta tutoría" con
       borde punteado verde) y muestra la insignia "SIN CHOQUES" o "CHOQUE".
-- [ ] Modal 05 con horarios, lugar y el correo del usuario; `POST /inscripciones` lleva a Mis
+- [x] Modal 05 con horarios, lugar y el correo del usuario; `POST /inscripciones` lleva a Mis
       tutorias con el aviso "Inscripción confirmada".
-- [ ] Darse de baja con confirmacion.
+- [x] Darse de baja con confirmacion.
 
 ### 3.4 Mis tutorias (07)
 
-- [ ] `GET /inscripciones`.
-- [ ] Tarjeta de proxima sesion: fecha en bloque ("MAR 6"), "PRÓXIMA SESIÓN · MAÑANA", temas del
+- [x] `GET /inscripciones`.
+- [x] Tarjeta de proxima sesion: fecha en bloque ("MAR 6"), "PRÓXIMA SESIÓN · MAÑANA", temas del
       dia y "Recordatorio por correo a las 14:00".
-- [ ] Inscripciones activas: insignia NUEVA o ACTIVA, horarios, lugar, medidor de inasistencias,
+- [x] Inscripciones activas: insignia NUEVA o ACTIVA, horarios, lugar, medidor de inasistencias,
       proxima sesion o "Primera sesión: …" y "Ver detalle y asistencia →".
-- [ ] Inscripciones anteriores: BAJA, BAJA AUTOMÁTICA y tutoria desactivada (diseno propio).
-- [ ] Estado vacio.
+- [x] Inscripciones anteriores: BAJA, BAJA AUTOMÁTICA y tutoria desactivada (diseno propio).
+- [x] Estado vacio.
 
 ### 3.5 Mi asistencia (08)
 
-- [ ] `GET /inscripciones/tutorias/{id}`.
-- [ ] Historial de asistencia: se muestran las 6 sesiones mas recientes; "Ver las N sesiones →"
+- [x] `GET /inscripciones/tutorias/{id}`.
+- [x] Historial de asistencia: se muestran las 6 sesiones mas recientes; "Ver las N sesiones →"
       despliega todas.
-- [ ] Horarios y temas.
-- [ ] Comentarios con formulario (contador 0/255) y borrado de los propios (insignia "TÚ").
-- [ ] Columna lateral: "Tu asistencia" (medidor, aviso y conteos), proxima sesion y "Darme de baja"
+- [x] Horarios y temas.
+- [x] Comentarios con formulario (contador 0/255) y borrado de los propios (insignia "TÚ").
+- [x] Columna lateral: "Tu asistencia" (medidor, aviso y conteos), proxima sesion y "Darme de baja"
       con confirmacion, que lleva a Mis tutorias.
-- [ ] Si la inscripcion ya no esta activa, se ocultan el formulario y la baja.
+- [x] Si la inscripcion ya no esta activa, se ocultan el formulario y la baja.
 
 **Pruebas:** filtros a query params; insignia y barra segun cupo; los 6 estados del panel; flujo de
 inscripcion (confirmar, POST, navegacion y aviso); "Tu semana" con choque; Mis tutorias (activas y
 anteriores); Mi asistencia (historial, conteos y baja); comentarios (contador y borrar el propio).
 
-**Commits:** uno por seccion (`feat(tutorado): …`).
+**Commits:** `feat(tutorias): agregar los componentes compartidos del nuevo modelo`,
+`feat(tutorado): explorar, detalle, mis tutorias y mi asistencia`.
 
 ---
 
@@ -292,67 +299,67 @@ anteriores); Mi asistencia (historial, conteos y baja); comentarios (contador y 
 
 ### 4.1 Mis tutorias y sesiones de hoy (09)
 
-- [ ] `GET /sesiones/hoy` (se refresca cada minuto) y `GET /tutorias/mis-tutorias`.
-- [ ] Tarjetas de sesiones de hoy segun `estado` y `acciones`:
+- [x] `GET /sesiones/hoy` (se refresca cada minuto) y `GET /tutorias/mis-tutorias`.
+- [x] Tarjetas de sesiones de hoy segun `estado` y `acciones`:
   - "Abrir pase de lista" (`POST /sesiones/abrir-lista`) lleva al pase de lista.
   - "Revisar y cerrar lista" lleva al pase de lista abierto.
   - "Cancelar sesión" con confirmacion.
   - Aviso "La sesión terminó…" con `terminada` y "Los tutorados recibirán el recordatorio a las …".
-- [ ] Listas sin cerrar de dias anteriores (diseno propio).
-- [ ] "Tus tutorías": insignia, NRC, horarios, lugar, barra de inscritos, aviso
+- [x] Listas sin cerrar de dias anteriores (diseno propio).
+- [x] "Tus tutorías": insignia, NRC, horarios, lugar, barra de inscritos, aviso
       "1 tutorado ya tiene 2 inasistencias" o proxima sesion, y "Ver detalle →".
-- [ ] Boton "+ Crear tutoría".
+- [x] Boton "+ Crear tutoría".
 
 ### 4.2 Crear (10) y editar tutoria
 
-- [ ] react-hook-form con `useFieldArray`.
-- [ ] Experiencia Educativa (`GET /materias`), edificio y aula dependientes
+- [x] react-hook-form con `useFieldArray`.
+- [x] Experiencia Educativa (`GET /materias`), edificio y aula dependientes
       (`GET /catalogos/edificios`) y aviso "Cupo de 7 tutorados…".
-- [ ] Horarios: dia (Lun a Vie en botones), hora de inicio y de fin, temas con `TemasInput`
+- [x] Horarios: dia (Lun a Vie en botones), hora de inicio y de fin, temas con `TemasInput`
       (contador "26/60 caracteres · 2/10 temas" y texto "Los tutorados verán estos temas en las
       sesiones del martes."), "+ Agregar otro horario", quitar horario, "Limpiar" y "Crear tutoría".
-- [ ] Validacion zod: al menos un horario; inicio antes que fin; sin traslapes entre los horarios
+- [x] Validacion zod: al menos un horario; inicio antes que fin; sin traslapes entre los horarios
       de la tutoria (RN-1: los contiguos no chocan); temas de 1 a 60 caracteres, maximo 10 y sin
       repetir.
-- [ ] Los errores del backend (choque con otra tutoria o con el aula) se muestran en un `Alert`.
-- [ ] Editar: el mismo formulario precargado, con la Experiencia Educativa bloqueada; `PUT` con
+- [x] Los errores del backend (choque con otra tutoria o con el aula) se muestran en un `Alert`.
+- [x] Editar: el mismo formulario precargado, con la Experiencia Educativa bloqueada; `PUT` con
       `idHorario` en los horarios que se conservan.
 
 ### 4.3 Detalle de tutoria (11)
 
-- [ ] `GET /tutorias/{id}`, `/sesiones`, `/inscritos` y `/comentarios`.
-- [ ] Encabezado (EE, NRC, estado), horarios y lugar.
-- [ ] Lista de sesiones con el texto y la accion de cada estado:
+- [x] `GET /tutorias/{id}`, `/sesiones`, `/inscritos` y `/comentarios`.
+- [x] Encabezado (EE, NRC, estado), horarios y lugar.
+- [x] Lista de sesiones con el texto y la accion de cada estado:
   - "Recordatorio a los tutorados a las 08:00" con "Cancelar sesión".
   - "5 de 5 marcados · falta cerrar la lista" con "Ir al pase de lista".
   - "4 de 5 asistieron" con "Ver lista".
   - "Se avisó por correo a los 5 tutorados · no cuenta para inasistencias".
-- [ ] Enlace "Historial de asistencia →".
-- [ ] Horarios y temas editables: agregar con Enter o "+" y quitar con "×"
+- [x] Enlace "Historial de asistencia →".
+- [x] Horarios y temas editables: agregar con Enter o "+" y quitar con "×"
       (`POST /horarios/{id}/temas`, `DELETE /temas/{id}`).
-- [ ] Botones "Editar tutoría" y "Desactivar tutoría" (disenos propios).
-- [ ] Panel "Inscritos" con cupo, lista y "En riesgo de baja".
-- [ ] Comentarios de los tutorados (solo lectura).
+- [x] Botones "Editar tutoría" y "Desactivar tutoría" (disenos propios).
+- [x] Panel "Inscritos" con cupo, lista y "En riesgo de baja".
+- [x] Comentarios de los tutorados (solo lectura).
 
 ### 4.4 Pase de lista (12) y cierre (13)
 
-- [ ] `GET /sesiones/{id}/lista`; encabezado con EE, fecha, horario y lugar.
-- [ ] Cada fila con "Asistió" y "No asistió": cada clic hace un `PUT` parcial y se pinta la
+- [x] `GET /sesiones/{id}/lista`; encabezado con EE, fecha, horario y lugar.
+- [x] Cada fila con "Asistió" y "No asistió": cada clic hace un `PUT` parcial y se pinta la
       respuesta. "Marcar a todos: asistió" envia a todos.
-- [ ] Aviso "Con esta inasistencia suma 3…" cuando `causaraBaja`.
-- [ ] Resumen (asistieron, no asistieron, sin marca) y panel de cierre con las 3 condiciones de
+- [x] Aviso "Con esta inasistencia suma 3…" cuando `causaraBaja`.
+- [x] Resumen (asistieron, no asistieron, sin marca) y panel de cierre con las 3 condiciones de
       `cierre`.
-- [ ] Modal 13 con los conteos y `bajasPrevistas`; `POST /sesiones/{id}/cerrar-lista` lleva al
+- [x] Modal 13 con los conteos y `bajasPrevistas`; `POST /sesiones/{id}/cerrar-lista` lleva al
       historial con el aviso de cierre.
-- [ ] Modo de solo lectura para sesiones completadas (diseno propio).
+- [x] Modo de solo lectura para sesiones completadas (diseno propio).
 
 ### 4.5 Historial de asistencia (14)
 
-- [ ] Selector de tutoria (`GET /tutorias/mis-tutorias?estado=TODAS`).
-- [ ] Aviso de cierre, que llega desde el pase de lista.
-- [ ] 4 indicadores: sesiones completadas, asistencia ("86 % · 30 de 35 marcas"), canceladas y
+- [x] Selector de tutoria (`GET /tutorias/mis-tutorias?estado=TODAS`).
+- [x] Aviso de cierre, que llega desde el pase de lista.
+- [x] 4 indicadores: sesiones completadas, asistencia ("86 % · 30 de 35 marcas"), canceladas y
       bajas automaticas.
-- [ ] Matriz tutorado x sesion:
+- [x] Matriz tutorado x sesion:
   - columna de sesion cancelada sombreada;
   - celdas ✓, × y × rellena para la inasistencia que causo la baja;
   - "—" para sesion cancelada y punto gris para "aún no inscrito" (con `fechaInscripcion`);
@@ -363,15 +370,15 @@ anteriores); Mi asistencia (historial, conteos y baja); comentarios (contador y 
 temas); body de crear y editar; temas en linea; pase de lista (marcar, marcar a todos, condiciones y
 modal con bajas); matriz del historial.
 
-**Commits:** uno por seccion (`feat(tutor): …`).
+**Commits:** `feat(tutor): sesiones de hoy, crear y editar, detalle, pase de lista e historial`.
 
 ---
 
 ## Fase 5 - Administracion
 
-- [ ] **Roles:** el admin deja de usar el panel del tutor; tiene su propio inicio
+- [x] **Roles:** el admin deja de usar el panel del tutor; tiene su propio inicio
       (`/administracion/tutorias`) y su menu (Tutorías, Experiencias Educativas).
-- [ ] **15 Tutorias de la facultad:**
+- [x] **15 Tutorias de la facultad:**
   - `GET /admin/resumen?desde=`, `GET /admin/tutorias` y `GET /admin/tutores`.
   - 4 indicadores.
   - Buscador con espera, filtro de tutor y filtro de estado ("Solo activas", "Inactivas",
@@ -380,7 +387,7 @@ modal con bajas); matriz del historial.
     y estado.
   - Desactivar por fila y cierre de periodo (disenos propios).
   - Pie "11 tutorías activas · cupo fijo de 7 tutorados por tutoría".
-- [ ] **16 Experiencias Educativas:**
+- [x] **16 Experiencias Educativas:**
   - `GET /materias?q=`; tabla con NRC, nombre, tutorias activas y "Editar".
   - Panel "Agregar Experiencia Educativa" (nombre de hasta 100 caracteres, NRC entero positivo)
     con el error de NRC duplicado bajo el campo.
@@ -395,20 +402,23 @@ confirmaciones de desactivar y de cierre de periodo.
 
 ## Fase 6 - Limpieza, documentacion y PR
 
-- [ ] Borrar `src/api/legacy/`, `features/horarios/`, `AgregarHorario`, `constants/espacios.js`, la
+- [x] Borrar `src/api/legacy/`, `features/horarios/`, `AgregarHorario`, `constants/espacios.js`, la
       logica del modelo anterior en `utils/tutoria.js`, los componentes que ya no se usan
       (`AccionesTutoria`, `EditarTutoriaForm`, etc.), los esquemas de login y registro con
       contrasena, `PasswordInput` si queda sin uso, y sus pruebas.
-- [ ] `grep` sin referencias a las rutas viejas (`/tutoria/`, `/asistencia`, `/horario`,
+- [x] `grep` sin referencias a las rutas viejas (`/tutoria/`, `/asistencia`, `/horario`,
       `/materia/`, `/auth/signin`).
-- [ ] README: funcionalidades, rutas, integracion con el backend, variables de entorno y
+- [x] README: funcionalidades, rutas, integracion con el backend, variables de entorno y
       configuracion de Microsoft y Google.
-- [ ] CHANGELOG en `[Sin publicar]`.
-- [ ] `npm run lint`, `npm run build` y `npm run test:run` en verde.
+- [x] CHANGELOG en `[Sin publicar]`.
+- [x] `npm run lint`, `npm run build` y `npm run test:run` en verde.
 - [ ] Checklist manual contra Render, cuando el backend este desplegado.
 - [ ] PR unico a `main`; se fusiona y despliega junto con el backend.
 
 **Commits:** `refactor: eliminar el modelo anterior`, `docs: documentar el nuevo modelo`.
+
+> Pendiente: el checklist manual y el PR dependen de que el backend despliegue la API nueva
+> y de los Client IDs (ver [Dependencias con el backend](#dependencias-con-el-backend)).
 
 ---
 
