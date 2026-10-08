@@ -1,32 +1,32 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
-import { Alert, Button, FormField, Input, PasswordInput, RadioGroup } from '@/components/ui'
-import { ROLES } from '@/constants/roles'
+import { useNavigate } from 'react-router-dom'
+import { Alert, Avatar, Badge, Button, FormField, Input, RadioGroup } from '@/components/ui'
 import { ROUTES } from '@/constants/routes'
 import { useAuth } from '@/features/auth/AuthContext'
 import { AuthLayout } from '@/features/auth/components/AuthLayout'
-import { MIN_CARACTERES_CONTRASENA, registroSchema } from '@/schemas/auth'
-import { clases } from '@/utils/clases'
+import { completarRegistroSchema, ROLES_REGISTRO } from '@/schemas/auth'
+import { nombreCompleto } from '@/utils/formatters'
 import styles from './Registro.module.css'
 
 const OPCIONES_ROL = [
-  { value: ROLES.TUTORADO, label: 'Tutorado', description: 'Quiero inscribirme a tutorías' },
-  { value: ROLES.TUTOR, label: 'Tutor', description: 'Quiero impartir tutorías' },
+  {
+    value: ROLES_REGISTRO.TUTORADO,
+    label: 'Tutorado',
+    description: 'Quiero inscribirme a tutorías',
+  },
+  { value: ROLES_REGISTRO.TUTOR, label: 'Tutor', description: 'Quiero impartir tutorías' },
 ]
 
-// Ids de rol que espera el backend en el registro.
-const ROL_IDS = { [ROLES.TUTOR]: 2, [ROLES.TUTORADO]: 3 }
+const NOMBRE_PROVEEDOR = { MICROSOFT: 'Microsoft', GOOGLE: 'Google' }
 
-const CARACTERISTICAS = [
-  'Acceso inmediato a tutorías activas',
-  'Inscripción y cancelación en un clic',
-  'Tu historial siempre disponible',
-]
-
+// Pantalla 02: primer acceso. Nombre y correo vienen del proveedor; solo faltan matricula y rol.
 const Registro = () => {
-  const { registro } = useAuth()
+  const { registroPendiente, completarRegistro, descartarRegistro } = useAuth()
   const navigate = useNavigate()
+  const perfil = registroPendiente?.perfil ?? {}
+  const proveedor = NOMBRE_PROVEEDOR[perfil.proveedor] ?? 'tu proveedor'
+  const nombre = nombreCompleto(perfil)
 
   const {
     register,
@@ -35,132 +35,93 @@ const Registro = () => {
     setError,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(registroSchema),
-    defaultValues: {
-      rol: ROLES.TUTORADO,
-      nombre: '',
-      matricula: '',
-      apellidoP: '',
-      apellidoM: '',
-      correo: '',
-      pwd: '',
-    },
+    resolver: zodResolver(completarRegistroSchema),
+    defaultValues: { matricula: '', rol: ROLES_REGISTRO.TUTORADO },
   })
 
   const enviar = handleSubmit(async (datos) => {
-    const res = await registro({ ...datos, rol: ROL_IDS[datos.rol] })
-    if (!res.ok) {
-      setError('root', { message: res.message })
+    const res = await completarRegistro(datos)
+    if (res.ok) return
+    if (res.vencido) {
+      navigate(ROUTES.login, { replace: true, state: { aviso: res.message } })
       return
     }
-    navigate(ROUTES.login, { state: { registrado: true } })
+    // La matricula duplicada llega como error del campo.
+    if (res.errores?.matricula) setError('matricula', { message: res.errores.matricula })
+    else setError('root', { message: res.message })
   })
+
+  const entrarConOtra = () => {
+    descartarRegistro()
+    navigate(ROUTES.login, { replace: true })
+  }
 
   return (
     <AuthLayout
-      wide
-      brandTitle="Crea tu cuenta"
-      brandSubtitle="Regístrate como tutor o tutorado y comienza a aprovechar las tutorías de tu universidad."
-      features={CARACTERISTICAS}
-      title="Registro"
-      subtitle="Completa tus datos para crear la cuenta."
+      eyebrow="Primer acceso"
+      brandTitle="Ya casi terminas"
+      brandSubtitle="Tu nombre y tu correo vienen de tu cuenta. Solo falta tu matrícula y el rol con el que usarás el sistema."
+      pasos={[
+        { texto: `Cuenta de ${proveedor} verificada`, estado: 'hecho' },
+        { texto: 'Matrícula y rol', estado: 'actual' },
+        { texto: 'Entrar a tu panel', estado: 'pendiente' },
+      ]}
+      title="Completar registro"
+      subtitle="Revisa tus datos y completa lo que falta."
       footer={
         <>
-          ¿Ya tienes cuenta?<Link to={ROUTES.login}>Iniciar sesión</Link>
+          ¿No es tu cuenta?
+          <button type="button" className={styles.enlace} onClick={entrarConOtra}>
+            Entrar con otra
+          </button>
         </>
       }
     >
       <form className={styles.formulario} onSubmit={enviar} noValidate>
-        {errors.root ? (
-          <Alert tone="error" className={styles.completo}>
-            {errors.root.message}
-          </Alert>
-        ) : null}
+        {errors.root ? <Alert tone="error">{errors.root.message}</Alert> : null}
+
+        <div className={styles.perfil}>
+          <Avatar nombre={nombre || perfil.correo} size="lg" />
+          <div className={styles.datos}>
+            <strong>{nombre || 'Sin nombre'}</strong>
+            <span>{perfil.correo}</span>
+          </div>
+          {perfil.proveedor ? <Badge tone="neutral">{perfil.proveedor}</Badge> : null}
+        </div>
+
+        <FormField
+          label="Matrícula institucional"
+          htmlFor="matricula"
+          hint="Tal como aparece en tu credencial. Debe ser única: no puede estar registrada con otra cuenta."
+          error={errors.matricula?.message}
+        >
+          <Input
+            id="matricula"
+            placeholder="S24011236"
+            autoComplete="off"
+            autoCapitalize="characters"
+            spellCheck={false}
+            {...register('matricula')}
+          />
+        </FormField>
 
         <Controller
           control={control}
           name="rol"
           render={({ field }) => (
             <RadioGroup
-              className={styles.completo}
               name={field.name}
-              legend="Tipo de cuenta que quieres crear"
+              legend="¿Cómo usarás el sistema?"
               options={OPCIONES_ROL}
               value={field.value}
               onChange={field.onChange}
+              error={errors.rol?.message}
             />
           )}
         />
 
-        <FormField label="Nombre(s)" htmlFor="nombre" error={errors.nombre?.message}>
-          <Input id="nombre" placeholder="Luis" autoComplete="given-name" {...register('nombre')} />
-        </FormField>
-
-        <FormField
-          label="Matrícula institucional"
-          htmlFor="matricula"
-          error={errors.matricula?.message}
-        >
-          <Input
-            id="matricula"
-            placeholder="Ej. 20230001"
-            autoComplete="username"
-            inputMode="numeric"
-            {...register('matricula')}
-          />
-        </FormField>
-
-        <FormField label="Apellido paterno" htmlFor="apellidoP" error={errors.apellidoP?.message}>
-          <Input
-            id="apellidoP"
-            placeholder="Pérez"
-            autoComplete="family-name"
-            {...register('apellidoP')}
-          />
-        </FormField>
-
-        <FormField label="Apellido materno" htmlFor="apellidoM" error={errors.apellidoM?.message}>
-          <Input id="apellidoM" placeholder="López" {...register('apellidoM')} />
-        </FormField>
-
-        <FormField
-          label="Correo electrónico de contacto"
-          htmlFor="correo"
-          className={styles.completo}
-          error={errors.correo?.message}
-        >
-          <Input
-            id="correo"
-            type="email"
-            placeholder="luis@example.com"
-            autoComplete="email"
-            {...register('correo')}
-          />
-        </FormField>
-
-        <FormField
-          label="Contraseña para tu cuenta"
-          htmlFor="pwd"
-          hint={`Debe tener al menos ${MIN_CARACTERES_CONTRASENA} caracteres.`}
-          className={styles.completo}
-          error={errors.pwd?.message}
-        >
-          <PasswordInput
-            id="pwd"
-            placeholder={`Mínimo ${MIN_CARACTERES_CONTRASENA} caracteres`}
-            autoComplete="new-password"
-            {...register('pwd')}
-          />
-        </FormField>
-
-        <Button
-          type="submit"
-          size="lg"
-          fullWidth
-          loading={isSubmitting}
-          className={clases(styles.completo, styles.enviar)}
-        >
-          {isSubmitting ? 'Registrando…' : 'Crear cuenta'}
+        <Button type="submit" size="lg" fullWidth loading={isSubmitting} className={styles.enviar}>
+          {isSubmitting ? 'Creando tu cuenta…' : 'Crear cuenta y continuar'}
         </Button>
       </form>
     </AuthLayout>

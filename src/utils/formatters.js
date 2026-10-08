@@ -27,6 +27,10 @@ const listaY = new Intl.ListFormat('es', { type: 'conjunction' })
 
 export const capitalizar = (texto) => (texto ? texto[0].toUpperCase() + texto.slice(1) : '')
 
+// "Rocío Hernández Aguilar" a partir de { nombre, apellidos }.
+export const nombreCompleto = ({ nombre, apellidos } = {}) =>
+  [nombre, apellidos].filter(Boolean).join(' ').trim()
+
 // "3 lugares", "1 lugar"
 export const pluralizar = (cantidad, singular, plural = `${singular}s`) =>
   `${cantidad} ${cantidad === 1 ? singular : plural}`

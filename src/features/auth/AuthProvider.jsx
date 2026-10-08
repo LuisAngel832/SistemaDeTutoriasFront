@@ -1,15 +1,29 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { authApi } from '@/api/legacy/auth'
+import { authApi } from '@/api/auth'
 import { configureApi } from '@/api/client'
-import { HOME_POR_ROL, normalizarRol } from '@/constants/roles'
-import { ROUTES } from '@/constants/routes'
+import { normalizarRol } from '@/constants/roles'
+import { nombreCompleto } from '@/utils/formatters'
 import { AuthContext } from './AuthContext'
 import { expiracionDelToken, tokenExpirado } from './jwt'
-import { esClaveDeSesion, guardarSesion, leerSesion, limpiarSesion, SESION_VACIA } from './storage'
+import {
+  esClaveDeSesion,
+  guardarRegistroPendiente,
+  guardarSesion,
+  leerRegistroPendiente,
+  leerSesion,
+  limpiarSesion,
+  SESION_VACIA,
+} from './storage'
 
 // Por que termino la ultima sesion: el login muestra un aviso si expiro y, si el usuario
 // salio por su cuenta, no se recuerda la pagina en la que estaba.
 const MOTIVOS_CIERRE = { EXPIRADA: 'expirada', LOGOUT: 'logout' }
+
+// El tokenRegistro del primer acceso vale 15 minutos; se descarta un poco antes.
+const VIGENCIA_REGISTRO_MS = 14 * 60_000
+
+const MENSAJE_REGISTRO_VENCIDO =
+  'El tiempo para completar tu registro terminó. Vuelve a entrar con tu cuenta.'
 
 // Si el token guardado ya vencio, se descarta antes de renderizar las rutas.
 const sesionInicial = () => {
@@ -21,13 +35,27 @@ const sesionInicial = () => {
   return { sesion: guardada, motivoCierre: null }
 }
 
-const nombreCompleto = ({ nombre, apellidoP, apellidoM } = {}) =>
-  [nombre, apellidoP, apellidoM].filter(Boolean).join(' ').trim()
+const registroVigente = () => {
+  const registro = leerRegistroPendiente()
+  if (registro && registro.expira > Date.now()) return registro
+  if (registro) guardarRegistroPendiente(null)
+  return null
+}
+
+// Sesion a partir de la respuesta del login o del registro: { token, usuario }.
+const sesionDesdeRespuesta = ({ token, usuario }) => ({
+  token,
+  rol: normalizarRol(usuario?.rol),
+  matricula: usuario?.matricula ?? '',
+  nombre: nombreCompleto(usuario),
+  correo: usuario?.correo ?? '',
+})
 
 export const AuthProvider = ({ children }) => {
   const [inicial] = useState(sesionInicial)
   const [sesion, setSesion] = useState(inicial.sesion)
   const [motivoCierre, setMotivoCierre] = useState(inicial.motivoCierre)
+  const [registroPendiente, setRegistroPendiente] = useState(registroVigente)
   const tokenRef = useRef(sesion.token)
 
   // No navega: al quedar sin sesion, RequireRole manda a /login. Navegar aqui competiria con
@@ -71,52 +99,84 @@ export const AuthProvider = ({ children }) => {
     return () => window.removeEventListener('storage', alCambiar)
   }, [])
 
-  const login = useCallback(async (matricula, pwd) => {
-    try {
-      const data = await authApi.iniciarSesion({ matricula, pwd })
-      const rol = normalizarRol(data?.rol)
-      if (!data?.token || !rol) {
-        return { ok: false, message: 'Respuesta del servidor inválida' }
-      }
-
-      const nueva = {
-        token: data.token,
-        rol,
-        matricula: String(matricula),
-        // El login actual no devuelve el nombre; se completa despues (ver actualizarNombre).
-        nombre: nombreCompleto(data),
-      }
-      guardarSesion(nueva)
-      tokenRef.current = nueva.token
-      setSesion(nueva)
-      setMotivoCierre(null)
-      return { ok: true, destino: HOME_POR_ROL[rol] ?? ROUTES.login }
-    } catch (err) {
-      return { ok: false, message: err.message }
-    }
+  const iniciarSesion = useCallback((data) => {
+    const nueva = sesionDesdeRespuesta(data)
+    if (!nueva.token || !nueva.rol) throw new Error('Respuesta del servidor inválida')
+    guardarSesion(nueva)
+    guardarRegistroPendiente(null)
+    tokenRef.current = nueva.token
+    setRegistroPendiente(null)
+    setSesion(nueva)
+    setMotivoCierre(null)
   }, [])
 
-  const registro = useCallback(async (usuario) => {
-    try {
-      await authApi.registrarse(usuario)
-      return { ok: true }
-    } catch (err) {
-      return { ok: false, message: err.message }
-    }
+  // proveedor: 'microsoft' | 'google'. Con un usuario registrado inicia la sesion (SoloInvitados
+  // redirige); en el primer acceso guarda el registro pendiente y responde `registroPendiente`.
+  const entrarConProveedor = useCallback(
+    async (proveedor, idToken) => {
+      try {
+        const data = await authApi[proveedor](idToken)
+        if (data?.registroPendiente) {
+          const registro = {
+            tokenRegistro: data.tokenRegistro,
+            perfil: data.perfil,
+            expira: Date.now() + VIGENCIA_REGISTRO_MS,
+          }
+          guardarRegistroPendiente(registro)
+          setRegistroPendiente(registro)
+          return { ok: true, registroPendiente: true }
+        }
+        iniciarSesion(data ?? {})
+        return { ok: true, registroPendiente: false }
+      } catch (err) {
+        return { ok: false, message: err.message }
+      }
+    },
+    [iniciarSesion],
+  )
+
+  const descartarRegistro = useCallback(() => {
+    guardarRegistroPendiente(null)
+    setRegistroPendiente(null)
   }, [])
+
+  // rol: 'TUTORADO' | 'TUTOR'. `errores` trae los errores por campo del backend.
+  const completarRegistro = useCallback(
+    async ({ matricula, rol }) => {
+      const registro = registroVigente()
+      if (!registro) {
+        setRegistroPendiente(null)
+        return { ok: false, vencido: true, message: MENSAJE_REGISTRO_VENCIDO }
+      }
+      try {
+        const data = await authApi.completarRegistro({
+          tokenRegistro: registro.tokenRegistro,
+          matricula,
+          rol,
+        })
+        iniciarSesion(data ?? {})
+        return { ok: true }
+      } catch (err) {
+        return { ok: false, message: err.message, errores: err.errores ?? {} }
+      }
+    },
+    [iniciarSesion],
+  )
 
   const logout = useCallback(() => cerrarSesion(MOTIVOS_CIERRE.LOGOUT), [cerrarSesion])
 
-  const actualizarNombre = useCallback(
-    (nombre) => {
-      const limpio = (nombre || '').trim()
-      if (!limpio || !sesion.token || sesion.nombre === limpio) return
-      const nueva = { ...sesion, nombre: limpio }
+  // Actualiza nombre y correo con GET /usuarios/me (el rol lo define el token).
+  const sincronizarUsuario = useCallback((usuario) => {
+    if (!usuario) return
+    setSesion((actual) => {
+      const nombre = nombreCompleto(usuario) || actual.nombre
+      const correo = usuario.correo || actual.correo
+      if (!actual.token || (actual.nombre === nombre && actual.correo === correo)) return actual
+      const nueva = { ...actual, nombre, correo }
       guardarSesion(nueva)
-      setSesion(nueva)
-    },
-    [sesion],
-  )
+      return nueva
+    })
+  }, [])
 
   const valor = useMemo(
     () => ({
@@ -124,12 +184,23 @@ export const AuthProvider = ({ children }) => {
       isAuthenticated: Boolean(sesion.token),
       sesionExpirada: motivoCierre === MOTIVOS_CIERRE.EXPIRADA,
       cierreVoluntario: motivoCierre === MOTIVOS_CIERRE.LOGOUT,
-      login,
-      registro,
+      registroPendiente,
+      entrarConProveedor,
+      completarRegistro,
+      descartarRegistro,
       logout,
-      actualizarNombre,
+      sincronizarUsuario,
     }),
-    [sesion, motivoCierre, login, registro, logout, actualizarNombre],
+    [
+      sesion,
+      motivoCierre,
+      registroPendiente,
+      entrarConProveedor,
+      completarRegistro,
+      descartarRegistro,
+      logout,
+      sincronizarUsuario,
+    ],
   )
 
   return <AuthContext.Provider value={valor}>{children}</AuthContext.Provider>

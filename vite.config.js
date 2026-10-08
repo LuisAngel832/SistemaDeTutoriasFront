@@ -31,6 +31,15 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
     },
+    build: {
+      rolldownOptions: {
+        // redirect.html es el destino del popup de inicio de sesion de Microsoft.
+        input: {
+          main: fileURLToPath(new URL('./index.html', import.meta.url)),
+          redirect: fileURLToPath(new URL('./redirect.html', import.meta.url)),
+        },
+      },
+    },
     server: {
       proxy: {
         // Solo los recursos del backend: la expresion exige el segmento completo para que
@@ -47,10 +56,17 @@ export default defineConfig(({ mode }) => {
       setupFiles: ['./src/test/setup.js'],
       css: false,
       restoreMocks: true,
+      // Las pruebas de pantallas completas (router, formularios) son lentas en paralelo.
+      testTimeout: 20_000,
       coverage: {
         provider: 'v8',
         include: ['src/**/*.{js,jsx}'],
-        exclude: ['src/test/**', 'src/app/main.jsx', 'src/**/*.test.{js,jsx}'],
+        exclude: [
+          'src/test/**',
+          'src/app/main.jsx',
+          'src/app/redirect.js',
+          'src/**/*.test.{js,jsx}',
+        ],
         reporter: ['text-summary', 'html'],
       },
     },

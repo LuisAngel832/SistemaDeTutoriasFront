@@ -94,3 +94,74 @@ export const IconPuerta = () => (
 )
 
 export const IconBuscar = IconExplorar
+
+export const IconCorreo = () => (
+  <svg {...baseProps}>
+    <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+    <path d="m4 7 8 6 8-6" />
+  </svg>
+)
+
+export const IconCampana = () => (
+  <svg {...baseProps}>
+    <path d="M6.5 16.5V11a5.5 5.5 0 0 1 11 0v5.5l1.5 1.5H5z" />
+    <path d="M10 20.5a2 2 0 0 0 4 0" />
+  </svg>
+)
+
+export const IconAlerta = () => (
+  <svg {...baseProps}>
+    <path d="M10.3 4.3 2.9 17.5A2 2 0 0 0 4.6 20.5h14.8a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z" />
+    <path d="M12 9.5v4M12 17h.01" />
+  </svg>
+)
+
+export const IconCheck = () => (
+  <svg {...baseProps}>
+    <path d="m5 12.5 4.5 4.5L19 7.5" />
+  </svg>
+)
+
+export const IconCruz = IconClose
+
+export const IconMas = () => (
+  <svg {...baseProps}>
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+)
+
+export const IconUsuarios = () => (
+  <svg {...baseProps}>
+    <circle cx="9" cy="8.5" r="3.5" />
+    <path d="M2.5 19.5a6.5 6.5 0 0 1 13 0" />
+    <path d="M16 5.2a3.5 3.5 0 0 1 0 6.6M18.5 14a6.5 6.5 0 0 1 3 5.5" />
+  </svg>
+)
+
+export const IconCuadricula = () => (
+  <svg {...baseProps}>
+    <rect x="4" y="4" width="6.5" height="6.5" rx="1.5" />
+    <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" />
+    <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" />
+    <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" />
+  </svg>
+)
+
+export const IconHistorial = () => (
+  <svg {...baseProps}>
+    <path d="M10 6.5h10M10 12h10M10 17.5h10" />
+    <path d="m3.5 6.5 1.2 1.2L7 5.4M3.5 12l1.2 1.2L7 10.9M3.5 17.5l1.2 1.2L7 16.4" />
+  </svg>
+)
+
+export const IconFlechaIzquierda = () => (
+  <svg {...baseProps}>
+    <path d="M19 12H5m0 0 5.5-5.5M5 12l5.5 5.5" />
+  </svg>
+)
+
+export const IconFlechaDerecha = () => (
+  <svg {...baseProps}>
+    <path d="M5 12h14m0 0-5.5-5.5M19 12l-5.5 5.5" />
+  </svg>
+)

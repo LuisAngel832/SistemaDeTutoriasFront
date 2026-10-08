@@ -1,23 +1,12 @@
-import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { EncabezadoPagina, GridTarjetas, Pagina } from '@/components/layout/Pagina'
 import { Alert, Button, EmptyState, Skeleton } from '@/components/ui'
 import { ROUTES } from '@/constants/routes'
-import { useAuth } from '@/features/auth/AuthContext'
 import { TutoriaCard } from '@/features/tutorias/components/TutoriaCard'
 import { useMisTutorias } from '@/features/tutorias/hooks/useMisTutorias'
 
 const TutorHome = () => {
   const { tutorias, isLoading, error } = useMisTutorias()
-  const { matricula, actualizarNombre } = useAuth()
-
-  // El login no devuelve el nombre del tutor, pero si viene en sus tutorias:
-  // lo guardamos para poder mostrarlo en la tarjeta del sidebar.
-  // (Un admin ve tutorias de otros tutores, asi que solo aplica si todas son del mismo.)
-  useEffect(() => {
-    const nombres = new Set(tutorias.map((tutoria) => tutoria.nombreTutor).filter(Boolean))
-    if (matricula && nombres.size === 1) actualizarNombre([...nombres][0])
-  }, [tutorias, matricula, actualizarNombre])
 
   return (
     <Pagina aria-busy={isLoading}>

@@ -3,7 +3,12 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { CargandoPagina } from '@/components/layout/CargandoPagina'
 import { ROLES_TUTOR, ROLES_TUTORADO } from '@/constants/roles'
 import { ROUTES } from '@/constants/routes'
-import { RedireccionInicio, RequireRole, SoloInvitados } from '@/features/auth/guards'
+import {
+  RedireccionInicio,
+  RequiereRegistroPendiente,
+  RequireRole,
+  SoloInvitados,
+} from '@/features/auth/guards'
 import PaginaError from './PaginaError'
 import { RaizApp } from './RaizApp'
 import { RedirigirDetalle } from './RedirigirDetalle'
@@ -28,9 +33,14 @@ export const rutas = [
             lazy: pagina(() => import('@/features/auth/pages/LogIn')),
           },
           {
-            path: ROUTES.registro,
-            handle: { titulo: 'Crear cuenta' },
-            lazy: pagina(() => import('@/features/auth/pages/Registro')),
+            element: <RequiereRegistroPendiente />,
+            children: [
+              {
+                path: ROUTES.registro,
+                handle: { titulo: 'Completar registro' },
+                lazy: pagina(() => import('@/features/auth/pages/Registro')),
+              },
+            ],
           },
         ],
       },

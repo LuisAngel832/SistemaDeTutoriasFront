@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { loginSchema, registroSchema } from './auth'
+import { completarRegistroSchema } from './auth'
 import { horarioSchema } from './horario'
 import { crearTutoriaSchema, editarTutoriaSchema } from './tutoria'
 
@@ -7,37 +7,22 @@ const mensajes = (resultado) => resultado.error.issues.map((issue) => issue.mess
 const porCampo = (resultado) =>
   Object.fromEntries(resultado.error.issues.map((issue) => [issue.path.join('.'), issue.message]))
 
-describe('loginSchema', () => {
-  it('exige matricula numerica y contrasena', () => {
-    expect(loginSchema.safeParse({ matricula: '1001', contrasena: 'secreta' }).success).toBe(true)
-    expect(porCampo(loginSchema.safeParse({ matricula: 'abc', contrasena: '' }))).toEqual({
-      matricula: 'La matrícula debe tener solo números',
-      contrasena: 'Ingresa tu contraseña',
+describe('completarRegistroSchema', () => {
+  it('normaliza la matricula como el backend', () => {
+    const resultado = completarRegistroSchema.safeParse({ matricula: ' zs24011236 ', rol: 'TUTOR' })
+    expect(resultado.data).toEqual({ matricula: 'S24011236', rol: 'TUTOR' })
+  })
+
+  it('exige la S con 8 digitos y un rol valido', () => {
+    expect(
+      porCampo(completarRegistroSchema.safeParse({ matricula: '2401123', rol: 'ADMIN' })),
+    ).toEqual({
+      matricula: 'Escribe la S seguida de 8 dígitos, por ejemplo S24011236',
+      rol: 'Elige cómo usarás el sistema',
     })
-  })
-})
-
-describe('registroSchema', () => {
-  const valido = {
-    rol: 'tutorado',
-    nombre: 'Luis',
-    matricula: '20230001',
-    apellidoP: 'Perez',
-    apellidoM: 'Ruiz',
-    correo: 'luis@uv.mx',
-    pwd: '12345678',
-  }
-
-  it('acepta un registro completo', () => {
-    expect(registroSchema.safeParse(valido).success).toBe(true)
-  })
-
-  it('valida correo y longitud de la contrasena', () => {
-    const resultado = registroSchema.safeParse({ ...valido, correo: 'luis', pwd: '123' })
-    expect(mensajes(resultado)).toEqual([
-      'Escribe un correo electrónico válido',
-      'La contraseña debe tener al menos 8 caracteres',
-    ])
+    expect(
+      mensajes(completarRegistroSchema.safeParse({ matricula: '', rol: 'TUTORADO' })),
+    ).toContain('Ingresa tu matrícula')
   })
 })
 

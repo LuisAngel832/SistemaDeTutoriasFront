@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom/vitest'
-import { cleanup } from '@testing-library/react'
+import { cleanup, configure } from '@testing-library/react'
 import { afterEach } from 'vitest'
+
+// Con todas las pruebas en paralelo, las paginas lazy pueden tardar mas de 1 s en aparecer.
+configure({ asyncUtilTimeout: 4000 })
 
 // Las pruebas de fechas asumen la zona horaria de los usuarios (sin horario de verano).
 process.env.TZ = 'America/Mexico_City'
@@ -8,6 +11,7 @@ process.env.TZ = 'America/Mexico_City'
 afterEach(() => {
   cleanup()
   localStorage.clear()
+  sessionStorage.clear()
 })
 
 // jsdom no implementa <dialog>: se simula lo necesario para probar Modal.
