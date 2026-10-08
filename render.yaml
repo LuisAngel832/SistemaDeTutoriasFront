@@ -10,6 +10,13 @@ services:
       # URL del backend que se "hornea" en el bundle durante el build.
       - key: VITE_API_URL
         value: https://tutoriasbe.onrender.com
+      # Client IDs del inicio de sesion (publicos). Se capturan en el panel de Render.
+      - key: VITE_MICROSOFT_CLIENT_ID
+        sync: false
+      - key: VITE_MICROSOFT_TENANT_ID
+        sync: false
+      - key: VITE_GOOGLE_CLIENT_ID
+        sync: false
     # Regla SPA: cualquier ruta sirve index.html para que React Router maneje
     # el enrutado del lado cliente (evita 404 al recargar /tutor/home, etc.).
     routes:

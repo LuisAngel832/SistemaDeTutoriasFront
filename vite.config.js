@@ -2,18 +2,28 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// Recursos del backend que el servidor de desarrollo reenvia (ver docs del backend, API.md).
+const RECURSOS_API = [
+  'auth',
+  'usuarios',
+  'materias',
+  'catalogos',
+  'tutorias',
+  'horarios',
+  'temas',
+  'inscripciones',
+  'sesiones',
+  'comentarios',
+  'admin',
+]
+const PREFIJOS_API = `^/(${RECURSOS_API.join('|')})(/|\\?|$)`
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   // Carga las variables de .env (loadEnv es necesario porque process.env no
   // incluye los archivos .env dentro de la configuracion de Vite).
   const env = loadEnv(mode, process.cwd(), '')
-  const BACKEND_URL = env.VITE_BACKEND_URL || 'http://localhost:8080'
-
-  const proxyTarget = {
-    target: BACKEND_URL,
-    changeOrigin: true,
-    secure: false,
-  }
+  const BACKEND_URL = env.VITE_BACKEND_URL || 'https://tutoriasbe.onrender.com'
 
   return {
     plugins: [react()],
@@ -23,14 +33,13 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       proxy: {
-        '/auth': proxyTarget,
-        '/materia': proxyTarget,
-        '/horario': proxyTarget,
-        '/tutoria': proxyTarget,
-        '/tutorias': proxyTarget,
-        '/temas': proxyTarget,
-        '/asistencia': proxyTarget,
-        '/comentarios': proxyTarget,
+        // Solo los recursos del backend: la expresion exige el segmento completo para que
+        // rutas del front como /administracion no se reenvien por empezar con /admin.
+        [PREFIJOS_API]: {
+          target: BACKEND_URL,
+          changeOrigin: true,
+          secure: false,
+        },
       },
     },
     test: {
