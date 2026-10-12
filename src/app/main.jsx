@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
-import { z } from 'zod'
+import * as z from 'zod/mini'
 import '@fontsource-variable/montserrat'
 import '@/styles/tokens.css'
 import '@/styles/animations.css'
