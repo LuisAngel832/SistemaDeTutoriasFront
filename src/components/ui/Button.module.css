@@ -1,0 +1,126 @@
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid transparent;
+  border-radius: var(--radio-sm);
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.boton:focus-visible {
+  outline: var(--contorno-foco);
+  outline-offset: 2px;
+}
+
+.boton:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.boton:disabled {
+  cursor: not-allowed;
+}
+
+.completo {
+  width: 100%;
+}
+
+/* Tamanos */
+.sm {
+  padding: 0.45rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.md {
+  padding: 0.65rem 1.1rem;
+  font-size: 0.9rem;
+}
+
+.lg {
+  padding: 0.8rem 1.4rem;
+  font-size: 0.95rem;
+}
+
+/* Variantes */
+.primary {
+  background-color: var(--color-exito);
+  color: var(--color-texto-inverso);
+  box-shadow: var(--sombra-exito);
+}
+
+.primary:hover:not(:disabled) {
+  background-color: var(--color-exito-hover);
+  box-shadow: var(--sombra-exito-hover);
+}
+
+.primary:disabled {
+  background-color: var(--color-exito-deshabilitado);
+  box-shadow: none;
+}
+
+.brand {
+  background-color: var(--color-primario);
+  color: var(--color-texto-inverso);
+}
+
+.brand:hover:not(:disabled) {
+  background-color: var(--color-primario-oscuro);
+}
+
+.brand:disabled {
+  opacity: 0.6;
+}
+
+.secondary {
+  background-color: transparent;
+  border-color: var(--color-borde);
+  color: var(--color-texto-secundario);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--color-fondo-hover);
+  color: var(--color-texto);
+}
+
+.secondary:disabled {
+  opacity: 0.6;
+}
+
+.danger {
+  background-color: var(--color-peligro);
+  color: var(--color-texto-inverso);
+}
+
+.danger:hover:not(:disabled) {
+  background-color: var(--color-peligro-hover);
+}
+
+.danger:disabled {
+  opacity: 0.6;
+}
+
+.danger-outline {
+  background-color: transparent;
+  border-color: var(--color-peligro-borde);
+  color: var(--color-peligro-texto);
+}
+
+.danger-outline:hover:not(:disabled) {
+  background-color: var(--color-peligro-suave);
+  border-color: var(--color-peligro-borde-hover);
+}
+
+.danger-outline:disabled {
+  opacity: 0.6;
+}

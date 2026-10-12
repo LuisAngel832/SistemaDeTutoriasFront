@@ -1,0 +1,10 @@
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.enviar {
+  min-height: 46px;
+  margin-top: 0.4rem;
+}

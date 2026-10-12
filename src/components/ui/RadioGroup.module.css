@@ -1,0 +1,166 @@
+.grupo {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.leyenda {
+  margin-bottom: 0.45rem;
+  padding: 0;
+  color: var(--color-texto-secundario);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.opciones {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.card {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.chip {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+/* El radio real queda invisible pero sigue siendo enfocable y operable con teclado. */
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.opcion {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-md);
+  background-color: var(--color-superficie);
+  color: var(--color-texto-secundario);
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.12s ease;
+}
+
+.opcion:hover {
+  border-color: var(--color-borde-fuerte);
+  background-color: var(--color-fondo-suave);
+  color: var(--color-texto);
+}
+
+.opcion:active {
+  transform: scale(0.97);
+}
+
+.opcion:has(.input:focus-visible) {
+  outline: var(--contorno-foco);
+  outline-offset: 2px;
+}
+
+.deshabilitada {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Variante tarjeta */
+.card .opcion {
+  align-items: flex-start;
+  padding: 0.85rem 1rem;
+}
+
+.card .activa,
+.card .activa:hover {
+  border-color: var(--color-primario);
+  background-color: var(--color-primario-tenue);
+  color: var(--color-texto);
+  box-shadow: 0 0 0 3px rgba(45, 95, 167, 0.12);
+}
+
+.titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.circulo {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-borde-fuerte);
+  border-radius: 50%;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.activa .circulo {
+  border-color: var(--color-primario);
+  background-color: var(--color-primario);
+  box-shadow: inset 0 0 0 3px var(--color-superficie);
+}
+
+.descripcion {
+  color: var(--color-texto-suave);
+  font-size: 0.78rem;
+}
+
+/* Variante chip */
+.chip .opcion {
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.4rem;
+}
+
+.chip .activa,
+.chip .activa:hover {
+  border-color: var(--color-primario);
+  background-color: var(--color-primario);
+  color: var(--color-texto-inverso);
+  box-shadow: 0 2px 8px rgba(45, 95, 167, 0.3);
+}
+
+.corta {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.larga {
+  font-size: 0.65rem;
+  letter-spacing: 0.4px;
+  opacity: 0.85;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .chip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .card {
+    grid-template-columns: 1fr;
+  }
+}
+
+.error {
+  margin: 0.5rem 0 0;
+  color: var(--color-peligro-texto);
+  font-size: 0.78rem;
+  font-weight: 500;
+}

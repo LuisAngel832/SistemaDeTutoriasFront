@@ -13,64 +13,83 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 - [Instalacion](#instalacion)
 - [Configuracion del entorno](#configuracion-del-entorno)
 - [Scripts disponibles](#scripts-disponibles)
+- [Calidad de codigo](#calidad-de-codigo)
 - [Proxy de desarrollo y CORS](#proxy-de-desarrollo-y-cors)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Rutas principales](#rutas-principales)
 - [Integracion con el backend](#integracion-con-el-backend)
-- [Convenciones de commits y ramas](#convenciones-de-commits-y-ramas)
+- [Contribuir](#contribuir)
 - [Solucion de problemas comunes](#solucion-de-problemas-comunes)
 
 ## Funcionalidades
 
-### Autenticacion
-- Registro de usuarios con rol Tutor o Tutorado (matricula como identificador).
-- Inicio de sesion con JWT y redireccion automatica al panel correspondiente.
-- Toggle de mostrar/ocultar contrasena, validacion de longitud minima.
+Sigue los mockups de escritorio del 5 oct 2026 (16 pantallas) y el contrato de la API
+documentado en el backend (`docs/API.md`). El plan de la migracion esta en
+[PLAN_NUEVO_MODELO.md](PLAN_NUEVO_MODELO.md).
 
-### Panel del Tutor
-- Listado de tutorias propias con estado, fecha, horario, lugar y temas.
-- Creacion de tutorias: seleccion de materia (cargada del back), horario, fecha,
-  edificio, aula y **temas tentativos** (chips dinamicos).
-- Gestion de horarios recurrentes con selector de dia, hora inicio/fin y lista
-  inline de los horarios creados (eliminacion en un click).
-- Pagina de detalle por tutoria con:
-  - Edicion de fecha, horario, edificio y aula.
-  - Edicion inline de temas (agregar/quitar).
-  - Boton para marcar como completada o cancelar (con confirmacion).
-  - Lista de inscritos con estado de asistencia (Pendiente / Asistio / No asistio).
-  - Vista de comentarios y sugerencias de los tutorados.
+### Acceso
 
-### Panel del Tutorado
-- Explorar tutorias disponibles con buscador por materia o tutor.
-- Detalle de tutoria con inscripcion y cancelacion (la cancelacion respeta la
-  regla del backend: hasta 15 min antes de inicio).
-- Zona de comentarios para sugerir temas u observaciones previas a la sesion.
-- Listado de inscripciones propias.
+- Inicio de sesion con correo o matricula y contrasena; el backend entrega un JWT.
+- Registro con nombre, apellidos, matricula (`S` + 8 digitos), correo, contrasena y rol
+  (tutorado o tutor).
+- Redireccion al panel de cada rol: tutorado, tutor o administrador.
+
+### Panel del tutorado
+
+- Explorar tutorias con busqueda, filtro por dia, "solo con lugares" y "ocultar las que se
+  cruzan con mis horarios" (los filtros se guardan en la URL).
+- Detalle de tutoria con horarios y temas, comentarios, "Tu semana" y el panel de inscripcion
+  en sus seis estados (con lugar, inscrito, choque, llena, no activa y baja automatica).
+- Mis tutorias: proxima sesion, inscripciones activas con sus inasistencias e inscripciones
+  anteriores.
+- Mi asistencia: historial por sesion, comentarios para el tutor y baja voluntaria.
+
+### Panel del tutor
+
+- Sesiones de hoy (abrir pase de lista, cancelar, listas sin cerrar) y tutorias activas.
+- Crear y editar tutorias con varios horarios semanales y sus temas.
+- Detalle con sesiones, temas editables, inscritos en riesgo, comentarios y desactivar.
+- Pase de lista con marcas al momento y cierre con las bajas automaticas previstas.
+- Historial de asistencia: indicadores y matriz tutorado por sesion.
+
+### Panel de administracion
+
+- Tutorias de la facultad: indicadores, filtros, cupo y asistencia por tutoria, desactivar
+  una tutoria y cierre de periodo.
+- Catalogo de Experiencias Educativas: alta, edicion y eliminacion.
 
 ### Interfaz
+
 - Diseno responsive con breakpoints para escritorio, tablet y movil.
-- Header con menu hamburguesa y drawer lateral en pantallas pequenas.
-- Tema visual unificado (paleta azul/verde) con animaciones sutiles.
-- Soporte para `prefers-reduced-motion`.
+- Sidebar lateral colapsable (se recuerda la preferencia) y drawer con menu hamburguesa en
+  pantallas pequenas.
+- Tema visual unificado con tokens de diseno (paleta azul/verde) y animaciones sutiles.
+- Accesibilidad: contraste AA, radios y dialogos nativos, mensajes anunciados a lectores de
+  pantalla y soporte para `prefers-reduced-motion`.
 
 ## Stack
 
-| Capa | Tecnologia |
-| --- | --- |
-| Build & dev server | [Vite](https://vitejs.dev/) 8 |
-| UI | [React](https://react.dev/) 19 |
-| Routing | [react-router-dom](https://reactrouter.com/) 7 |
-| Lint | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh` |
-| Lenguaje | JavaScript (JSX) |
-| Estilos | CSS plano por componente |
+| Capa               | Tecnologia                                                                    |
+| ------------------ | ----------------------------------------------------------------------------- |
+| Build & dev server | [Vite](https://vitejs.dev/) 8                                                 |
+| UI                 | [React](https://react.dev/) 19                                                |
+| Routing            | [react-router-dom](https://reactrouter.com/) 7                                |
+| Datos del servidor | [TanStack Query](https://tanstack.com/query) 5 (cache, reintentos)            |
+| Formularios        | [react-hook-form](https://react-hook-form.com/) 7 + [Zod](https://zod.dev/) 4 |
+| Avisos             | [sonner](https://sonner.emilkowal.ski/) (toasts de las acciones)              |
+| Pruebas            | Vitest + Testing Library (jsdom) y MSW                                        |
+| Lint               | ESLint 10 con `eslint-plugin-react-hooks` y `eslint-plugin-react-refresh`     |
+| Formato            | Prettier 3 + lint-staged (pre-commit) y commitlint (commit-msg)               |
+| Lenguaje           | JavaScript (JSX)                                                              |
+| Estilos            | CSS por componente con tokens de diseno y tipografia Montserrat               |
 
 ## Requisitos
 
-- **Node.js 20.19+** o **22.12+** (requerido por Vite 8).
+- **Node.js 22.12+** (Vite 8 y commitlint lo requieren). El repo incluye `.nvmrc`:
+  con nvm basta ejecutar `nvm use`.
 - **npm 10+** (incluido con Node).
-- Backend del [Sistema de Tutorias](https://github.com/Shtven/TutoriasBackend)
-  corriendo (por defecto en `http://localhost:8080`) si quieres usar las
-  funcionalidades autenticadas.
+- El [backend del Sistema de Tutorias](https://github.com/Shtven/TutoriasBackend). Por defecto
+  el proxy de desarrollo apunta al desplegado en `https://tutoriasbe.onrender.com`.
 
 Para verificar tu version de Node:
 
@@ -93,60 +112,68 @@ cp .env.example .env
 El archivo `.env` se crea a partir de `.env.example` y define las variables que
 usa Vite en build time.
 
-| Variable | Default | Descripcion |
-| --- | --- | --- |
-| `VITE_API_URL` | (vacio) | URL absoluta del backend. **Dejar vacio para usar el proxy de Vite** (recomendado en desarrollo). Si la defines, la app la usa como prefijo en todas las llamadas a la API. |
-| `VITE_BACKEND_URL` | `http://localhost:8080` | URL a la que Vite proxea las peticiones en desarrollo. Solo aplica si `VITE_API_URL` queda vacio. |
+| Variable           | Default                           | Descripcion                                                                                             |
+| ------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `VITE_API_URL`     | (vacio)                           | URL absoluta del backend. **Dejar vacio para usar el proxy de Vite** (recomendado en desarrollo).       |
+| `VITE_BACKEND_URL` | `https://tutoriasbe.onrender.com` | URL a la que Vite reenvia las peticiones en desarrollo (`http://localhost:8080` para un backend local). |
 
 Variables sensibles (tokens, secretos) no se almacenan en este repo. El `.env`
 local esta listado en `.gitignore`.
 
 ## Scripts disponibles
 
-| Comando | Descripcion |
-| --- | --- |
-| `npm run dev` | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
-| `npm run build` | Compila a produccion en la carpeta `dist/`. |
-| `npm run preview` | Sirve el `dist/` localmente para probar el build. |
-| `npm run lint` | Ejecuta ESLint sobre todo el codigo. |
+| Comando                 | Descripcion                                                                                              |
+| ----------------------- | -------------------------------------------------------------------------------------------------------- |
+| `npm run dev`           | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
+| `npm run build`         | Compila a produccion en la carpeta `dist/`.                                                              |
+| `npm run preview`       | Sirve el `dist/` localmente para probar el build.                                                        |
+| `npm run lint`          | Ejecuta ESLint sobre todo el codigo.                                                                     |
+| `npm run format`        | Formatea todo el proyecto con Prettier.                                                                  |
+| `npm run format:check`  | Verifica el formato sin modificar archivos (lo usa el CI).                                               |
+| `npm run test`          | Ejecuta las pruebas con Vitest en modo watch.                                                            |
+| `npm run test:run`      | Ejecuta las pruebas una sola vez (lo usa el CI).                                                         |
+| `npm run test:coverage` | Ejecuta las pruebas y genera el reporte de cobertura en `coverage/`.                                     |
+
+## Calidad de codigo
+
+- **Hooks de git (Husky):** al hacer commit se ejecutan ESLint y Prettier sobre los archivos
+  en stage, y commitlint valida que el mensaje siga Conventional Commits. Se instalan solos
+  con `npm install`.
+- **CI (GitHub Actions):** cada push y PR hacia `main` o `develop` corre lint, verificacion de
+  formato, pruebas y build ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+- **Dependabot** propone actualizaciones semanales de dependencias.
+- **git blame:** para omitir el commit de formato masivo ejecuta una vez
+  `git config blame.ignoreRevsFile .git-blame-ignore-revs`.
 
 ## Proxy de desarrollo y CORS
 
-El backend de Spring Boot no expone reglas CORS en el `SecurityConfig`, por lo
-que en desarrollo el front evita CORS reenviando las peticiones a traves del
-proxy de Vite ([`vite.config.js`](vite.config.js)). Los siguientes prefijos se
-reenvian a `VITE_BACKEND_URL` (`http://localhost:8080` por defecto):
+En desarrollo el front evita CORS reenviando las peticiones a traves del proxy de Vite
+([`vite.config.js`](vite.config.js)) hacia `VITE_BACKEND_URL`. Se reenvian los recursos de la
+API: `/auth`, `/usuarios`, `/materias`, `/catalogos`, `/tutorias`, `/horarios`, `/temas`,
+`/inscripciones`, `/sesiones`, `/comentarios` y `/admin`.
 
-- `/auth/*`
-- `/materia/*`
-- `/horario/*`
-- `/tutoria/*` y `/tutorias/*`
-- `/temas/*`
-- `/asistencia/*`
-- `/comentarios/*`
-
-Por eso los hooks del front pegan a paths relativos (`/auth/signin`, etc.) en
-vez de URLs absolutas, salvo que definas `VITE_API_URL` apuntando a un
-backend desplegado.
+La regla exige el segmento completo (`/admin/...`), asi que rutas del front como
+`/administracion` no se reenvian. Las rutas nuevas del front no deben empezar con esos
+prefijos.
 
 ## Despliegue en Render (Static Site)
 
 El front se despliega como **Static Site** en Render usando el blueprint
 [`render.yaml`](render.yaml):
 
-| Parametro | Valor |
-| --- | --- |
-| Build command | `npm ci && npm run build` |
-| Publish directory | `dist` |
-| Rewrite (SPA) | `/*` -> `/index.html` |
-| `VITE_API_URL` | `https://tutoriasbe.onrender.com` |
+| Parametro         | Valor                             |
+| ----------------- | --------------------------------- |
+| Build command     | `npm ci && npm run build`         |
+| Publish directory | `dist`                            |
+| Rewrite (SPA)     | `/*` -> `/index.html`             |
+| `VITE_API_URL`    | `https://tutoriasbe.onrender.com` |
 
 Pasos:
 
 1. En Render: **New + > Blueprint** y selecciona este repositorio. Render lee
    `render.yaml` y crea el servicio con la configuracion anterior.
    - Alternativa manual: **New + > Static Site**, build `npm ci && npm run build`,
-     publish `dist`, agrega la env var `VITE_API_URL` y la regla de *rewrite*.
+     publish `dist`, agrega la env var `VITE_API_URL` y la regla de _rewrite_.
 2. La URL de produccion del backend se toma de [`.env.production`](.env.production)
    (versionado, sin secretos) y/o de la env var `VITE_API_URL` de Render. Se
    incrusta en el bundle durante el build.
@@ -159,78 +186,101 @@ Pasos:
 
 ## Estructura del proyecto
 
+Cada carpeta de `features/` reune la interfaz, los hooks y el estado de un dominio; lo que
+usan varias features vive en `components/`, `utils/` o `constants/`. Los imports entre
+carpetas usan el alias `@` (`@/components/ui`), definido en `vite.config.js` y `jsconfig.json`.
+
 ```
 src/
-  Routes/
-    AppRouter.jsx          # Configuracion de rutas y proteccion por rol
-    PrivateRoute.jsx       # HOC que valida token y rol antes de renderizar
-  assets/
-    css/components/        # CSS compartido (header, etc.)
+  app/                     # Arranque, rutas y proveedores globales
+    main.jsx               # Punto de entrada (lo carga index.html)
+    router.jsx             # Rutas, carga diferida, redirecciones y paginas de error
+    RaizApp.jsx            # Raiz: sesion, titulo del documento y barra de navegacion
+    providers.jsx          # TanStack Query, avisos (sonner) y devtools en desarrollo
+    queryClient.js         # Configuracion de cache y reintentos
+    PaginaError.jsx        # Pantalla de error; NoEncontrada.jsx es el 404
+  api/                     # Cliente HTTP, un modulo por recurso de la API y claves de cache
   components/
-    Comentarios.jsx        # Componente reusable de comentarios (RF15)
-    Tutor/
-      Header.jsx           # Header del tutor con drawer mobile
-      TemasInput.jsx       # Input de chips para temas (RF14)
-    Tutorado/
-      HeaderTR.jsx         # Header del tutorado con drawer mobile
-  hooks/
-    useAutentificacion.jsx # Login, signup y logout
-    useComentarios.jsx     # CRUD de comentarios sobre una tutoria
-    useCrearTutoria.jsx    # Estado y submit de crear tutoria
-    useHorarios.jsx        # CRUD de horarios del tutor
-    useMisTutorias.jsx     # Tutorias del tutor autenticado
-    useTutoriaDetalleTutor.jsx     # Detalle, edicion, cancel, completar, temas
-    useTutoriaDetalleTutorado.jsx  # Detalle + inscripcion + cancelacion
-    useTutoriasExplorar.jsx        # Listado de tutorias disponibles
-    useTutoriasTutorado.jsx        # Inscripciones del tutorado
-  pages/
-    LogIn/                 # Pantalla de inicio de sesion
-    Registro/              # Pantalla de registro
-    Tutor/
-      Home.jsx             # Mis tutorias (tutor)
-      AgregarHorario/
-      CrearTutoria/
-      TutoriaDetalle/      # Detalle de tutoria del tutor
-    Tutorado/
-      Home.jsx             # Explorar tutorias
-      MisTutorias.jsx
-      TutoriaDetalle.jsx
+    layout/                # AppLayout (sidebar + contenido), Sidebar y Pagina
+    ui/                    # Componentes base: Button, Card, FormField, Modal, Indicador... (CSS Modules)
+  constants/               # Rutas, roles, reglas y estados del negocio, dias habiles
+  features/
+    auth/                  # AuthProvider, guards, storage, JWT y pages/ (login y registro)
+    comentarios/           # Comentarios de una tutoria y su hook
+    tutorias/              # Piezas compartidas: cupo, horarios, temas, insignias, detalle
+    tutorado/              # Pantallas 03 a 08 con sus componentes y hooks
+    tutor/                 # Pantallas 09 a 14 con sus componentes y hooks
+    admin/                 # Pantallas 15 y 16 con sus hooks
+  schemas/                 # Validacion de formularios con Zod (registro, tutoria, EE)
+  styles/
+    tokens.css             # Colores, sombras y radios (unica fuente de valores de diseno)
+    animations.css         # Animaciones compartidas y reduccion de movimiento
+    global.css             # Estilos base del documento
+  test/                    # Setup de Vitest, servidor MSW, fixtures y helpers de render
+  utils/
+    avisos.js              # Muestra { ok, message } como toast
+    choques.js             # Textos de los choques de horario
+    cupo.js                # Insignia y tono de la barra de cupo
+    ejecutarMutacion.js    # Ejecuta una mutacion y devuelve { ok, message }
+    fechas.js              # Fechas en la zona de Mexico, "hoy/manana" e inicio de periodo
+    formatters.js          # Formato de fechas, horarios, lugares, porcentajes e iniciales
 ```
 
 ## Rutas principales
 
-| Ruta | Rol | Pantalla |
-| --- | --- | --- |
-| `/login` | publico | Inicio de sesion |
-| `/registro` | publico | Registro |
-| `/tutor/home` | TUTOR | Mis tutorias |
-| `/tutor/crear` | TUTOR | Crear tutoria |
-| `/tutor/agregar-horario` | TUTOR | Gestionar horarios |
-| `/tutor/tutoria/:id` | TUTOR | Detalle de tutoria (editar, cancelar, ver inscritos) |
-| `/tutorado/home` | TUTORADO | Explorar tutorias |
-| `/tutorado/tutorias` | TUTORADO | Mis inscripciones |
-| `/tutorado/infoTutoria/:id` | TUTORADO | Detalle de tutoria (inscribirse, cancelar, comentar) |
+Las rutas se definen en [`src/app/router.jsx`](src/app/router.jsx) y sus URLs en
+[`src/constants/routes.js`](src/constants/routes.js). Cada pagina se descarga solo al visitarla.
 
-`PrivateRoute` redirige a `/login` si no hay token o el rol no corresponde.
+| Ruta                                 | Rol      | Pantalla                                         |
+| ------------------------------------ | -------- | ------------------------------------------------ |
+| `/login`                             | publico  | 01 Iniciar sesion                                |
+| `/registro`                          | publico  | 02 Crear cuenta                                  |
+| `/tutorado/home`                     | TUTORADO | 03 Explorar tutorias                             |
+| `/tutorado/tutorias/:id`             | TUTORADO | 04 a 06 Detalle, inscripcion y estados del panel |
+| `/tutorado/inscripciones`            | TUTORADO | 07 Mis tutorias                                  |
+| `/tutorado/inscripciones/:idTutoria` | TUTORADO | 08 Mi asistencia                                 |
+| `/tutor/home`                        | TUTOR    | 09 Mis tutorias y sesiones de hoy                |
+| `/tutor/tutorias/nueva`              | TUTOR    | 10 Crear tutoria                                 |
+| `/tutor/tutorias/:id`                | TUTOR    | 11 Detalle de tutoria                            |
+| `/tutor/tutorias/:id/editar`         | TUTOR    | Editar tutoria (sin inscritos)                   |
+| `/tutor/sesiones/:idSesion/lista`    | TUTOR    | 12 y 13 Pase de lista y cierre                   |
+| `/tutor/historial?tutoria=:id`       | TUTOR    | 14 Historial de asistencia                       |
+| `/administracion/tutorias`           | ADMIN    | 15 Tutorias de la facultad                       |
+| `/administracion/experiencias`       | ADMIN    | 16 Experiencias Educativas                       |
+
+- `RequireRole` redirige a `/login` si no hay sesion (y vuelve a la ruta pedida despues del
+  login) o a la pantalla inicial del usuario si su rol no corresponde.
+- Con sesion activa, `/login` y `/registro` redirigen al inicio del rol.
+- Las URLs anteriores (`/tutor/crear`, `/tutor/horarios`, `/tutor/agregar-horario`,
+  `/tutor/tutoria/:id`, `/tutorado/tutorias`, `/tutorado/infoTutoria/:id`) redirigen a las
+  nuevas.
+- Las rutas desconocidas muestran una pagina 404 y los errores inesperados una pagina de error
+  con opcion de reintentar.
 
 ## Integracion con el backend
 
-El backend espera autenticacion JWT en el header `Authorization: Bearer <token>`.
-El front lee el token de `localStorage` (clave `token`) despues del login.
+El contrato es el de `TutoriasBackend/docs/API.md`, salvo el acceso. Todas las llamadas usan
+el JWT del backend en el header `Authorization: Bearer <token>` (salvo `/auth/**`).
 
-Endpoints consumidos:
+Acceso con contrasena (en lugar de Microsoft y Google):
 
-- `POST /auth/signup`, `POST /auth/signin`
-- `GET/POST/PUT/DELETE /horario`, `GET /horario/{id}`
-- `GET /materia` (cargado de la lista de materias para crear tutoria)
-- `POST /tutoria`, `GET /tutoria/mis-tutorias`, `GET /tutoria/disponibles`,
-  `GET/PUT/DELETE /tutoria/{id}`, `PUT /tutoria/completar/{id}`
-- `POST /temas`, `GET /temas/tutoria/{id}`, `DELETE /temas/{id}` (RF14)
-- `POST /comentarios`, `GET /comentarios/tutoria/{id}`,
-  `GET /comentarios/mis-comentarios`, `DELETE /comentarios/{id}` (RF15)
-- `POST /asistencia`, `GET /asistencia/mis-inscripciones`,
-  `GET /asistencia/tutoria/{idTutoria}`, `DELETE /asistencia/{idAsistencia}`,
-  `PATCH /asistencia/{idAsistencia}?asistio=true`
+- `POST /auth/signin` con `{ matricula, pwd }` o `{ correo, pwd }` (el front envia `correo`
+  si lo escrito lleva `@`). Respuesta: `{ token, usuario }`; tambien acepta `{ token, rol }`
+  y toma la matricula del claim `sub` del token.
+- `POST /auth/signup` con `{ nombre, apellidos, matricula, correo, pwd, rol }` (`rol`:
+  `TUTORADO` o `TUTOR`). Si responde `{ token, usuario }` entra directo; si no, manda al login.
+  La matricula o el correo duplicados se muestran bajo su campo si llegan como
+  `data: { matricula }` o `data: { correo }`.
+
+- **Cliente HTTP** ([`src/api/client.js`](src/api/client.js)): agrega el token, aplica un
+  timeout de 15 s, convierte los errores en `ApiError` con el mensaje del backend (y los
+  errores por campo en `errores`) y cancela peticiones al desmontar las pantallas.
+- **Modulos por recurso** (`src/api/*.js`): `auth`, `usuarios`, `materias`, `catalogos`,
+  `tutorias`, `temas`, `inscripciones`, `sesiones`, `comentarios` y `admin`. Los DTOs se usan
+  tal como llegan; el formato para mostrar vive en `src/utils/formatters.js`.
+- **Sesion** ([`src/features/auth`](src/features/auth)): `AuthProvider` guarda token, rol,
+  matricula, nombre y correo (en `localStorage`). La sesion se cierra y se avisa al usuario cuando el token vence (segun
+  su `exp`) o el backend responde `401`.
 
 Wrapper de respuesta esperado del backend:
 
@@ -238,26 +288,27 @@ Wrapper de respuesta esperado del backend:
 { "success": true, "message": "...", "data": {} }
 ```
 
-## Convenciones de commits y ramas
+Ajustes al contrato que el front da por hechos: errores de NRC duplicado con formato de
+validacion (`data: { nrc }`),
+`Sesion.inscritos` en sesiones canceladas, `panelTutorado.choques` con la forma de los
+`choques` de explorar y `fechaInscripcion` en el historial de asistencia.
 
-- Commits en formato [Conventional Commits](https://www.conventionalcommits.org/)
-  (`feat:`, `fix:`, `chore:`, `build:`, `docs:`, etc.).
-- Ramas con prefijo segun proposito: `feat/`, `fix/`, `chore/`, `docs/`.
-- Las ramas de feature se abren contra `develop`. Despues de QA, `develop` se
-  promueve a `main`.
+## Contribuir
+
+Las convenciones de ramas, commits, codigo y el checklist de cada PR estan en
+[CONTRIBUTING.md](CONTRIBUTING.md). El plan del nuevo modelo esta en
+[PLAN_NUEVO_MODELO.md](PLAN_NUEVO_MODELO.md) y el de las mejoras anteriores en
+[PLAN_IMPLEMENTACION.md](PLAN_IMPLEMENTACION.md).
 
 ## Solucion de problemas comunes
 
 **El navegador devuelve 502 al pegarle al backend.**
-El proxy de Vite no puede alcanzar el backend. Verifica que tu backend Spring
-Boot este corriendo en `http://localhost:8080` o ajusta `VITE_BACKEND_URL` en
-tu `.env`.
+El proxy de Vite no puede alcanzar el backend. Verifica `VITE_BACKEND_URL` en tu `.env`. En
+Render, la primera peticion tras un rato sin uso puede tardar mientras el servicio arranca.
 
 **El navegador devuelve 403 en endpoints autenticados.**
 El JWT no tiene el rol esperado o expiro. Vuelve a iniciar sesion. Si solo
-afecta a algunos endpoints (ej. `/tutoria/disponibles` para TUTORADO), puede
-ser una regla de seguridad del backend; revisa los issues abiertos en el
-repo del backend.
+afecta a algunos endpoints, revisa la matriz de permisos de `docs/API.md` en el backend.
 
 **El puerto 5173 esta ocupado.**
 Vite escogera automaticamente el siguiente disponible. Revisa la salida de
@@ -266,8 +317,3 @@ Vite escogera automaticamente el siguiente disponible. Revisa la salida de
 **Cambios en `.env` no se reflejan.**
 Vite solo lee `.env` al arrancar. Detiene el servidor (`Ctrl+C`) y vuelve a
 ejecutar `npm run dev`.
-
-**`Encountered two children with the same key`.**
-Indica que el backend devuelve items sin id estable. Verifica que el endpoint
-correspondiente este devolviendo el shape enriquecido (ver issues del
-backend).

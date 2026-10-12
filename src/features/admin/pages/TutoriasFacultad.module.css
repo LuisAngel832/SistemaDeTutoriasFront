@@ -1,0 +1,146 @@
+.filtros {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px 180px;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.buscador {
+  position: relative;
+}
+
+.icono {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  display: inline-flex;
+  color: var(--color-texto-tenue);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.campo {
+  padding-left: 2.5rem;
+}
+
+.tablaContenedor {
+  overflow-x: auto;
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.7rem 0.85rem;
+  color: var(--color-texto);
+  font-weight: 400;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tabla thead th {
+  border-bottom: 1px solid var(--color-borde-suave);
+  background-color: var(--color-fondo-suave);
+  color: var(--color-texto-tenue);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tabla tbody tr + tr > * {
+  border-top: 1px solid var(--color-divisor);
+}
+
+.materia {
+  display: block;
+  font-weight: 600;
+}
+
+.nrc,
+.linea {
+  display: block;
+}
+
+.nrc {
+  color: var(--color-texto-tenue);
+  font-size: 0.76rem;
+}
+
+.linea {
+  color: var(--color-texto-secundario);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.derecha {
+  text-align: right !important;
+}
+
+.asistencia {
+  font-weight: 700 !important;
+  white-space: nowrap;
+}
+
+.baja {
+  color: var(--color-alerta-texto) !important;
+}
+
+.baja svg {
+  width: 14px;
+  height: 14px;
+  margin-right: 0.3rem;
+  vertical-align: -2px;
+}
+
+.pie {
+  margin: 0.85rem 0 0;
+  color: var(--color-texto-suave);
+  font-size: 0.82rem;
+}
+
+.casilla {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-texto-secundario);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.casilla input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--color-peligro);
+}
+
+.oculto {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .filtros {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .buscador {
+    grid-column: 1 / -1;
+  }
+}

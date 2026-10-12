@@ -1,0 +1,37 @@
+/* Barra superior mientras se descarga la siguiente pagina */
+.barra-navegacion {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 1000;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primario), var(--color-exito));
+  transform-origin: left;
+  animation: avance-barra 1.2s ease-out forwards;
+}
+
+/* Carga inicial de la aplicacion */
+.cargando-pagina {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  color: var(--color-texto-suave);
+  font-size: 0.9rem;
+}
+
+.cargando-pagina-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-borde);
+  border-top-color: var(--color-primario);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barra-navegacion,
+  .cargando-pagina-spinner {
+    animation: none;
+  }
+}

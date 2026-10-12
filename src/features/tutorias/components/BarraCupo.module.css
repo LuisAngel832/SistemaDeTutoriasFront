@@ -1,0 +1,79 @@
+.cupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.etiqueta {
+  color: var(--color-texto-tenue);
+  font-size: 0.8rem;
+}
+
+.cifra {
+  color: var(--color-texto);
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.pista {
+  position: relative;
+  overflow: hidden;
+  height: 6px;
+  border-radius: var(--radio-pill);
+  background-color: var(--color-borde-suave);
+}
+
+.relleno {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.normal {
+  background-color: var(--color-primario);
+}
+
+.limite {
+  background-color: var(--color-limite);
+}
+
+.lleno {
+  background-color: var(--color-peligro-texto);
+}
+
+.texto-limite {
+  color: var(--color-limite);
+}
+
+.texto-lleno {
+  color: var(--color-peligro-texto);
+}
+
+/* Variante para tablas */
+.mini {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 90px;
+}
+
+.mini .pista {
+  flex: 1;
+  max-width: 56px;
+}
+
+.cifraMini {
+  color: var(--color-texto);
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,119 @@
+.buscador {
+  position: relative;
+  flex: 0 1 360px;
+  min-width: 260px;
+}
+
+.icono {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  display: inline-flex;
+  color: var(--color-texto-tenue);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.campo {
+  height: 42px;
+  padding-left: 2.5rem;
+  font-size: 0.92rem;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.dias {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.etiqueta {
+  margin-right: 0.35rem;
+  color: var(--color-texto-secundario);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.dia {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-sm);
+  background-color: var(--color-superficie);
+  color: var(--color-texto-secundario);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.dia:hover {
+  border-color: var(--color-borde-fuerte);
+  color: var(--color-texto);
+}
+
+.dia:focus-visible {
+  outline: var(--contorno-foco);
+  outline-offset: 2px;
+}
+
+.diaActivo,
+.diaActivo:hover {
+  border-color: var(--color-primario);
+  background-color: var(--color-primario);
+  color: var(--color-texto-inverso);
+}
+
+.casillas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+.casilla {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--color-texto-secundario);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.casilla input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--color-primario);
+  cursor: pointer;
+}
+
+.conteo {
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+}
+
+.rejilla {
+  align-items: stretch;
+}
+
+@media (max-width: 640px) {
+  .buscador {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}

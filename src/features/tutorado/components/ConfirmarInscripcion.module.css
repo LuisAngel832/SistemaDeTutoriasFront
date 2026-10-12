@@ -1,0 +1,41 @@
+.texto {
+  margin: 0;
+  color: var(--color-texto-secundario);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.texto strong {
+  color: var(--color-texto);
+}
+
+.resumen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-md);
+  background-color: var(--color-fondo-suave);
+}
+
+.correo {
+  display: flex;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--color-primario-borde);
+  border-radius: var(--radio-md);
+  background-color: var(--color-primario-tenue);
+  color: var(--color-primario-texto);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.correo svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+}

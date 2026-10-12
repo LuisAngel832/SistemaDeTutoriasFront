@@ -1,0 +1,64 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0.2rem 0.6rem;
+  /* Radio suave (no pildora): un texto largo puede ocupar varias lineas. */
+  border-radius: var(--radio-xl);
+  font-size: 0.8rem;
+  font-weight: 500;
+  animation: aparecer-escala 0.2s ease-out;
+}
+
+.removible {
+  padding-right: 0.3rem;
+}
+
+.texto {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.neutral {
+  background-color: var(--color-fondo-hover);
+  color: var(--color-texto);
+}
+
+.primary {
+  background-color: var(--color-primario-tenue);
+  color: var(--color-primario-texto);
+}
+
+.quitar {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.quitar:hover:not(:disabled) {
+  background-color: rgba(31, 90, 171, 0.15);
+}
+
+.quitar:focus-visible {
+  outline: var(--contorno-foco);
+  outline-offset: 1px;
+}
+
+.quitar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
