@@ -166,6 +166,7 @@ El front se despliega como **Static Site** en Render usando el blueprint
 | Build command     | `npm ci && npm run build`         |
 | Publish directory | `dist`                            |
 | Rewrite (SPA)     | `/*` -> `/index.html`             |
+| Auto-deploy       | `checksPass` (tras pasar la CI)   |
 | `VITE_API_URL`    | `https://tutoriasbe.onrender.com` |
 
 Pasos:
@@ -177,6 +178,10 @@ Pasos:
 2. La URL de produccion del backend se toma de [`.env.production`](.env.production)
    (versionado, sin secretos) y/o de la env var `VITE_API_URL` de Render. Se
    incrusta en el bundle durante el build.
+3. Render despliega un commit de `main` solo cuando pasan sus checks de GitHub
+   (`autoDeployTrigger: checksPass`). En un servicio creado antes de este ajuste, comprobar en
+   **Settings > Build & Deploy > Auto-Deploy** que diga **After CI Checks Pass** (o sincronizar
+   el blueprint).
 
 > **Importante — CORS:** en produccion **no existe el proxy de Vite**, así que el
 > navegador llama al backend en `https://tutoriasbe.onrender.com` desde otro

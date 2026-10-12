@@ -6,6 +6,9 @@ services:
     runtime: static
     buildCommand: npm ci && npm run build
     staticPublishPath: ./dist
+    # Despliega un commit de main solo cuando pasan sus checks de GitHub (job `verificar` de
+    # .github/workflows/ci.yml). Si un check falla o no hay checks, Render no despliega.
+    autoDeployTrigger: checksPass
     envVars:
       # URL del backend que se "hornea" en el bundle durante el build.
       - key: VITE_API_URL
