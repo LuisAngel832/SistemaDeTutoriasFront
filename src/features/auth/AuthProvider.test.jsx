@@ -1,5 +1,6 @@
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { http, HttpResponse } from 'msw'
 import { useState } from 'react'
 import { createMemoryRouter, Outlet, RouterProvider } from 'react-router-dom'
@@ -84,9 +85,11 @@ const renderApp = (ruta) => {
     [
       {
         element: (
-          <AuthProvider>
-            <Outlet />
-          </AuthProvider>
+          <QueryClientProvider client={new QueryClient()}>
+            <AuthProvider>
+              <Outlet />
+            </AuthProvider>
+          </QueryClientProvider>
         ),
         children: [
           {

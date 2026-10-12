@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { authApi } from '@/api/auth'
 import { configureApi } from '@/api/client'
@@ -62,6 +63,20 @@ export const AuthProvider = ({ children }) => {
   const [sesion, setSesion] = useState(inicial.sesion)
   const [motivoCierre, setMotivoCierre] = useState(inicial.motivoCierre)
   const tokenRef = useRef(sesion.token)
+  const queryClient = useQueryClient()
+  // Ultimo usuario con sesion en esta pestana; se conserva despues del logout.
+  const usuarioRef = useRef(sesion.matricula)
+
+  // Al entrar otro usuario se descartan los datos del anterior antes de cambiar la sesion, para
+  // que ninguna pantalla los muestre (p. ej. /usuarios/me se guarda 5 minutos).
+  const prepararDatosDe = useCallback(
+    (matricula) => {
+      if (!matricula) return
+      if (usuarioRef.current && usuarioRef.current !== matricula) queryClient.clear()
+      usuarioRef.current = matricula
+    },
+    [queryClient],
+  )
 
   // No navega: al quedar sin sesion, RequireRole manda a /login. Navegar aqui competiria con
   // esa redireccion mientras se descarga la pagina de login.
@@ -105,27 +120,32 @@ export const AuthProvider = ({ children }) => {
         cerrarSesion(MOTIVOS_CIERRE.EXPIRADA)
         return
       }
-      setSesion((actual) => {
-        if (token === actual.token) return actual
-        const nueva = sesionDesdeToken(token)
+      if (token === tokenRef.current) return
+      const nueva = sesionDesdeToken(token)
+      prepararDatosDe(nueva.matricula)
+      setSesion((actual) =>
         // Mismo usuario con un token renovado: conserva el nombre y el correo ya cargados.
-        return nueva.matricula && nueva.matricula === actual.matricula
+        nueva.matricula && nueva.matricula === actual.matricula
           ? { ...nueva, nombre: actual.nombre, correo: actual.correo }
-          : nueva
-      })
+          : nueva,
+      )
     }
     window.addEventListener('storage', alCambiar)
     return () => window.removeEventListener('storage', alCambiar)
-  }, [cerrarSesion])
+  }, [cerrarSesion, prepararDatosDe])
 
-  const iniciarSesion = useCallback((data, credenciales) => {
-    const nueva = sesionDesdeRespuesta(data, credenciales)
-    if (!nueva.token || !nueva.rol) throw new Error('Respuesta del servidor inválida')
-    guardarToken(nueva.token)
-    tokenRef.current = nueva.token
-    setSesion(nueva)
-    setMotivoCierre(null)
-  }, [])
+  const iniciarSesion = useCallback(
+    (data, credenciales) => {
+      const nueva = sesionDesdeRespuesta(data, credenciales)
+      if (!nueva.token || !nueva.rol) throw new Error('Respuesta del servidor inválida')
+      prepararDatosDe(nueva.matricula)
+      guardarToken(nueva.token)
+      tokenRef.current = nueva.token
+      setSesion(nueva)
+      setMotivoCierre(null)
+    },
+    [prepararDatosDe],
+  )
 
   // credenciales: { correo, pwd } o { matricula, pwd }. Con exito no navega: SoloInvitados
   // redirige a la pagina pedida o al inicio del rol.
