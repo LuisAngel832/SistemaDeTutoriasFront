@@ -38,6 +38,10 @@ Las casillas `[ ]` sirven para llevar el avance directamente en este archivo.
 
 ## Decisiones
 
+> **Cambio posterior (acceso):** el inicio de sesion con Microsoft y Google se reemplazo por
+> correo o matricula y contrasena (`POST /auth/signin` y `POST /auth/signup`). Lo que este
+> plan dice de proveedores, Client IDs, `redirect.html` y "Completar registro" ya no aplica.
+
 | Tema                      | Decision                                                                                                                                                                                                                                                                                 |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Backend                   | Se programa contra el contrato documentado como si ya estuviera desplegado en `https://tutoriasbe.onrender.com`. En desarrollo se llega por el proxy de Vite; en produccion, por `VITE_API_URL`.                                                                                         |

@@ -14,8 +14,8 @@ proyecto sigue [Versionado Semantico](https://semver.org/lang/es/).
 
 - Nuevo modelo de tutorias (mockups de escritorio del 5 oct 2026): tutorias recurrentes con
   horarios semanales y temas por horario, inscripciones, sesiones, pase de lista e historial.
-- Inicio de sesion con Microsoft y Google (MSAL y Google Identity Services) y registro en el
-  primer acceso con matricula y rol.
+- Inicio de sesion con correo o matricula y contrasena, y registro con nombre, apellidos,
+  matricula, correo, contrasena y rol.
 - Tutorado: explorar con filtros, panel de inscripcion con sus seis estados, "Tu semana",
   Mis tutorias con la proxima sesion y Mi asistencia con historial, comentarios y baja.
 - Tutor: sesiones de hoy (abrir pase de lista, cancelar, listas sin cerrar), crear y editar
@@ -74,8 +74,8 @@ proyecto sigue [Versionado Semantico](https://semver.org/lang/es/).
 
 ### Eliminado
 
-- Login y registro con contrasena, horarios de disponibilidad del tutor ("Mis horarios") y
-  la tutoria de una sola fecha, con su capa de API, componentes y utilidades.
+- Horarios de disponibilidad del tutor ("Mis horarios") y la tutoria de una sola fecha, con
+  su capa de API, componentes y utilidades.
 - Archivos sin uso del template de Vite.
 
 ## [0.1.0]

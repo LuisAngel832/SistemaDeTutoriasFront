@@ -29,9 +29,8 @@ documentado en el backend (`docs/API.md`). El plan de la migracion esta en
 
 ### Acceso
 
-- Inicio de sesion con Microsoft (cuenta institucional) o Google; el backend verifica el ID
-  token del proveedor y entrega su propio JWT. No hay contrasenas.
-- Primer acceso: se completa el registro con la matricula (`S` + 8 digitos) y el rol
+- Inicio de sesion con correo o matricula y contrasena; el backend entrega un JWT.
+- Registro con nombre, apellidos, matricula (`S` + 8 digitos), correo, contrasena y rol
   (tutorado o tutor).
 - Redireccion al panel de cada rol: tutorado, tutor o administrador.
 
@@ -91,8 +90,6 @@ documentado en el backend (`docs/API.md`). El plan de la migracion esta en
 - **npm 10+** (incluido con Node).
 - El [backend del Sistema de Tutorias](https://github.com/Shtven/TutoriasBackend). Por defecto
   el proxy de desarrollo apunta al desplegado en `https://tutoriasbe.onrender.com`.
-- Client IDs de Microsoft y Google para iniciar sesion (ver
-  [Inicio de sesion con Microsoft y Google](#inicio-de-sesion-con-microsoft-y-google)).
 
 Para verificar tu version de Node:
 
@@ -115,16 +112,10 @@ cp .env.example .env
 El archivo `.env` se crea a partir de `.env.example` y define las variables que
 usa Vite en build time.
 
-| Variable                   | Default                           | Descripcion                                                                                                      |
-| -------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `VITE_API_URL`             | (vacio)                           | URL absoluta del backend. **Dejar vacio para usar el proxy de Vite** (recomendado en desarrollo).                |
-| `VITE_BACKEND_URL`         | `https://tutoriasbe.onrender.com` | URL a la que Vite reenvia las peticiones en desarrollo (`http://localhost:8080` para un backend local).          |
-| `VITE_MICROSOFT_CLIENT_ID` | (vacio)                           | Client ID de la app registrada en Microsoft Entra ID.                                                            |
-| `VITE_MICROSOFT_TENANT_ID` | (vacio)                           | Tenant de la UV. Vacio usa `organizations` (cualquier cuenta de trabajo o escuela; el backend valida el tenant). |
-| `VITE_GOOGLE_CLIENT_ID`    | (vacio)                           | Client ID web de Google Identity Services.                                                                       |
-
-Los Client IDs son publicos (no son secretos). Sin ellos, los botones de inicio de sesion
-muestran un aviso de que el proveedor no esta configurado.
+| Variable           | Default                           | Descripcion                                                                                             |
+| ------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `VITE_API_URL`     | (vacio)                           | URL absoluta del backend. **Dejar vacio para usar el proxy de Vite** (recomendado en desarrollo).       |
+| `VITE_BACKEND_URL` | `https://tutoriasbe.onrender.com` | URL a la que Vite reenvia las peticiones en desarrollo (`http://localhost:8080` para un backend local). |
 
 Variables sensibles (tokens, secretos) no se almacenan en este repo. El `.env`
 local esta listado en `.gitignore`.
@@ -165,39 +156,24 @@ La regla exige el segmento completo (`/admin/...`), asi que rutas del front como
 `/administracion` no se reenvian. Las rutas nuevas del front no deben empezar con esos
 prefijos.
 
-## Inicio de sesion con Microsoft y Google
-
-- **Microsoft** usa MSAL (`@azure/msal-browser`) con una ventana emergente. La ventana vuelve a
-  [`redirect.html`](redirect.html), una pagina minima que entrega la respuesta a la app. En
-  la app registrada en Microsoft Entra ID (plataforma **SPA**) deben estar como redirect URI
-  `http://localhost:5173/redirect.html` y `https://<dominio del front>/redirect.html`.
-- **Google** usa el boton oficial de Google Identity Services (`@react-oauth/google`), que es el
-  unico que entrega el ID token. En el cliente OAuth deben estar como _Authorized JavaScript
-  origins_ `http://localhost`, `http://localhost:5173` y el dominio del front.
-- El ID token se envia a `POST /auth/microsoft` o `POST /auth/google`. Si es el primer acceso,
-  el backend responde un `tokenRegistro` (15 minutos) y la app pide matricula y rol.
-
 ## Despliegue en Render (Static Site)
 
 El front se despliega como **Static Site** en Render usando el blueprint
 [`render.yaml`](render.yaml):
 
-| Parametro         | Valor                                                              |
-| ----------------- | ------------------------------------------------------------------ |
-| Build command     | `npm ci && npm run build`                                          |
-| Publish directory | `dist`                                                             |
-| Rewrite (SPA)     | `/*` -> `/index.html`                                              |
-| `VITE_API_URL`    | `https://tutoriasbe.onrender.com`                                  |
-| Client IDs        | `VITE_MICROSOFT_*` y `VITE_GOOGLE_CLIENT_ID` en el panel de Render |
+| Parametro         | Valor                             |
+| ----------------- | --------------------------------- |
+| Build command     | `npm ci && npm run build`         |
+| Publish directory | `dist`                            |
+| Rewrite (SPA)     | `/*` -> `/index.html`             |
+| `VITE_API_URL`    | `https://tutoriasbe.onrender.com` |
 
 Pasos:
 
 1. En Render: **New + > Blueprint** y selecciona este repositorio. Render lee
    `render.yaml` y crea el servicio con la configuracion anterior.
    - Alternativa manual: **New + > Static Site**, build `npm ci && npm run build`,
-     publish `dist`, agrega las env vars y la regla de _rewrite_.
-   - Verifica que `https://<dominio>/redirect.html` devuelva la pagina de redireccion y no
-     `index.html` (la regla de _rewrite_ solo debe aplicar a rutas sin archivo).
+     publish `dist`, agrega la env var `VITE_API_URL` y la regla de _rewrite_.
 2. La URL de produccion del backend se toma de [`.env.production`](.env.production)
    (versionado, sin secretos) y/o de la env var `VITE_API_URL` de Render. Se
    incrusta en el bundle durante el build.
@@ -218,7 +194,6 @@ carpetas usan el alias `@` (`@/components/ui`), definido en `vite.config.js` y `
 src/
   app/                     # Arranque, rutas y proveedores globales
     main.jsx               # Punto de entrada (lo carga index.html)
-    redirect.js            # Pagina de redireccion del popup de Microsoft (redirect.html)
     router.jsx             # Rutas, carga diferida, redirecciones y paginas de error
     RaizApp.jsx            # Raiz: sesion, titulo del documento y barra de navegacion
     providers.jsx          # TanStack Query, avisos (sonner) y devtools en desarrollo
@@ -230,7 +205,7 @@ src/
     ui/                    # Componentes base: Button, Card, FormField, Modal, Indicador... (CSS Modules)
   constants/               # Rutas, roles, reglas y estados del negocio, dias habiles
   features/
-    auth/                  # AuthProvider, guards, storage, JWT, proveedores y pages/ (01 y 02)
+    auth/                  # AuthProvider, guards, storage, JWT y pages/ (login y registro)
     comentarios/           # Comentarios de una tutoria y su hook
     tutorias/              # Piezas compartidas: cupo, horarios, temas, insignias, detalle
     tutorado/              # Pantallas 03 a 08 con sus componentes y hooks
@@ -259,7 +234,7 @@ Las rutas se definen en [`src/app/router.jsx`](src/app/router.jsx) y sus URLs en
 | Ruta                                 | Rol      | Pantalla                                         |
 | ------------------------------------ | -------- | ------------------------------------------------ |
 | `/login`                             | publico  | 01 Iniciar sesion                                |
-| `/registro`                          | publico  | 02 Completar registro (solo en el primer acceso) |
+| `/registro`                          | publico  | 02 Crear cuenta                                  |
 | `/tutorado/home`                     | TUTORADO | 03 Explorar tutorias                             |
 | `/tutorado/tutorias/:id`             | TUTORADO | 04 a 06 Detalle, inscripcion y estados del panel |
 | `/tutorado/inscripciones`            | TUTORADO | 07 Mis tutorias                                  |
@@ -284,8 +259,18 @@ Las rutas se definen en [`src/app/router.jsx`](src/app/router.jsx) y sus URLs en
 
 ## Integracion con el backend
 
-El contrato es el de `TutoriasBackend/docs/API.md`. Todas las llamadas usan el JWT del
-backend en el header `Authorization: Bearer <token>` (salvo `/auth/**`).
+El contrato es el de `TutoriasBackend/docs/API.md`, salvo el acceso. Todas las llamadas usan
+el JWT del backend en el header `Authorization: Bearer <token>` (salvo `/auth/**`).
+
+Acceso con contrasena (en lugar de Microsoft y Google):
+
+- `POST /auth/signin` con `{ matricula, pwd }` o `{ correo, pwd }` (el front envia `correo`
+  si lo escrito lleva `@`). Respuesta: `{ token, usuario }`; tambien acepta `{ token, rol }`
+  y toma la matricula del claim `sub` del token.
+- `POST /auth/signup` con `{ nombre, apellidos, matricula, correo, pwd, rol }` (`rol`:
+  `TUTORADO` o `TUTOR`). Si responde `{ token, usuario }` entra directo; si no, manda al login.
+  La matricula o el correo duplicados se muestran bajo su campo si llegan como
+  `data: { matricula }` o `data: { correo }`.
 
 - **Cliente HTTP** ([`src/api/client.js`](src/api/client.js)): agrega el token, aplica un
   timeout de 15 s, convierte los errores en `ApiError` con el mensaje del backend (y los
@@ -294,8 +279,7 @@ backend en el header `Authorization: Bearer <token>` (salvo `/auth/**`).
   `tutorias`, `temas`, `inscripciones`, `sesiones`, `comentarios` y `admin`. Los DTOs se usan
   tal como llegan; el formato para mostrar vive en `src/utils/formatters.js`.
 - **Sesion** ([`src/features/auth`](src/features/auth)): `AuthProvider` guarda token, rol,
-  matricula, nombre y correo (en `localStorage`) y el registro pendiente del primer acceso
-  (en `sessionStorage`). La sesion se cierra y se avisa al usuario cuando el token vence (segun
+  matricula, nombre y correo (en `localStorage`). La sesion se cierra y se avisa al usuario cuando el token vence (segun
   su `exp`) o el backend responde `401`.
 
 Wrapper de respuesta esperado del backend:
@@ -304,8 +288,8 @@ Wrapper de respuesta esperado del backend:
 { "success": true, "message": "...", "data": {} }
 ```
 
-Ajustes al contrato que el front da por hechos: cuentas `@uv.mx` en el login de Microsoft,
-errores de NRC y matricula duplicados con formato de validacion (`data: { campo }`),
+Ajustes al contrato que el front da por hechos: errores de NRC duplicado con formato de
+validacion (`data: { nrc }`),
 `Sesion.inscritos` en sesiones canceladas, `panelTutorado.choques` con la forma de los
 `choques` de explorar y `fechaInscripcion` en el historial de asistencia.
 
@@ -325,10 +309,6 @@ Render, la primera peticion tras un rato sin uso puede tardar mientras el servic
 **El navegador devuelve 403 en endpoints autenticados.**
 El JWT no tiene el rol esperado o expiro. Vuelve a iniciar sesion. Si solo
 afecta a algunos endpoints, revisa la matriz de permisos de `docs/API.md` en el backend.
-
-**El popup de Microsoft se queda en blanco o no inicia sesion.**
-Revisa que `<origen>/redirect.html` este registrado como redirect URI tipo SPA y que
-`VITE_MICROSOFT_CLIENT_ID` y `VITE_MICROSOFT_TENANT_ID` sean los de la app registrada.
 
 **El puerto 5173 esta ocupado.**
 Vite escogera automaticamente el siguiente disponible. Revisa la salida de
