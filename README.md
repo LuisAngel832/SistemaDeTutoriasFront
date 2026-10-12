@@ -184,6 +184,18 @@ Pasos:
 > Static Site (ej. `https://tutorias-frontend.onrender.com`), de lo contrario las
 > peticiones seran bloqueadas por el navegador.
 
+### Cabeceras de seguridad
+
+`render.yaml` envia `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`,
+`Permissions-Policy` y una CSP. La CSP esta en modo **Report-Only**: el navegador muestra
+en la consola lo que bloquearia, sin bloquearlo.
+
+- Para probarlas en local: `npm run build` y `npm run preview`, que aplica las mismas
+  cabeceras (`CABECERAS_SEGURIDAD` en `vite.config.js`). Si se cambia una, cambiar la otra.
+- Si cambia la URL del backend, actualizar `connect-src` en ambos archivos.
+- Cuando la consola no muestre violaciones en ningun rol, renombrar la cabecera a
+  `Content-Security-Policy` para que se aplique.
+
 ## Estructura del proyecto
 
 Cada carpeta de `features/` reune la interfaz, los hooks y el estado de un dominio; lo que

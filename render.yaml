@@ -10,6 +10,28 @@ services:
       # URL del backend que se "hornea" en el bundle durante el build.
       - key: VITE_API_URL
         value: https://tutoriasbe.onrender.com
+    # Cabeceras de seguridad. Mantenerlas iguales a CABECERAS_SEGURIDAD de vite.config.js,
+    # que las aplica en `npm run preview` para probarlas en local.
+    # La CSP va en modo Report-Only: el navegador avisa en consola de lo que bloquearia, sin
+    # bloquearlo. Cuando no haya avisos, renombrar a Content-Security-Policy.
+    # - style-src 'unsafe-inline': sonner inyecta un <style> en tiempo de ejecucion.
+    # - connect-src: si cambia VITE_API_URL, actualizar tambien aqui.
+    headers:
+      - path: /*
+        name: Content-Security-Policy-Report-Only
+        value: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://tutoriasbe.onrender.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=(), payment=(), usb=()
     # Regla SPA: cualquier ruta sirve index.html para que React Router maneje
     # el enrutado del lado cliente (evita 404 al recargar /tutor/home, etc.).
     routes:

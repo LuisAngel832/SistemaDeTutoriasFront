@@ -18,6 +18,27 @@ const RECURSOS_API = [
 ]
 const PREFIJOS_API = `^/(${RECURSOS_API.join('|')})(/|\\?|$)`
 
+// Las mismas cabeceras que `headers` de render.yaml; mantenerlas iguales. Solo se aplican en
+// `vite preview` (el servidor de desarrollo usa scripts inline para HMR).
+const CABECERAS_SEGURIDAD = {
+  'Content-Security-Policy-Report-Only': [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self'",
+    "img-src 'self' data:",
+    "connect-src 'self' https://tutoriasbe.onrender.com",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "object-src 'none'",
+  ].join('; '),
+  'X-Frame-Options': 'DENY',
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   // Carga las variables de .env (loadEnv es necesario porque process.env no
@@ -41,6 +62,9 @@ export default defineConfig(({ mode }) => {
           secure: false,
         },
       },
+    },
+    preview: {
+      headers: CABECERAS_SEGURIDAD,
     },
     test: {
       environment: 'jsdom',
