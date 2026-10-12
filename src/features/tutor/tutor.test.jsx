@@ -436,6 +436,12 @@ describe('Pase de lista (12 y 13)', () => {
     expect(
       screen.getByText(/Se aplicó la baja automática a Mariana López Herrera/),
     ).toBeInTheDocument()
+
+    // El aviso sale del historial del navegador (no reaparece al recargar ni con atras y
+    // adelante), pero sigue visible y la URL conserva la tutoria elegida.
+    await waitFor(() => expect(router.state.location.state).toBeNull())
+    expect(router.state.location.search).toBe('?tutoria=12')
+    expect(screen.getByText('Lista del lunes 5 de octubre cerrada.')).toBeInTheDocument()
   })
 
   it('no deja cerrar si faltan marcas', async () => {

@@ -1,5 +1,5 @@
-import { useEffect, useId } from 'react'
-import { Link, useLocation, useSearchParams } from 'react-router-dom'
+import { useEffect, useId, useState } from 'react'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { EncabezadoPagina, Pagina } from '@/components/layout/Pagina'
 import {
   Alert,
@@ -50,8 +50,21 @@ const textoCierre = ({ fecha, bajas = [] }) => {
 const HistorialAsistencia = () => {
   const [parametros, setParametros] = useSearchParams()
   const location = useLocation()
+  const navigate = useNavigate()
   const idSelector = useId()
   const idTutoria = parametros.get('tutoria') ?? ''
+
+  // El aviso del cierre llega en location.state. Se copia al montar, junto con la tutoria a la
+  // que corresponde, y se borra del historial para que no reaparezca al recargar o al volver con
+  // atras y adelante.
+  const [avisoCierre] = useState(() =>
+    location.state?.cierre ? { idTutoria, ...textoCierre(location.state.cierre) } : null,
+  )
+  useEffect(() => {
+    if (!location.state?.cierre) return
+    const { pathname, search, hash } = location
+    navigate({ pathname, search, hash }, { replace: true, state: null })
+  }, [location, navigate])
   const { tutorias, historial, cargandoTutorias, cargandoHistorial, error } =
     useHistorialAsistencia(idTutoria)
 
@@ -62,8 +75,7 @@ const HistorialAsistencia = () => {
     setParametros({ tutoria: String(primera.idTutoria) }, { replace: true })
   }, [idTutoria, tutorias, setParametros])
 
-  const cierre = location.state?.cierre
-  const aviso = cierre ? textoCierre(cierre) : null
+  const aviso = avisoCierre?.idTutoria === idTutoria ? avisoCierre : null
 
   const selector = tutorias.length ? (
     <div className={styles.selector}>
