@@ -3,7 +3,17 @@ import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { MemoryRouter, Link } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
-import { Alert, Button, Chip, ConfirmDialog, FormField, Input, Modal, RadioGroup } from './index'
+import {
+  Alert,
+  Button,
+  Chip,
+  ConfirmDialog,
+  FormField,
+  Input,
+  Modal,
+  PasswordInput,
+  RadioGroup,
+} from './index'
 
 describe('Button', () => {
   it('es type="button" por defecto para no enviar formularios por accidente', () => {
@@ -87,6 +97,21 @@ describe('FormField', () => {
     )
     expect(campo).toHaveAttribute('aria-invalid', 'true')
     expect(campo).toHaveAccessibleDescription('Formato invalido Usa tu correo institucional')
+  })
+
+  it('PasswordInput alterna la visibilidad de la contrasena', async () => {
+    render(
+      <FormField label="Contrasena" htmlFor="pwd">
+        <PasswordInput id="pwd" />
+      </FormField>,
+    )
+    const campo = screen.getByLabelText('Contrasena')
+    const alternar = screen.getByRole('button', { name: 'Mostrar' })
+    expect(campo).toHaveAttribute('type', 'password')
+
+    await userEvent.click(alternar)
+    expect(campo).toHaveAttribute('type', 'text')
+    expect(screen.getByRole('button', { name: 'Ocultar' })).toHaveAttribute('aria-pressed', 'true')
   })
 })
 
