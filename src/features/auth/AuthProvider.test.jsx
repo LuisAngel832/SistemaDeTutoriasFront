@@ -143,6 +143,24 @@ describe('inicio de sesion', () => {
     expect(localStorage.length).toBe(1)
   })
 
+  it('vuelve a la ruta pedida con sus parametros y su ancla', async () => {
+    servidor.use(
+      http.post('*/auth/signin', () =>
+        HttpResponse.json(respuestaOk({ token: crearToken(), usuario: USUARIOS.tutor })),
+      ),
+    )
+    const router = renderApp('/tutor/tutorias/5?pestana=sesiones#inscritos')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Entrar' }))
+
+    expect(await screen.findByText('Detalle tutor')).toBeInTheDocument()
+    expect(router.state.location).toMatchObject({
+      pathname: '/tutor/tutorias/5',
+      search: '?pestana=sesiones',
+      hash: '#inscritos',
+    })
+  })
+
   it('acepta la respuesta anterior { token, rol } y toma la matricula del token', async () => {
     const token = crearToken({ rol: 'TUTORADO', matricula: 'S23014587' })
     servidor.use(

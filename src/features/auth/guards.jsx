@@ -29,7 +29,12 @@ export const SoloInvitados = () => {
   const inicio = HOME_POR_ROL[rol]
 
   if (isAuthenticated && inicio) {
-    return <Navigate to={location.state?.from?.pathname ?? inicio} replace />
+    // Vuelve a la pagina pedida con sus parametros y su ancla (p. ej. /tutor/historial?tutoria=7).
+    const desde = location.state?.from
+    const destino = desde
+      ? { pathname: desde.pathname, search: desde.search, hash: desde.hash }
+      : inicio
+    return <Navigate to={destino} replace />
   }
 
   return <Outlet />
