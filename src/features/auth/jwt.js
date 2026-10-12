@@ -1,5 +1,5 @@
 // Lectura del payload del JWT (sin verificar la firma: eso lo hace el backend).
-// El backend incluye { matricula, rol, iat, exp }.
+// El backend incluye { sub (matricula), rol, iat, exp }.
 
 export const decodificarToken = (token) => {
   try {

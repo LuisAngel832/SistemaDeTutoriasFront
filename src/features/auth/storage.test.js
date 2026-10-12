@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   esClaveDeSesion,
-  guardarRegistroPendiente,
   guardarSesion,
-  leerRegistroPendiente,
   leerSesion,
   limpiarSesion,
   SESION_VACIA,
@@ -38,15 +36,5 @@ describe('storage de la sesion', () => {
     expect(esClaveDeSesion('token')).toBe(true)
     expect(esClaveDeSesion(null)).toBe(true)
     expect(esClaveDeSesion('sidebarCollapsed')).toBe(false)
-  })
-
-  it('guarda el registro pendiente en sessionStorage', () => {
-    const registro = { tokenRegistro: 'tr', perfil: { correo: 'a@b.mx' }, expira: 1 }
-    guardarRegistroPendiente(registro)
-    expect(leerRegistroPendiente()).toEqual(registro)
-    expect(localStorage.getItem(STORAGE_KEYS.REGISTRO_PENDIENTE)).toBeNull()
-
-    guardarRegistroPendiente(null)
-    expect(leerRegistroPendiente()).toBeNull()
   })
 })

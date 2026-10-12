@@ -4,10 +4,12 @@ import { decodificarToken, expiracionDelToken, tokenExpirado } from './jwt'
 
 describe('decodificarToken', () => {
   it('lee el payload del JWT', () => {
-    expect(decodificarToken(crearToken({ rol: 'TUTORADO', matricula: 2001 }))).toMatchObject({
-      rol: 'TUTORADO',
-      matricula: 2001,
-    })
+    expect(decodificarToken(crearToken({ rol: 'TUTORADO', matricula: 'S23014587' }))).toMatchObject(
+      {
+        rol: 'TUTORADO',
+        sub: 'S23014587',
+      },
+    )
   })
 
   it('devuelve null con tokens ilegibles', () => {

@@ -4,7 +4,7 @@ const base64url = (objeto) =>
 
 export const crearToken = ({ rol = 'TUTOR', matricula = 1001, expiraEnSeg = 3600 } = {}) => {
   const ahora = Math.floor(Date.now() / 1000)
-  const payload = { matricula, rol, iat: ahora }
+  const payload = { sub: String(matricula), rol, iat: ahora }
   if (expiraEnSeg !== null) payload.exp = ahora + expiraEnSeg
   return `${base64url({ alg: 'HS256' })}.${base64url(payload)}.firma`
 }

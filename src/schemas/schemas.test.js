@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { completarRegistroSchema } from './auth'
+import { loginSchema, registroSchema } from './auth'
 import { materiaSchema } from './materia'
 import { aPayloadTutoria, formularioTutoriaSchema } from './tutoria'
 
@@ -7,22 +7,66 @@ const mensajes = (resultado) => resultado.error.issues.map((issue) => issue.mess
 const porCampo = (resultado) =>
   Object.fromEntries(resultado.error.issues.map((issue) => [issue.path.join('.'), issue.message]))
 
-describe('completarRegistroSchema', () => {
-  it('normaliza la matricula como el backend', () => {
-    const resultado = completarRegistroSchema.safeParse({ matricula: ' zs24011236 ', rol: 'TUTOR' })
-    expect(resultado.data).toEqual({ matricula: 'S24011236', rol: 'TUTOR' })
+describe('loginSchema', () => {
+  it('arma el body con la matricula normalizada o con el correo', () => {
+    expect(loginSchema.parse({ usuario: ' zs23014587 ', contrasena: 'secreta' })).toEqual({
+      matricula: 'S23014587',
+      pwd: 'secreta',
+    })
+    expect(loginSchema.parse({ usuario: 'Ana@UV.mx', contrasena: 'secreta' })).toEqual({
+      correo: 'ana@uv.mx',
+      pwd: 'secreta',
+    })
   })
 
-  it('exige la S con 8 digitos y un rol valido', () => {
-    expect(
-      porCampo(completarRegistroSchema.safeParse({ matricula: '2401123', rol: 'ADMIN' })),
-    ).toEqual({
-      matricula: 'Escribe la S seguida de 8 dígitos, por ejemplo S24011236',
-      rol: 'Elige cómo usarás el sistema',
+  it('exige un correo o una matricula valida y la contrasena', () => {
+    expect(porCampo(loginSchema.safeParse({ usuario: '1234', contrasena: '' }))).toEqual({
+      usuario: 'Escribe tu correo o tu matrícula (S seguida de 8 dígitos)',
+      contrasena: 'Ingresa tu contraseña',
     })
+    expect(mensajes(loginSchema.safeParse({ usuario: '', contrasena: 'x' }))).toContain(
+      'Ingresa tu correo o tu matrícula',
+    )
+  })
+})
+
+describe('registroSchema', () => {
+  const valido = {
+    rol: 'TUTORADO',
+    nombre: 'Sofía',
+    apellidos: 'Ramos Gutiérrez',
+    matricula: 'zs24011236',
+    correo: 'ZS24011236@estudiantes.uv.mx',
+    pwd: '12345678',
+  }
+
+  it('normaliza matricula y correo', () => {
+    expect(registroSchema.parse(valido)).toMatchObject({
+      matricula: 'S24011236',
+      correo: 'zs24011236@estudiantes.uv.mx',
+    })
+  })
+
+  it('valida cada campo', () => {
     expect(
-      mensajes(completarRegistroSchema.safeParse({ matricula: '', rol: 'TUTORADO' })),
-    ).toContain('Ingresa tu matrícula')
+      porCampo(
+        registroSchema.safeParse({
+          rol: 'ADMIN',
+          nombre: '',
+          apellidos: ' ',
+          matricula: '123',
+          correo: 'sofia',
+          pwd: '123',
+        }),
+      ),
+    ).toEqual({
+      rol: 'Elige cómo usarás el sistema',
+      nombre: 'Ingresa tu nombre',
+      apellidos: 'Ingresa tus apellidos',
+      matricula: 'Escribe la S seguida de 8 dígitos, por ejemplo S24011236',
+      correo: 'Escribe un correo electrónico válido',
+      pwd: 'La contraseña debe tener al menos 8 caracteres',
+    })
   })
 })
 

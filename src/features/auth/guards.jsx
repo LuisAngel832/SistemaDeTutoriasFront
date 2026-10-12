@@ -35,14 +35,6 @@ export const SoloInvitados = () => {
   return <Outlet />
 }
 
-// Completar registro solo tiene sentido despues de entrar con un proveedor por primera vez.
-export const RequiereRegistroPendiente = () => {
-  const { registroPendiente } = useAuth()
-  const location = useLocation()
-  if (!registroPendiente) return <Navigate to={ROUTES.login} replace state={location.state} />
-  return <Outlet />
-}
-
 // "/" lleva al inicio del rol o al login.
 export const RedireccionInicio = () => {
   const { rol } = useAuth()

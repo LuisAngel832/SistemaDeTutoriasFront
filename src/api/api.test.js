@@ -38,19 +38,40 @@ beforeEach(() => {
 
 const casos = [
   [
-    'login con Microsoft',
-    () => authApi.microsoft('id-ms'),
+    'login con matricula',
+    () => authApi.iniciarSesion({ matricula: 'S23014587', pwd: 'secreta1' }),
     'POST',
-    '/auth/microsoft',
-    { idToken: 'id-ms' },
+    '/auth/signin',
+    { matricula: 'S23014587', pwd: 'secreta1' },
   ],
-  ['login con Google', () => authApi.google('id-g'), 'POST', '/auth/google', { idToken: 'id-g' }],
   [
-    'completar registro',
-    () => authApi.completarRegistro({ tokenRegistro: 't', matricula: 'S24011236', rol: 'TUTOR' }),
+    'login con correo',
+    () => authApi.iniciarSesion({ correo: 'ana@uv.mx', pwd: 'secreta1' }),
     'POST',
-    '/auth/registro',
-    { tokenRegistro: 't', matricula: 'S24011236', rol: 'TUTOR' },
+    '/auth/signin',
+    { correo: 'ana@uv.mx', pwd: 'secreta1' },
+  ],
+  [
+    'crear cuenta',
+    () =>
+      authApi.registrarse({
+        nombre: 'Sofía',
+        apellidos: 'Ramos Gutiérrez',
+        matricula: 'S24011236',
+        correo: 'zs24011236@estudiantes.uv.mx',
+        pwd: 'secreta12',
+        rol: 'TUTORADO',
+      }),
+    'POST',
+    '/auth/signup',
+    {
+      nombre: 'Sofía',
+      apellidos: 'Ramos Gutiérrez',
+      matricula: 'S24011236',
+      correo: 'zs24011236@estudiantes.uv.mx',
+      pwd: 'secreta12',
+      rol: 'TUTORADO',
+    },
   ],
   ['usuario actual', () => usuariosApi.actual(), 'GET', '/usuarios/me'],
   [
@@ -206,7 +227,7 @@ describe('rutas del contrato', () => {
   })
 
   it('el login no envia el token de la sesion', async () => {
-    await authApi.microsoft('id-ms')
+    await authApi.iniciarSesion({ matricula: 'S23014587', pwd: 'x' })
     expect(peticion.auth).toBeNull()
     await usuariosApi.actual()
     expect(peticion.auth).toBe('Bearer token')

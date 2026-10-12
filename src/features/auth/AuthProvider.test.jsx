@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { useState } from 'react'
-import { createMemoryRouter, Outlet, RouterProvider, useNavigate } from 'react-router-dom'
+import { createMemoryRouter, Outlet, RouterProvider } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { api } from '@/api/client'
 import { USUARIOS } from '@/test/fixtures'
@@ -10,26 +10,19 @@ import { respuestaError, respuestaOk, servidor, usarServidorMock } from '@/test/
 import { crearToken } from '@/test/tokens'
 import { useAuth } from './AuthContext'
 import { AuthProvider } from './AuthProvider'
-import { RequiereRegistroPendiente, RequireRole, SoloInvitados } from './guards'
-import {
-  guardarRegistroPendiente,
-  guardarSesion,
-  leerRegistroPendiente,
-  leerSesion,
-} from './storage'
+import { RequireRole, SoloInvitados } from './guards'
+import { guardarSesion, leerSesion } from './storage'
 
 usarServidorMock()
 
 // Pantallas minimas para probar el flujo sin depender del diseno real.
 const LoginDePrueba = () => {
-  const { entrarConProveedor, sesionExpirada } = useAuth()
-  const navigate = useNavigate()
+  const { login, sesionExpirada } = useAuth()
   const [error, setError] = useState('')
 
   const entrar = async () => {
-    const res = await entrarConProveedor('microsoft', 'id-token-ms')
+    const res = await login({ matricula: 'S21009342', pwd: 'secreta1' })
     if (!res.ok) setError(res.message)
-    else if (res.registroPendiente) navigate('/registro')
   }
 
   return (
@@ -43,18 +36,26 @@ const LoginDePrueba = () => {
 }
 
 const RegistroDePrueba = () => {
-  const { registroPendiente, completarRegistro } = useAuth()
+  const { registro } = useAuth()
   const [resultado, setResultado] = useState(null)
 
   const registrar = async () =>
-    setResultado(await completarRegistro({ matricula: 'S24011236', rol: 'TUTORADO' }))
+    setResultado(
+      await registro({
+        nombre: 'Sofía',
+        apellidos: 'Ramos Gutiérrez',
+        matricula: 'S24011236',
+        correo: 'zs24011236@estudiantes.uv.mx',
+        pwd: 'secreta12',
+        rol: 'TUTORADO',
+      }),
+    )
 
   return (
     <div>
-      <h1>Completar registro</h1>
-      <p>{registroPendiente?.perfil?.correo}</p>
+      <h1>Crear cuenta</h1>
       {resultado?.errores?.matricula ? <p role="alert">{resultado.errores.matricula}</p> : null}
-      {resultado?.vencido ? <p role="alert">Registro vencido</p> : null}
+      {resultado?.ok && !resultado.sesionIniciada ? <p>Cuenta creada</p> : null}
       <button onClick={registrar}>Registrar</button>
     </div>
   )
@@ -92,10 +93,7 @@ const renderApp = (ruta) => {
             element: <SoloInvitados />,
             children: [
               { path: '/login', element: <LoginDePrueba /> },
-              {
-                element: <RequiereRegistroPendiente />,
-                children: [{ path: '/registro', element: <RegistroDePrueba /> }],
-              },
+              { path: '/registro', element: <RegistroDePrueba /> },
             ],
           },
           {
@@ -120,36 +118,14 @@ const renderApp = (ruta) => {
   return router
 }
 
-const loginRegistrado = (usuario = USUARIOS.tutor, token = crearToken()) =>
-  http.post('*/auth/microsoft', () =>
-    HttpResponse.json(respuestaOk({ registroPendiente: false, token, usuario }, 'Login')),
-  )
-
-const loginPrimerAcceso = http.post('*/auth/microsoft', () =>
-  HttpResponse.json(
-    respuestaOk({
-      registroPendiente: true,
-      tokenRegistro: 'token-registro',
-      perfil: {
-        nombre: 'Sofía',
-        apellidos: 'Ramos Gutiérrez',
-        correo: 'zS24011236@estudiantes.uv.mx',
-        proveedor: 'MICROSOFT',
-      },
-    }),
-  ),
-)
-
-describe('inicio de sesion con proveedor', () => {
-  it('con un usuario registrado guarda la sesion y vuelve a la ruta pedida', async () => {
+describe('inicio de sesion', () => {
+  it('guarda la sesion del usuario y vuelve a la ruta pedida', async () => {
     const token = crearToken()
     let cuerpo
     servidor.use(
-      http.post('*/auth/microsoft', async ({ request }) => {
+      http.post('*/auth/signin', async ({ request }) => {
         cuerpo = await request.json()
-        return HttpResponse.json(
-          respuestaOk({ registroPendiente: false, token, usuario: USUARIOS.tutor }),
-        )
+        return HttpResponse.json(respuestaOk({ token, usuario: USUARIOS.tutor }))
       }),
     )
     const router = renderApp('/tutor/tutorias/5')
@@ -158,7 +134,7 @@ describe('inicio de sesion con proveedor', () => {
 
     expect(await screen.findByText('Detalle tutor')).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/tutor/tutorias/5')
-    expect(cuerpo).toEqual({ idToken: 'id-token-ms' })
+    expect(cuerpo).toEqual({ matricula: 'S21009342', pwd: 'secreta1' })
     expect(screen.getByText('S21009342 - tutor - Rocío Hernández Aguilar')).toBeInTheDocument()
     expect(leerSesion()).toMatchObject({
       token,
@@ -168,74 +144,71 @@ describe('inicio de sesion con proveedor', () => {
     })
   })
 
-  it('sin ruta pedida lleva al inicio del rol', async () => {
-    servidor.use(loginRegistrado(USUARIOS.tutorado, crearToken({ rol: 'TUTORADO' })))
+  it('acepta la respuesta anterior { token, rol } y toma la matricula del token', async () => {
+    const token = crearToken({ rol: 'TUTORADO', matricula: 'S23014587' })
+    servidor.use(
+      http.post('*/auth/signin', () => HttpResponse.json(respuestaOk({ token, rol: 'TUTORADO' }))),
+    )
     const router = renderApp('/login')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Entrar' }))
     expect(await screen.findByText('Inicio tutorado')).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/tutorado/home')
+    expect(leerSesion()).toMatchObject({ rol: 'tutorado', matricula: 'S23014587' })
   })
 
-  it('muestra el error del backend si la cuenta no es de un dominio permitido', async () => {
+  it('muestra el error del backend si las credenciales son incorrectas', async () => {
     servidor.use(
-      http.post('*/auth/microsoft', () =>
-        HttpResponse.json(respuestaError('Solo se permiten cuentas @estudiantes.uv.mx.'), {
-          status: 400,
-        }),
+      http.post('*/auth/signin', () =>
+        HttpResponse.json(respuestaError('Usuario o contraseña incorrectos.'), { status: 400 }),
       ),
     )
     renderApp('/login')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Entrar' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Solo se permiten cuentas @estudiantes.uv.mx.',
-    )
+    expect(await screen.findByRole('alert')).toHaveTextContent('Usuario o contraseña incorrectos.')
     expect(leerSesion().token).toBe('')
   })
 })
 
-describe('primer acceso', () => {
-  it('guarda el registro pendiente y al completarlo entra al inicio del rol', async () => {
-    let cuerpoRegistro
+describe('registro', () => {
+  it('entra directo si el backend devuelve el token', async () => {
+    let cuerpo
     servidor.use(
-      loginPrimerAcceso,
-      http.post('*/auth/registro', async ({ request }) => {
-        cuerpoRegistro = await request.json()
+      http.post('*/auth/signup', async ({ request }) => {
+        cuerpo = await request.json()
         return HttpResponse.json(
           respuestaOk({
-            registroPendiente: false,
             token: crearToken({ rol: 'TUTORADO' }),
             usuario: { ...USUARIOS.tutorado, matricula: 'S24011236' },
           }),
         )
       }),
     )
-    const router = renderApp('/login')
+    const router = renderApp('/registro')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Entrar' }))
-    expect(await screen.findByText('zS24011236@estudiantes.uv.mx')).toBeInTheDocument()
-    expect(leerRegistroPendiente()).toMatchObject({ tokenRegistro: 'token-registro' })
-
-    await userEvent.click(screen.getByRole('button', { name: 'Registrar' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Registrar' }))
 
     expect(await screen.findByText('Inicio tutorado')).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/tutorado/home')
-    expect(cuerpoRegistro).toEqual({
-      tokenRegistro: 'token-registro',
-      matricula: 'S24011236',
-      rol: 'TUTORADO',
-    })
-    expect(leerRegistroPendiente()).toBeNull()
+    expect(cuerpo).toMatchObject({ matricula: 'S24011236', rol: 'TUTORADO', pwd: 'secreta12' })
   })
 
-  it('expone el error de matricula duplicada por campo', async () => {
-    guardarRegistroPendiente({ tokenRegistro: 't', perfil: {}, expira: Date.now() + 60_000 })
+  it('sin token deja la sesion cerrada para que la pantalla mande al login', async () => {
+    servidor.use(http.post('*/auth/signup', () => HttpResponse.json(respuestaOk(null))))
+    renderApp('/registro')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Registrar' }))
+    expect(await screen.findByText('Cuenta creada')).toBeInTheDocument()
+    expect(leerSesion().token).toBe('')
+  })
+
+  it('expone los errores por campo del backend', async () => {
     servidor.use(
-      http.post('*/auth/registro', () =>
+      http.post('*/auth/signup', () =>
         HttpResponse.json(
           respuestaError('Error de validación', {
-            matricula: 'La matrícula ya está registrada con otra cuenta.',
+            matricula: 'La matrícula ya está registrada.',
           }),
           { status: 400 },
         ),
@@ -244,25 +217,7 @@ describe('primer acceso', () => {
     renderApp('/registro')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Registrar' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      'La matrícula ya está registrada con otra cuenta.',
-    )
-  })
-
-  it('avisa cuando el registro pendiente vence antes de enviarlo', async () => {
-    guardarRegistroPendiente({ tokenRegistro: 't', perfil: {}, expira: Date.now() + 60_000 })
-    renderApp('/registro')
-    await screen.findByRole('button', { name: 'Registrar' })
-
-    guardarRegistroPendiente({ tokenRegistro: 't', perfil: {}, expira: Date.now() - 1 })
-    await userEvent.click(screen.getByRole('button', { name: 'Registrar' }))
-
-    expect(await screen.findByText('Pantalla de login')).toBeInTheDocument()
-  })
-
-  it('no deja abrir completar registro sin haber entrado con un proveedor', async () => {
-    const router = renderApp('/registro')
-    await waitFor(() => expect(router.state.location.pathname).toBe('/login'))
+    expect(await screen.findByRole('alert')).toHaveTextContent('La matrícula ya está registrada.')
   })
 })
 

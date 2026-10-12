@@ -1,61 +1,20 @@
 .formulario {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.perfil {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--color-borde-suave);
-  border-radius: var(--radio-md);
-  background-color: var(--color-fondo-suave);
-}
-
-.datos {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 0.1rem;
-  min-width: 0;
-}
-
-.datos strong {
-  color: var(--color-texto);
-  font-size: 0.95rem;
-}
-
-.datos span {
-  overflow: hidden;
-  color: var(--color-texto-suave);
-  font-size: 0.82rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.completo {
+  grid-column: 1 / -1;
 }
 
 .enviar {
   min-height: 46px;
+  margin-top: 0.4rem;
 }
 
-.enlace {
-  margin-left: 0.3rem;
-  padding: 0;
-  border: none;
-  background: none;
-  color: var(--color-primario);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.enlace:hover {
-  color: var(--color-primario-oscuro);
-  text-decoration: underline;
-}
-
-.enlace:focus-visible {
-  outline: var(--contorno-foco);
-  outline-offset: 2px;
+@media (max-width: 560px) {
+  .formulario {
+    grid-template-columns: 1fr;
+  }
 }

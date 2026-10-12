@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { Alert, Spinner } from '@/components/ui'
-import { IconCorreo } from '@/components/ui/icons'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { Link, useLocation } from 'react-router-dom'
+import { Alert, Button, FormField, Input, PasswordInput } from '@/components/ui'
 import { ROUTES } from '@/constants/routes'
 import { useAuth } from '@/features/auth/AuthContext'
 import { AuthLayout } from '@/features/auth/components/AuthLayout'
-import { BotonGoogle } from '@/features/auth/proveedores/BotonGoogle'
-import { obtenerIdTokenMicrosoft, prepararMicrosoft } from '@/features/auth/proveedores/microsoft'
+import { loginSchema } from '@/schemas/auth'
 import styles from './LogIn.module.css'
-import botones from '@/features/auth/proveedores/BotonProveedor.module.css'
 
 const CARACTERISTICAS = [
   'Grupos de hasta 7 tutorados por tutoría',
@@ -16,42 +14,31 @@ const CARACTERISTICAS = [
   'Tu historial de asistencia siempre a la mano',
 ]
 
+// Pantalla 01: inicio de sesion con correo o matricula y contrasena.
 const LogIn = () => {
-  const { entrarConProveedor, sesionExpirada } = useAuth()
-  const navigate = useNavigate()
+  const { login, sesionExpirada } = useAuth()
   const location = useLocation()
-  // Proveedor con el que se esta entrando ('microsoft' | 'google'), para bloquear los botones.
-  const [entrando, setEntrando] = useState(null)
-  const [error, setError] = useState('')
 
-  // MSAL se prepara al abrir la pantalla para que el popup se abra en el mismo clic.
-  useEffect(() => {
-    prepararMicrosoft().catch(() => {})
-  }, [])
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { usuario: '', contrasena: '' },
+  })
 
-  const entrar = async (proveedor, obtenerIdToken) => {
-    setError('')
-    setEntrando(proveedor)
-    try {
-      const idToken = await obtenerIdToken()
-      // Ventana cerrada por el usuario: no es un error.
-      if (!idToken) return
-      const res = await entrarConProveedor(proveedor, idToken)
-      if (!res.ok) setError(res.message)
-      // Con un usuario registrado SoloInvitados redirige; en el primer acceso se completa el
-      // registro (se conserva la pagina pedida para despues).
-      else if (res.registroPendiente) navigate(ROUTES.registro, { state: location.state })
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setEntrando(null)
-    }
-  }
+  const enviar = handleSubmit(async (credenciales) => {
+    const res = await login(credenciales)
+    // Con exito no se navega aqui: SoloInvitados redirige a la pagina pedida o al inicio.
+    if (!res.ok) setError('root', { message: res.message })
+  })
 
-  const aviso = location.state?.aviso
-    ? { tono: 'warning', texto: location.state.aviso }
-    : sesionExpirada
-      ? { tono: 'warning', texto: 'Tu sesión expiró. Vuelve a iniciar sesión para continuar.' }
+  const aviso = sesionExpirada
+    ? { tono: 'warning', texto: 'Tu sesión expiró. Vuelve a iniciar sesión para continuar.' }
+    : location.state?.registrado
+      ? { tono: 'success', texto: 'Cuenta creada. Ya puedes iniciar sesión.' }
       : null
 
   return (
@@ -60,59 +47,44 @@ const LogIn = () => {
       brandSubtitle="Inscríbete a tutorías, pasa lista y consulta tu asistencia desde un solo lugar."
       features={CARACTERISTICAS}
       title="Iniciar sesión"
-      subtitle="Entra con tu cuenta institucional de Microsoft o con tu cuenta de Google."
+      subtitle="Entra con tu correo o tu matrícula y tu contraseña."
+      footer={
+        <>
+          ¿No tienes cuenta?<Link to={ROUTES.registro}>Crear cuenta</Link>
+        </>
+      }
     >
-      <div className={styles.contenido} aria-busy={Boolean(entrando)}>
-        {error ? (
-          <Alert tone="error">{error}</Alert>
+      <form className={styles.formulario} onSubmit={enviar} noValidate>
+        {errors.root ? (
+          <Alert tone="error">{errors.root.message}</Alert>
         ) : aviso ? (
           <Alert tone={aviso.tono}>{aviso.texto}</Alert>
         ) : null}
 
-        <button
-          type="button"
-          className={botones.boton}
-          disabled={Boolean(entrando)}
-          onClick={() => entrar('microsoft', obtenerIdTokenMicrosoft)}
-        >
-          {entrando === 'microsoft' ? (
-            <Spinner size="sm" />
-          ) : (
-            <span className={botones.logo} aria-hidden="true">
-              M
-            </span>
-          )}
-          {entrando === 'microsoft' ? 'Conectando con Microsoft…' : 'Continuar con Microsoft'}
-        </button>
+        <FormField label="Correo o matrícula" htmlFor="usuario" error={errors.usuario?.message}>
+          <Input
+            id="usuario"
+            placeholder="S23014587 o tu correo"
+            autoComplete="username"
+            autoCapitalize="none"
+            spellCheck={false}
+            {...register('usuario')}
+          />
+        </FormField>
 
-        <BotonGoogle
-          disabled={Boolean(entrando)}
-          onToken={(credential) => entrar('google', async () => credential)}
-          onError={setError}
-        />
+        <FormField label="Contraseña" htmlFor="contrasena" error={errors.contrasena?.message}>
+          <PasswordInput
+            id="contrasena"
+            placeholder="Tu contraseña"
+            autoComplete="current-password"
+            {...register('contrasena')}
+          />
+        </FormField>
 
-        {entrando === 'google' ? (
-          <p className={styles.estado} role="status">
-            <Spinner size="sm" /> Verificando tu cuenta…
-          </p>
-        ) : null}
-
-        <div className={styles.primeraVez}>
-          <strong>¿Es tu primera vez?</strong>
-          <p>
-            Al continuar te pediremos tu matrícula y tu rol para crear tu cuenta. No necesitas
-            contraseña.
-          </p>
-        </div>
-
-        <div className={styles.divisor} aria-hidden="true">
-          <IconCorreo />
-        </div>
-        <p className={styles.nota}>
-          Te enviaremos confirmaciones, recordatorios y avisos de cancelación o baja al correo de tu
-          cuenta.
-        </p>
-      </div>
+        <Button type="submit" size="lg" fullWidth loading={isSubmitting} className={styles.enviar}>
+          {isSubmitting ? 'Ingresando…' : 'Iniciar sesión'}
+        </Button>
+      </form>
     </AuthLayout>
   )
 }

@@ -1,13 +1,10 @@
 import { api } from './client'
 
-// Respuesta del login: { registroPendiente: false, token, usuario } o, en el primer acceso,
-// { registroPendiente: true, tokenRegistro, perfil }.
+// Acceso con correo o matricula y contrasena. Respuesta: { token, usuario } (o { token, rol }).
 export const authApi = {
-  microsoft: (idToken) => api.post('/auth/microsoft', { idToken }, { auth: false }),
+  // credenciales: { correo, pwd } o { matricula, pwd }
+  iniciarSesion: (credenciales) => api.post('/auth/signin', credenciales, { auth: false }),
 
-  google: (idToken) => api.post('/auth/google', { idToken }, { auth: false }),
-
-  // Nombre y correo salen del tokenRegistro; el body solo trae matricula y rol.
-  completarRegistro: ({ tokenRegistro, matricula, rol }) =>
-    api.post('/auth/registro', { tokenRegistro, matricula, rol }, { auth: false }),
+  // datos: { nombre, apellidos, matricula, correo, pwd, rol: 'TUTORADO' | 'TUTOR' }
+  registrarse: (datos) => api.post('/auth/signup', datos, { auth: false }),
 }

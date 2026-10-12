@@ -2,17 +2,11 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { rutas } from '@/app/router'
 import { USUARIOS } from '@/test/fixtures'
 import { respuestaError, respuestaOk, servidor, usarServidorMock } from '@/test/servidor'
 import { crearToken } from '@/test/tokens'
-
-// El popup de Microsoft no existe en las pruebas: se simula el ID token que entrega.
-vi.mock('@/features/auth/proveedores/microsoft', () => ({
-  prepararMicrosoft: vi.fn(() => Promise.resolve(null)),
-  obtenerIdTokenMicrosoft: vi.fn(() => Promise.resolve('id-token-ms')),
-}))
 
 usarServidorMock()
 
@@ -27,152 +21,144 @@ const renderRuta = (ruta) => {
   return router
 }
 
-const primerAcceso = http.post('*/auth/microsoft', () =>
-  HttpResponse.json(
-    respuestaOk({
-      registroPendiente: true,
-      tokenRegistro: 'token-registro',
-      perfil: {
-        nombre: 'Sofía',
-        apellidos: 'Ramos Gutiérrez',
-        correo: 'zS24011236@estudiantes.uv.mx',
-        proveedor: 'MICROSOFT',
-      },
+const capturarLogin = (respuesta) => {
+  const recibido = {}
+  servidor.use(
+    http.post('*/auth/signin', async ({ request }) => {
+      recibido.cuerpo = await request.json()
+      return respuesta()
     }),
-  ),
-)
-
-const irARegistro = async () => {
-  servidor.use(primerAcceso)
-  const router = renderRuta('/login')
-  await userEvent.click(await screen.findByRole('button', { name: 'Continuar con Microsoft' }))
-  await screen.findByRole('heading', { name: 'Completar registro' })
-  return router
+  )
+  return recibido
 }
 
 describe('Iniciar sesion (01)', () => {
-  it('entra con Microsoft y lleva al inicio del rol', async () => {
-    servidor.use(
-      http.post('*/auth/microsoft', () =>
-        HttpResponse.json(
-          respuestaOk({
-            registroPendiente: false,
-            token: crearToken({ rol: 'TUTORADO' }),
-            usuario: USUARIOS.tutorado,
-          }),
-        ),
+  it('entra con matricula y contrasena y lleva al inicio del rol', async () => {
+    const recibido = capturarLogin(() =>
+      HttpResponse.json(
+        respuestaOk({ token: crearToken({ rol: 'TUTORADO' }), usuario: USUARIOS.tutorado }),
       ),
     )
     const router = renderRuta('/login')
 
     // La primera prueba tambien paga la descarga de la pagina (lazy).
-    const boton = await screen.findByRole(
-      'button',
-      { name: 'Continuar con Microsoft' },
-      { timeout: 5000 },
-    )
-    expect(screen.getByText('¿Es tu primera vez?')).toBeInTheDocument()
-    await userEvent.click(boton)
+    const usuario = await screen.findByLabelText('Correo o matrícula', {}, { timeout: 5000 })
+    await userEvent.type(usuario, 'zs23014587')
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'secreta1')
+    await userEvent.click(screen.getByRole('button', { name: 'Iniciar sesión' }))
 
     await waitFor(() => expect(router.state.location.pathname).toBe('/tutorado/home'))
+    expect(recibido.cuerpo).toEqual({ matricula: 'S23014587', pwd: 'secreta1' })
   })
 
-  it('muestra el error del backend', async () => {
-    servidor.use(
-      http.post('*/auth/microsoft', () =>
-        HttpResponse.json(respuestaError('Solo se permiten cuentas @estudiantes.uv.mx.'), {
-          status: 400,
-        }),
+  it('tambien entra con el correo', async () => {
+    const recibido = capturarLogin(() =>
+      HttpResponse.json(
+        respuestaOk({ token: crearToken({ rol: 'TUTOR' }), usuario: USUARIOS.tutor }),
       ),
     )
-    renderRuta('/login')
+    const router = renderRuta('/login')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Continuar con Microsoft' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Solo se permiten cuentas @estudiantes.uv.mx.',
+    await userEvent.type(
+      await screen.findByLabelText('Correo o matrícula'),
+      'zS21009342@estudiantes.uv.mx',
     )
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'secreta1')
+    await userEvent.click(screen.getByRole('button', { name: 'Iniciar sesión' }))
+
+    await waitFor(() => expect(router.state.location.pathname).toBe('/tutor/home'))
+    expect(recibido.cuerpo).toEqual({ correo: 'zs21009342@estudiantes.uv.mx', pwd: 'secreta1' })
   })
 
-  it('avisa si Google no esta configurado', async () => {
+  it('valida los campos y muestra el error del backend', async () => {
+    capturarLogin(() =>
+      HttpResponse.json(respuestaError('Usuario o contraseña incorrectos.'), { status: 400 }),
+    )
     renderRuta('/login')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Continuar con Google' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent(/Google no está configurado/)
+    await userEvent.click(await screen.findByRole('button', { name: 'Iniciar sesión' }))
+    expect(await screen.findByText('Ingresa tu correo o tu matrícula')).toBeInTheDocument()
+    expect(screen.getByText('Ingresa tu contraseña')).toBeInTheDocument()
+
+    await userEvent.type(screen.getByLabelText('Correo o matrícula'), 'S23014587')
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'mala')
+    await userEvent.click(screen.getByRole('button', { name: 'Iniciar sesión' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('Usuario o contraseña incorrectos.')
   })
 })
 
-describe('Completar registro (02)', () => {
-  it('muestra el perfil, normaliza la matricula y entra al panel', async () => {
+describe('Crear cuenta (02)', () => {
+  const llenar = async () => {
+    await userEvent.click(await screen.findByRole('radio', { name: 'Tutor' }))
+    await userEvent.type(screen.getByLabelText('Nombre(s)'), 'Sofía')
+    await userEvent.type(screen.getByLabelText('Apellidos'), 'Ramos Gutiérrez')
+    await userEvent.type(screen.getByLabelText('Matrícula institucional'), 'zs24011236')
+    await userEvent.type(
+      screen.getByLabelText('Correo electrónico'),
+      'zS24011236@estudiantes.uv.mx',
+    )
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'secreta12')
+    await userEvent.click(screen.getByRole('button', { name: 'Crear cuenta' }))
+  }
+
+  it('envia los datos normalizados y, sin token, manda al login con aviso', async () => {
     let cuerpo
     servidor.use(
-      http.post('*/auth/registro', async ({ request }) => {
+      http.post('*/auth/signup', async ({ request }) => {
         cuerpo = await request.json()
-        return HttpResponse.json(
+        return HttpResponse.json(respuestaOk(null, 'Registro exitoso.'))
+      }),
+    )
+    const router = renderRuta('/registro')
+
+    await llenar()
+
+    await waitFor(() => expect(router.state.location.pathname).toBe('/login'))
+    expect(cuerpo).toEqual({
+      rol: 'TUTOR',
+      nombre: 'Sofía',
+      apellidos: 'Ramos Gutiérrez',
+      matricula: 'S24011236',
+      correo: 'zs24011236@estudiantes.uv.mx',
+      pwd: 'secreta12',
+    })
+    expect(await screen.findByText('Cuenta creada. Ya puedes iniciar sesión.')).toBeInTheDocument()
+  })
+
+  it('entra directo al panel si el backend devuelve el token', async () => {
+    servidor.use(
+      http.post('*/auth/signup', () =>
+        HttpResponse.json(
           respuestaOk({
-            registroPendiente: false,
             token: crearToken({ rol: 'TUTOR' }),
             usuario: { ...USUARIOS.tutor, matricula: 'S24011236' },
           }),
-        )
-      }),
+        ),
+      ),
     )
-    const router = await irARegistro()
+    const router = renderRuta('/registro')
 
-    expect(screen.getByText('Sofía Ramos Gutiérrez')).toBeInTheDocument()
-    expect(screen.getByText('zS24011236@estudiantes.uv.mx')).toBeInTheDocument()
-    expect(screen.getByText('Cuenta de Microsoft verificada')).toBeInTheDocument()
-
-    await userEvent.type(screen.getByLabelText('Matrícula institucional'), 'zs24011236')
-    await userEvent.click(screen.getByRole('radio', { name: 'Tutor' }))
-    await userEvent.click(screen.getByRole('button', { name: 'Crear cuenta y continuar' }))
+    await llenar()
 
     await waitFor(() => expect(router.state.location.pathname).toBe('/tutor/home'))
-    expect(cuerpo).toEqual({
-      tokenRegistro: 'token-registro',
-      matricula: 'S24011236',
-      rol: 'TUTOR',
-    })
-  })
-
-  it('valida la matricula antes de enviar', async () => {
-    await irARegistro()
-
-    await userEvent.type(screen.getByLabelText('Matrícula institucional'), '123')
-    await userEvent.click(screen.getByRole('button', { name: 'Crear cuenta y continuar' }))
-
-    expect(
-      await screen.findByText('Escribe la S seguida de 8 dígitos, por ejemplo S24011236'),
-    ).toBeInTheDocument()
   })
 
   it('muestra la matricula duplicada debajo del campo', async () => {
     servidor.use(
-      http.post('*/auth/registro', () =>
+      http.post('*/auth/signup', () =>
         HttpResponse.json(
           respuestaError('Error de validación', {
-            matricula: 'La matrícula ya está registrada con otra cuenta.',
+            matricula: 'La matrícula ya está registrada.',
           }),
           { status: 400 },
         ),
       ),
     )
-    await irARegistro()
+    renderRuta('/registro')
 
-    await userEvent.type(screen.getByLabelText('Matrícula institucional'), 'S24011236')
-    await userEvent.click(screen.getByRole('button', { name: 'Crear cuenta y continuar' }))
+    await llenar()
 
-    expect(
-      await screen.findByText('La matrícula ya está registrada con otra cuenta.'),
-    ).toBeInTheDocument()
+    expect(await screen.findByText('La matrícula ya está registrada.')).toBeInTheDocument()
     expect(screen.getByLabelText('Matrícula institucional')).toHaveAttribute('aria-invalid', 'true')
-  })
-
-  it('"Entrar con otra" descarta el registro y vuelve al login', async () => {
-    const router = await irARegistro()
-
-    await userEvent.click(screen.getByRole('button', { name: 'Entrar con otra' }))
-
-    await waitFor(() => expect(router.state.location.pathname).toBe('/login'))
-    expect(sessionStorage.getItem('registroPendiente')).toBeNull()
   })
 })

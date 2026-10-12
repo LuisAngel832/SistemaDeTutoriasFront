@@ -1,15 +1,10 @@
-import { clases } from '@/utils/clases'
 import styles from './AuthLayout.module.css'
 
 // Estructura de las pantallas de acceso: panel de marca + panel del formulario.
-// En el panel de marca, `features` lista beneficios con palomita y `pasos` muestra el avance
-// del registro: [{ texto, estado: 'hecho' | 'actual' | 'pendiente' }].
 export const AuthLayout = ({
-  eyebrow,
   brandTitle,
   brandSubtitle,
   features = [],
-  pasos = [],
   title,
   subtitle,
   footer,
@@ -24,7 +19,6 @@ export const AuthLayout = ({
         </div>
 
         <div className={styles.marcaCuerpo}>
-          {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
           <p className={styles.marcaTitulo}>{brandTitle}</p>
           <p className={styles.marcaSubtitulo}>{brandSubtitle}</p>
           {features.length ? (
@@ -38,22 +32,6 @@ export const AuthLayout = ({
                 </li>
               ))}
             </ul>
-          ) : null}
-          {pasos.length ? (
-            <ol className={styles.pasos}>
-              {pasos.map((paso, indice) => (
-                <li
-                  key={paso.texto}
-                  className={clases(styles.paso, styles[paso.estado])}
-                  aria-current={paso.estado === 'actual' ? 'step' : undefined}
-                >
-                  <span className={styles.numero} aria-hidden="true">
-                    {paso.estado === 'hecho' ? '✓' : indice + 1}
-                  </span>
-                  {paso.texto}
-                </li>
-              ))}
-            </ol>
           ) : null}
         </div>
 

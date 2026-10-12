@@ -4,26 +4,12 @@ import { configureApi } from '@/api/client'
 import { normalizarRol } from '@/constants/roles'
 import { nombreCompleto } from '@/utils/formatters'
 import { AuthContext } from './AuthContext'
-import { expiracionDelToken, tokenExpirado } from './jwt'
-import {
-  esClaveDeSesion,
-  guardarRegistroPendiente,
-  guardarSesion,
-  leerRegistroPendiente,
-  leerSesion,
-  limpiarSesion,
-  SESION_VACIA,
-} from './storage'
+import { decodificarToken, expiracionDelToken, tokenExpirado } from './jwt'
+import { esClaveDeSesion, guardarSesion, leerSesion, limpiarSesion, SESION_VACIA } from './storage'
 
 // Por que termino la ultima sesion: el login muestra un aviso si expiro y, si el usuario
 // salio por su cuenta, no se recuerda la pagina en la que estaba.
 const MOTIVOS_CIERRE = { EXPIRADA: 'expirada', LOGOUT: 'logout' }
-
-// El tokenRegistro del primer acceso vale 15 minutos; se descarta un poco antes.
-const VIGENCIA_REGISTRO_MS = 14 * 60_000
-
-const MENSAJE_REGISTRO_VENCIDO =
-  'El tiempo para completar tu registro terminó. Vuelve a entrar con tu cuenta.'
 
 // Si el token guardado ya vencio, se descarta antes de renderizar las rutas.
 const sesionInicial = () => {
@@ -35,27 +21,26 @@ const sesionInicial = () => {
   return { sesion: guardada, motivoCierre: null }
 }
 
-const registroVigente = () => {
-  const registro = leerRegistroPendiente()
-  if (registro && registro.expira > Date.now()) return registro
-  if (registro) guardarRegistroPendiente(null)
-  return null
+// Sesion a partir de la respuesta del login o del registro: { token, usuario }. Si solo trae
+// { token, rol }, la matricula sale del token (claim `sub`, o `matricula` en la version
+// anterior) y el nombre y el correo los completa GET /usuarios/me.
+const sesionDesdeRespuesta = ({ token, usuario, rol }, credenciales = {}) => {
+  const claims = decodificarToken(token) ?? {}
+  return {
+    token,
+    rol: normalizarRol(usuario?.rol ?? rol ?? claims.rol),
+    matricula: String(
+      usuario?.matricula ?? claims.sub ?? claims.matricula ?? credenciales.matricula ?? '',
+    ),
+    nombre: nombreCompleto(usuario),
+    correo: usuario?.correo ?? credenciales.correo ?? '',
+  }
 }
-
-// Sesion a partir de la respuesta del login o del registro: { token, usuario }.
-const sesionDesdeRespuesta = ({ token, usuario }) => ({
-  token,
-  rol: normalizarRol(usuario?.rol),
-  matricula: usuario?.matricula ?? '',
-  nombre: nombreCompleto(usuario),
-  correo: usuario?.correo ?? '',
-})
 
 export const AuthProvider = ({ children }) => {
   const [inicial] = useState(sesionInicial)
   const [sesion, setSesion] = useState(inicial.sesion)
   const [motivoCierre, setMotivoCierre] = useState(inicial.motivoCierre)
-  const [registroPendiente, setRegistroPendiente] = useState(registroVigente)
   const tokenRef = useRef(sesion.token)
 
   // No navega: al quedar sin sesion, RequireRole manda a /login. Navegar aqui competiria con
@@ -99,35 +84,23 @@ export const AuthProvider = ({ children }) => {
     return () => window.removeEventListener('storage', alCambiar)
   }, [])
 
-  const iniciarSesion = useCallback((data) => {
-    const nueva = sesionDesdeRespuesta(data)
+  const iniciarSesion = useCallback((data, credenciales) => {
+    const nueva = sesionDesdeRespuesta(data, credenciales)
     if (!nueva.token || !nueva.rol) throw new Error('Respuesta del servidor inválida')
     guardarSesion(nueva)
-    guardarRegistroPendiente(null)
     tokenRef.current = nueva.token
-    setRegistroPendiente(null)
     setSesion(nueva)
     setMotivoCierre(null)
   }, [])
 
-  // proveedor: 'microsoft' | 'google'. Con un usuario registrado inicia la sesion (SoloInvitados
-  // redirige); en el primer acceso guarda el registro pendiente y responde `registroPendiente`.
-  const entrarConProveedor = useCallback(
-    async (proveedor, idToken) => {
+  // credenciales: { correo, pwd } o { matricula, pwd }. Con exito no navega: SoloInvitados
+  // redirige a la pagina pedida o al inicio del rol.
+  const login = useCallback(
+    async (credenciales) => {
       try {
-        const data = await authApi[proveedor](idToken)
-        if (data?.registroPendiente) {
-          const registro = {
-            tokenRegistro: data.tokenRegistro,
-            perfil: data.perfil,
-            expira: Date.now() + VIGENCIA_REGISTRO_MS,
-          }
-          guardarRegistroPendiente(registro)
-          setRegistroPendiente(registro)
-          return { ok: true, registroPendiente: true }
-        }
-        iniciarSesion(data ?? {})
-        return { ok: true, registroPendiente: false }
+        const data = await authApi.iniciarSesion(credenciales)
+        iniciarSesion(data ?? {}, credenciales)
+        return { ok: true }
       } catch (err) {
         return { ok: false, message: err.message }
       }
@@ -135,27 +108,17 @@ export const AuthProvider = ({ children }) => {
     [iniciarSesion],
   )
 
-  const descartarRegistro = useCallback(() => {
-    guardarRegistroPendiente(null)
-    setRegistroPendiente(null)
-  }, [])
-
-  // rol: 'TUTORADO' | 'TUTOR'. `errores` trae los errores por campo del backend.
-  const completarRegistro = useCallback(
-    async ({ matricula, rol }) => {
-      const registro = registroVigente()
-      if (!registro) {
-        setRegistroPendiente(null)
-        return { ok: false, vencido: true, message: MENSAJE_REGISTRO_VENCIDO }
-      }
+  // Crea la cuenta. Si el backend ya devuelve el token, entra directo (`sesionIniciada`); si
+  // no, la pantalla manda al login. `errores` trae los errores por campo del backend.
+  const registro = useCallback(
+    async (datos) => {
       try {
-        const data = await authApi.completarRegistro({
-          tokenRegistro: registro.tokenRegistro,
-          matricula,
-          rol,
-        })
-        iniciarSesion(data ?? {})
-        return { ok: true }
+        const data = await authApi.registrarse(datos)
+        if (data?.token) {
+          iniciarSesion(data, datos)
+          return { ok: true, sesionIniciada: true }
+        }
+        return { ok: true, sesionIniciada: false }
       } catch (err) {
         return { ok: false, message: err.message, errores: err.errores ?? {} }
       }
@@ -184,23 +147,12 @@ export const AuthProvider = ({ children }) => {
       isAuthenticated: Boolean(sesion.token),
       sesionExpirada: motivoCierre === MOTIVOS_CIERRE.EXPIRADA,
       cierreVoluntario: motivoCierre === MOTIVOS_CIERRE.LOGOUT,
-      registroPendiente,
-      entrarConProveedor,
-      completarRegistro,
-      descartarRegistro,
+      login,
+      registro,
       logout,
       sincronizarUsuario,
     }),
-    [
-      sesion,
-      motivoCierre,
-      registroPendiente,
-      entrarConProveedor,
-      completarRegistro,
-      descartarRegistro,
-      logout,
-      sincronizarUsuario,
-    ],
+    [sesion, motivoCierre, login, registro, logout, sincronizarUsuario],
   )
 
   return <AuthContext.Provider value={valor}>{children}</AuthContext.Provider>
