@@ -50,3 +50,13 @@ html,
 body {
   overflow-x: hidden;
 }
+
+/* Texto solo para lectores de pantalla */
+.solo-lectores {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
