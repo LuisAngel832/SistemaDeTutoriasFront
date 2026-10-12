@@ -39,6 +39,35 @@ const CABECERAS_SEGURIDAD = {
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
 }
 
+// Precarga la fuente del texto (subconjunto latino, ver src/styles/fuente.css) para que no se
+// pinte primero con la del sistema y luego cambie. El nombre lleva el hash del build.
+const precargarFuente = () => ({
+  name: 'precargar-fuente',
+  apply: 'build',
+  transformIndexHtml: {
+    order: 'post',
+    handler: (_html, { bundle }) => {
+      const fuente = Object.keys(bundle ?? {}).find((archivo) =>
+        /montserrat-latin-wght-normal.*\.woff2$/.test(archivo),
+      )
+      if (!fuente) return []
+      return [
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'preload',
+            href: `/${fuente}`,
+            as: 'font',
+            type: 'font/woff2',
+            crossorigin: '',
+          },
+          injectTo: 'head',
+        },
+      ]
+    },
+  },
+})
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   // Carga las variables de .env (loadEnv es necesario porque process.env no
@@ -50,8 +79,10 @@ export default defineConfig(({ mode }) => {
   // o VITE_RELEASE si se define a mano.
   const RELEASE = env.VITE_RELEASE || env.RENDER_GIT_COMMIT || ''
 
+  const plugins = [react(), precargarFuente()]
+
   return {
-    plugins: [react()],
+    plugins,
     define: {
       'import.meta.env.VITE_RELEASE': JSON.stringify(RELEASE),
     },
