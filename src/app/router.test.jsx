@@ -5,8 +5,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { guardarSesion } from '@/features/auth/storage'
 import { respuestaOk, servidor, usarServidorMock } from '@/test/servidor'
 import { crearToken } from '@/test/tokens'
+import { reportarError } from './monitoreo'
 import PaginaError from './PaginaError'
 import { rutas } from './router'
+
+vi.mock('./monitoreo', () => ({ reportarError: vi.fn() }))
 
 usarServidorMock()
 
@@ -84,9 +87,10 @@ describe('router', () => {
 })
 
 describe('PaginaError', () => {
-  it('se muestra si una pagina falla al renderizar', async () => {
+  it('se muestra y reporta el error si una pagina falla al renderizar', async () => {
+    const error = new Error('fallo de prueba')
     const PaginaRota = () => {
-      throw new Error('fallo de prueba')
+      throw error
     }
     const router = createMemoryRouter(
       [{ path: '/', element: <PaginaRota />, errorElement: <PaginaError /> }],
@@ -98,6 +102,7 @@ describe('PaginaError', () => {
 
     expect(await screen.findByRole('heading', { name: 'Algo salió mal' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Reintentar' })).toBeInTheDocument()
+    expect(reportarError).toHaveBeenCalledWith(error, { origen: 'router' })
     consola.mockRestore()
   })
 })

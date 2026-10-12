@@ -1,4 +1,5 @@
-import { QueryClient } from '@tanstack/react-query'
+import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query'
+import { reportarError } from './monitoreo'
 
 // Un 4xx no se reintenta: el backend ya dio su respuesta definitiva.
 const reintentar = (intentos, error) => {
@@ -9,6 +10,19 @@ const reintentar = (intentos, error) => {
 
 export const crearQueryClient = () =>
   new QueryClient({
+    // Reporta los errores inesperados de cualquier consulta o mutacion. No se envian las
+    // variables de las mutaciones: pueden traer datos personales.
+    queryCache: new QueryCache({
+      onError: (error, query) =>
+        reportarError(error, { origen: 'query', extra: { clave: query.queryKey } }),
+    }),
+    mutationCache: new MutationCache({
+      onError: (error, _variables, _contexto, mutation) =>
+        reportarError(error, {
+          origen: 'mutation',
+          extra: { clave: mutation.options.mutationKey },
+        }),
+    }),
     defaultOptions: {
       queries: {
         // Volver a una pantalla no vuelve a pedir datos recientes.

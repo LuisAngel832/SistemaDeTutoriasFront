@@ -13,16 +13,21 @@ services:
       # URL del backend que se "hornea" en el bundle durante el build.
       - key: VITE_API_URL
         value: https://tutoriasbe.onrender.com
+      # DSN de Sentry o GlitchTip (publico). Sin valor no se envian errores. El release es el
+      # SHA del commit (RENDER_GIT_COMMIT, que Render define en el build).
+      - key: VITE_SENTRY_DSN
+        sync: false
     # Cabeceras de seguridad. Mantenerlas iguales a CABECERAS_SEGURIDAD de vite.config.js,
     # que las aplica en `npm run preview` para probarlas en local.
     # La CSP va en modo Report-Only: el navegador avisa en consola de lo que bloquearia, sin
     # bloquearlo. Cuando no haya avisos, renombrar a Content-Security-Policy.
     # - style-src 'unsafe-inline': sonner inyecta un <style> en tiempo de ejecucion.
-    # - connect-src: si cambia VITE_API_URL, actualizar tambien aqui.
+    # - connect-src: si cambia VITE_API_URL, actualizar tambien aqui. *.sentry.io recibe los
+    #   errores; con GlitchTip u otro host, cambiarlo por el del DSN.
     headers:
       - path: /*
         name: Content-Security-Policy-Report-Only
-        value: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://tutoriasbe.onrender.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+        value: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://tutoriasbe.onrender.com https://*.sentry.io; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
       - path: /*
         name: X-Frame-Options
         value: DENY

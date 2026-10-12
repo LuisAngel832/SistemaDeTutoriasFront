@@ -201,6 +201,16 @@ en la consola lo que bloquearia, sin bloquearlo.
 - Cuando la consola no muestre violaciones en ningun rol, renombrar la cabecera a
   `Content-Security-Policy` para que se aplique.
 
+### Monitoreo de errores
+
+Con `VITE_SENTRY_DSN` (Sentry o GlitchTip) se reportan los errores de render y de carga de
+paginas (`PaginaError`), los de consultas y mutaciones de React Query y los no capturados. No
+se reportan los 4xx, las cancelaciones ni los fallos de red del usuario. El `release` es el
+SHA del commit (`RENDER_GIT_COMMIT`). Sin DSN no se descarga el SDK. No se envian datos del
+usuario, cabeceras (el token), cuerpos de peticiones ni parametros de URL
+([`src/app/monitoreo.js`](src/app/monitoreo.js)). Con GlitchTip u otro host, agregar su
+dominio a `connect-src` de la CSP.
+
 ## Estructura del proyecto
 
 Cada carpeta de `features/` reune la interfaz, los hooks y el estado de un dominio; lo que

@@ -27,7 +27,7 @@ const CABECERAS_SEGURIDAD = {
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self'",
     "img-src 'self' data:",
-    "connect-src 'self' https://tutoriasbe.onrender.com",
+    "connect-src 'self' https://tutoriasbe.onrender.com https://*.sentry.io",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
@@ -46,8 +46,15 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const BACKEND_URL = env.VITE_BACKEND_URL || 'https://tutoriasbe.onrender.com'
 
+  // Version que se reporta a Sentry: el SHA del commit que Render construye (RENDER_GIT_COMMIT),
+  // o VITE_RELEASE si se define a mano.
+  const RELEASE = env.VITE_RELEASE || env.RENDER_GIT_COMMIT || ''
+
   return {
     plugins: [react()],
+    define: {
+      'import.meta.env.VITE_RELEASE': JSON.stringify(RELEASE),
+    },
     // '@' apunta a src/ para evitar imports relativos profundos.
     resolve: {
       alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
