@@ -127,6 +127,7 @@ local esta listado en `.gitignore`.
 | `npm run dev`           | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
 | `npm run build`         | Compila a produccion en la carpeta `dist/`.                                                              |
 | `npm run preview`       | Sirve el `dist/` localmente para probar el build.                                                        |
+| `npm run analizar`      | Compila y genera `dist/estadisticas.html` con el peso de cada modulo (gzip incluido).                    |
 | `npm run lint`          | Ejecuta ESLint sobre todo el codigo.                                                                     |
 | `npm run format`        | Formatea todo el proyecto con Prettier.                                                                  |
 | `npm run format:check`  | Verifica el formato sin modificar archivos (lo usa el CI).                                               |

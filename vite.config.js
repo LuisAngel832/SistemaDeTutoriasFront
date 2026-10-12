@@ -68,8 +68,11 @@ const precargarFuente = () => ({
   },
 })
 
+// `npm run analizar`: genera dist/estadisticas.html con el peso de cada modulo del bundle.
+const ANALIZAR = process.env.npm_lifecycle_event === 'analizar'
+
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
   // Carga las variables de .env (loadEnv es necesario porque process.env no
   // incluye los archivos .env dentro de la configuracion de Vite).
   const env = loadEnv(mode, process.cwd(), '')
@@ -80,6 +83,12 @@ export default defineConfig(({ mode }) => {
   const RELEASE = env.VITE_RELEASE || env.RENDER_GIT_COMMIT || ''
 
   const plugins = [react(), precargarFuente()]
+  if (ANALIZAR) {
+    const { visualizer } = await import('rollup-plugin-visualizer')
+    plugins.push(
+      visualizer({ filename: 'dist/estadisticas.html', template: 'treemap', gzipSize: true }),
+    )
+  }
 
   return {
     plugins,
