@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { guardarSesion } from '@/features/auth/storage'
+import { guardarToken } from '@/features/auth/storage'
 import { respuestaOk, servidor, usarServidorMock } from '@/test/servidor'
 import { crearToken } from '@/test/tokens'
 import { reportarError } from './monitoreo'
@@ -19,7 +19,7 @@ beforeEach(() => {
 })
 
 const iniciarSesionComo = (rol, matricula = '1001') =>
-  guardarSesion({ token: crearToken({ rol: rol.toUpperCase() }), rol, matricula })
+  guardarToken(crearToken({ rol: rol.toUpperCase(), matricula }))
 
 const renderRuta = (ruta) => {
   const router = createMemoryRouter(rutas, { initialEntries: [ruta] })

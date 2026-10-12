@@ -1,47 +1,32 @@
 // Unico modulo que lee y escribe la sesion en el almacenamiento del navegador.
-// Se conservan las claves historicas para no cerrar las sesiones ya abiertas.
+// Solo se guarda el token: el rol y la matricula salen de sus claims y el nombre y el correo de
+// GET /usuarios/me. Al ser una sola clave, las demas pestanas nunca ven una sesion a medias.
 
-export const STORAGE_KEYS = {
-  TOKEN: 'token',
-  ROL: 'rol',
-  MATRICULA: 'matricula',
-  NOMBRE: 'nombre',
-  CORREO: 'correo',
-}
+export const CLAVE_TOKEN = 'token'
 
-export const SESION_VACIA = { token: '', rol: '', matricula: '', nombre: '', correo: '' }
-
-const CAMPOS = {
-  token: STORAGE_KEYS.TOKEN,
-  rol: STORAGE_KEYS.ROL,
-  matricula: STORAGE_KEYS.MATRICULA,
-  nombre: STORAGE_KEYS.NOMBRE,
-  correo: STORAGE_KEYS.CORREO,
-}
+// Claves de la version anterior, que guardaba la sesion campo por campo. Se borran al guardar.
+const CLAVES_ANTERIORES = ['rol', 'matricula', 'nombre', 'correo']
 
 // localStorage puede lanzar (modo privado, almacenamiento bloqueado): se trata como vacio.
-const leer = (clave) => {
+export const leerToken = () => {
   try {
-    return localStorage.getItem(clave) ?? ''
+    return localStorage.getItem(CLAVE_TOKEN) ?? ''
   } catch {
     return ''
   }
 }
 
-export const leerSesion = () =>
-  Object.fromEntries(Object.entries(CAMPOS).map(([campo, clave]) => [campo, leer(clave)]))
-
-export const guardarSesion = (sesion) => {
+export const guardarToken = (token) => {
   try {
-    for (const [campo, clave] of Object.entries(CAMPOS)) {
-      if (sesion[campo]) localStorage.setItem(clave, sesion[campo])
-      else localStorage.removeItem(clave)
-    }
+    if (token) localStorage.setItem(CLAVE_TOKEN, token)
+    else localStorage.removeItem(CLAVE_TOKEN)
+    for (const clave of CLAVES_ANTERIORES) localStorage.removeItem(clave)
   } catch {
     // Sin almacenamiento la sesion vive solo en memoria hasta recargar.
   }
 }
 
-export const limpiarSesion = () => guardarSesion(SESION_VACIA)
+export const limpiarToken = () => guardarToken('')
 
-export const esClaveDeSesion = (clave) => clave === null || Object.values(CAMPOS).includes(clave)
+// null = localStorage.clear() en otra pestana.
+export const esClaveDeSesion = (clave) => clave === null || clave === CLAVE_TOKEN
