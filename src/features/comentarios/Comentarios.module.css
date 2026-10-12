@@ -128,7 +128,7 @@
 
 .borrar:focus-visible {
   outline: var(--contorno-foco);
-  outline-offset: 1px;
+  outline-offset: 2px;
 }
 
 .borrar:disabled {

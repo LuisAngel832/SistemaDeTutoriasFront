@@ -49,7 +49,8 @@
   --color-texto-suave: #5b6778;
   /* Texto de apoyo: cumple contraste 4.5:1 sobre blanco y sobre --color-fondo. */
   --color-texto-tenue: #687182;
-  --color-texto-placeholder: #9aa3b2;
+  /* Placeholder: 4.7:1 sobre blanco (WCAG 1.4.3). */
+  --color-texto-placeholder: #6b7484;
   --color-texto-inverso: #ffffff;
 
   /* Superficies y bordes */
@@ -57,11 +58,16 @@
   --color-fondo: #f5f7fb;
   --color-fondo-suave: #f9fafc;
   --color-fondo-hover: #f1f3f8;
+  /* Bordes decorativos (tarjetas, divisores). No usar en el limite de un control. */
   --color-borde: #d4dae4;
   --color-borde-suave: #e6eaf2;
   --color-borde-hover: #c8d2e0;
   --color-borde-fuerte: #b9c1cf;
   --color-divisor: #eef1f6;
+  /* Limite de controles (campos, botones sin fondo, opciones): >= 3:1 sobre blanco y sobre
+     --color-fondo-hover (WCAG 1.4.11). */
+  --color-borde-control: #7d879a;
+  --color-borde-control-hover: #5b6778;
 
   /* Sombras */
   --sombra-tarjeta: 0 2px 10px rgba(15, 30, 60, 0.04);
@@ -69,8 +75,10 @@
   --sombra-panel: 0 4px 24px rgba(15, 30, 60, 0.05);
   --sombra-exito: 0 2px 6px rgba(29, 132, 66, 0.3);
   --sombra-exito-hover: 0 4px 12px rgba(29, 132, 66, 0.4);
-  --anillo-foco: 0 0 0 3px rgba(45, 95, 167, 0.15);
-  --contorno-foco: 3px solid rgba(45, 95, 167, 0.35);
+  /* Foco visible con 6.3:1 sobre blanco (WCAG 1.4.11 / 2.4.7). En los campos, el anillo de 1px
+     se suma al borde primario y forma un contorno de 2px. */
+  --anillo-foco: 0 0 0 1px var(--color-primario), 0 0 0 4px rgba(45, 95, 167, 0.15);
+  --contorno-foco: 3px solid var(--color-primario);
 
   /* Radios */
   --radio-sm: 8px;

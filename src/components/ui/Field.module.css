@@ -4,7 +4,7 @@
   min-width: 0;
   height: 44px;
   padding: 0 0.9rem;
-  border: 1px solid var(--color-borde);
+  border: 1px solid var(--color-borde-control);
   border-radius: var(--radio-sm);
   background-color: var(--color-superficie);
   color: var(--color-texto);
@@ -21,7 +21,7 @@
 }
 
 .control:hover:not(:focus):not(:disabled) {
-  border-color: var(--color-borde-fuerte);
+  border-color: var(--color-borde-control-hover);
 }
 
 .control:focus {
@@ -36,12 +36,15 @@
   opacity: 0.7;
 }
 
+/* Borde de error con 4.8:1 sobre blanco; en foco, contorno de 2px como el resto. */
 .control[aria-invalid='true'] {
-  border-color: var(--color-peligro-borde-hover);
+  border-color: var(--color-peligro);
 }
 
 .control[aria-invalid='true']:focus {
-  box-shadow: 0 0 0 3px rgba(217, 48, 48, 0.15);
+  box-shadow:
+    0 0 0 1px var(--color-peligro),
+    0 0 0 4px rgba(217, 48, 48, 0.15);
 }
 
 /* Select con flecha propia */
@@ -110,5 +113,5 @@
 
 .accion:focus-visible {
   outline: var(--contorno-foco);
-  outline-offset: 1px;
+  outline-offset: 2px;
 }
