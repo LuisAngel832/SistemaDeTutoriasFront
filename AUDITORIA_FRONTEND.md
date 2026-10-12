@@ -407,3 +407,24 @@ No encontré hallazgos de severidad **Crítica** en el código del frontend. Las
 | Pasar la sesión a cookie `HttpOnly` con protección CSRF                                                            | Medio–Grande (front + back) |
 | Subir la cobertura de ramas (75 % → 85 %) en `queryClient`, `AppLayout` y los detalles de tutoría                  | Pequeño                     |
 | Presupuesto de rendimiento en la CI (tamaño de chunks) y Lighthouse CI                                             | Pequeño                     |
+
+---
+
+## Seguimiento (2026-10-12)
+
+| Hallazgo   | Estado                        | Detalle                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| H-01, H-05 | Parcial                       | Cabeceras en `render.yaml`. `X-Frame-Options`, `nosniff`, `Referrer-Policy` y `Permissions-Policy` activas; la CSP en modo Report-Only hasta probarla en staging con los tres roles.                                                                                                                                                                                                                                                  |
+| H-03       | Resuelto                      | El rol y la matrícula de la sesión salen de los claims del JWT, no de `localStorage`. Confirmado en el backend (`Shtven/TutoriasBackend`, `master`): `JWTFilter` toma el rol del token firmado y cada endpoint lo valida con `@PreAuthorize`; `/admin/**` exige `ADMIN`.                                                                                                                                                              |
+| H-04       | Resuelto                      | `react-router-dom` 7.18.4 y `vite` 8.3.4. `npm audit --omit=dev`: 0 vulnerabilidades.                                                                                                                                                                                                                                                                                                                                                 |
+| H-14       | Resuelto                      | La CI ejecuta `npm audit --omit=dev --audit-level=high`. Render despliega con `autoDeployTrigger: checksPass`. Ruleset de GitHub en `main`: check `verificar` obligatorio y al día con `main`, sin force-push ni borrado.                                                                                                                                                                                                             |
+| H-15       | Resuelto (falta el DSN)       | Sentry/GlitchTip en `PaginaError` y en las cachés de React Query, con el SHA del commit como `release` y sin datos personales. Se activa al definir `VITE_SENTRY_DSN` en Render. Pendiente: subir los source maps para ver las pilas sin minificar.                                                                                                                                                                                   |
+| H-02       | Abierto (depende del backend) | Confirmado en el backend: `AuthService.registrar` acepta `TUTOR` sin aprobación (`ROLES_REGISTRABLES = {TUTORADO, TUTOR}`), y el acceso con Google acepta cualquier cuenta `gmail.com` (`auth.google.dominio`). Se decidió mantener el selector de rol en el front. **Pedir al backend:** aprobación del admin, lista de tutores autorizados o restringir el alta de tutores a cuentas de la UV, también en el futuro `/auth/signup`. |
+
+### Bloqueante antes de fusionar `feat/nuevo-modelo` a `main`
+
+El front usa `POST /auth/signin` y `POST /auth/signup` (correo o matrícula y contraseña), pero el
+backend desplegado y la rama `master` de `Shtven/TutoriasBackend` solo exponen
+`/auth/microsoft`, `/auth/google` y `/auth/registro` (comprobado en `/v3/api-docs` del backend
+desplegado). Hasta que el backend publique esos endpoints, el login y el registro de esta rama
+no funcionan contra producción.
