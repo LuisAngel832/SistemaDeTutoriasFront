@@ -259,6 +259,26 @@ describe('sesion activa', () => {
     expect(await screen.findByText('Inicio tutorado')).toBeInTheDocument()
   })
 
+  it('toma el rol y la matricula del token aunque localStorage diga otra cosa', async () => {
+    guardarSesion({
+      token: crearToken({ rol: 'TUTORADO', matricula: 'S23014587' }),
+      rol: 'tutor',
+      matricula: 'S99999999',
+      nombre: 'Sofía',
+    })
+    renderApp('/tutor/home')
+
+    expect(await screen.findByText('Inicio tutorado')).toBeInTheDocument()
+    expect(screen.getByText('S23014587 - tutorado - Sofía')).toBeInTheDocument()
+  })
+
+  it('sin token no usa el rol que quede en localStorage', async () => {
+    localStorage.setItem('rol', 'tutor')
+    renderApp('/tutor/home')
+
+    expect(await screen.findByText('Pantalla de login')).toBeInTheDocument()
+  })
+
   it('con sesion activa no deja ver el login', async () => {
     guardarSesion({ token: crearToken(), rol: 'tutor', matricula: 'S1' })
     renderApp('/login')

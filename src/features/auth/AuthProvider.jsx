@@ -11,24 +11,37 @@ import { esClaveDeSesion, guardarSesion, leerSesion, limpiarSesion, SESION_VACIA
 // salio por su cuenta, no se recuerda la pagina en la que estaba.
 const MOTIVOS_CIERRE = { EXPIRADA: 'expirada', LOGOUT: 'logout' }
 
+// Sesion guardada con el rol y la matricula del token: las claves `rol` y `matricula` de
+// localStorage se pueden editar a mano, el token no sin invalidar su firma.
+const sesionGuardada = () => {
+  const guardada = leerSesion()
+  const claims = decodificarToken(guardada.token)
+  if (!claims) return SESION_VACIA
+  return {
+    ...guardada,
+    rol: normalizarRol(claims.rol),
+    matricula: String(claims.sub ?? claims.matricula ?? ''),
+  }
+}
+
 // Si el token guardado ya vencio, se descarta antes de renderizar las rutas.
 const sesionInicial = () => {
-  const guardada = leerSesion()
-  if (guardada.token && tokenExpirado(guardada.token)) {
+  const { token } = leerSesion()
+  if (token && tokenExpirado(token)) {
     limpiarSesion()
     return { sesion: SESION_VACIA, motivoCierre: MOTIVOS_CIERRE.EXPIRADA }
   }
-  return { sesion: guardada, motivoCierre: null }
+  return { sesion: sesionGuardada(), motivoCierre: null }
 }
 
-// Sesion a partir de la respuesta del login o del registro: { token, usuario }. Si solo trae
-// { token, rol }, la matricula sale del token (claim `sub`, o `matricula` en la version
-// anterior) y el nombre y el correo los completa GET /usuarios/me.
+// Sesion a partir de la respuesta del login o del registro: { token, usuario }. El rol sale
+// del token si lo trae. Si solo trae { token, rol }, la matricula sale del token (claim `sub`,
+// o `matricula` en la version anterior) y el nombre y el correo los completa GET /usuarios/me.
 const sesionDesdeRespuesta = ({ token, usuario, rol }, credenciales = {}) => {
   const claims = decodificarToken(token) ?? {}
   return {
     token,
-    rol: normalizarRol(usuario?.rol ?? rol ?? claims.rol),
+    rol: normalizarRol(claims.rol ?? usuario?.rol ?? rol),
     matricula: String(
       usuario?.matricula ?? claims.sub ?? claims.matricula ?? credenciales.matricula ?? '',
     ),
@@ -78,7 +91,7 @@ export const AuthProvider = ({ children }) => {
   // Mantiene sincronizadas las pestanas abiertas (login o logout en otra pestana).
   useEffect(() => {
     const alCambiar = (evento) => {
-      if (esClaveDeSesion(evento.key)) setSesion(leerSesion())
+      if (esClaveDeSesion(evento.key)) setSesion(sesionGuardada())
     }
     window.addEventListener('storage', alCambiar)
     return () => window.removeEventListener('storage', alCambiar)
