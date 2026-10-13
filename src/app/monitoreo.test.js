@@ -94,3 +94,22 @@ describe('reportarError', () => {
     })
   })
 })
+
+describe('respuestas con otra forma', () => {
+  it('se reportan con la ruta y los campos que fallaron', async () => {
+    const { RespuestaInvalidaError } = await import('@/api/client')
+    await monitoreo.iniciarMonitoreo({ dsn: 'https://clave@o1.ingest.sentry.io/1' })
+    const error = new RespuestaInvalidaError('GET /tutorias/12', ['materia: se esperaba string'])
+
+    monitoreo.reportarError(error, { origen: 'query', extra: { clave: ['tutorias', 12] } })
+
+    expect(Sentry.captureException).toHaveBeenCalledWith(error, {
+      tags: { origen: 'query' },
+      extra: {
+        clave: ['tutorias', 12],
+        ruta: 'GET /tutorias/12',
+        detalles: ['materia: se esperaba string'],
+      },
+    })
+  })
+})

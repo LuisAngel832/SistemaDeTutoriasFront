@@ -32,11 +32,16 @@ export const debeReportarse = (error) => {
 const capturar = (error, { origen, extra }) =>
   sentry.captureException(error, { tags: { origen }, extra })
 
-// origen: 'router' | 'query' | 'mutation' | ...; extra: datos sin informacion personal.
+// origen: 'router' | 'query' | 'mutation' | ...; extra: datos sin informacion personal. Una
+// RespuestaInvalidaError agrega la ruta (sin query) y los campos de la respuesta que fallaron.
 export const reportarError = (error, { origen = 'app', extra } = {}) => {
   if (!debeReportarse(error)) return
-  if (sentry) capturar(error, { origen, extra })
-  else pendientes?.push([error, { origen, extra }])
+  const contexto = {
+    origen,
+    extra: error.detalles ? { ...extra, ruta: error.ruta, detalles: error.detalles } : extra,
+  }
+  if (sentry) capturar(error, contexto)
+  else pendientes?.push([error, contexto])
 }
 
 // release: SHA del commit desplegado, para saber que version produjo cada error.
