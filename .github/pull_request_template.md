@@ -4,7 +4,7 @@
 
 ## Como probarlo
 
-<!-- Pasos para verificarlo manualmente (ver "Checklist de pruebas manuales" en PLAN_IMPLEMENTACION.md). -->
+<!-- Pasos para verificarlo manualmente (ver "Checklist de pruebas manuales" en docs/PLAN_IMPLEMENTACION.md). -->
 
 ## Capturas
 

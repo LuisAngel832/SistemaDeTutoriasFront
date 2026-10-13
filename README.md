@@ -25,7 +25,7 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 
 Sigue los mockups de escritorio del 5 oct 2026 (16 pantallas) y el contrato de la API
 documentado en el backend (`docs/API.md`). El plan de la migracion esta en
-[PLAN_NUEVO_MODELO.md](PLAN_NUEVO_MODELO.md).
+[docs/PLAN_NUEVO_MODELO.md](docs/PLAN_NUEVO_MODELO.md).
 
 ### Acceso
 
@@ -325,8 +325,9 @@ validacion (`data: { nrc }`),
 
 Las convenciones de ramas, commits, codigo y el checklist de cada PR estan en
 [CONTRIBUTING.md](CONTRIBUTING.md). El plan del nuevo modelo esta en
-[PLAN_NUEVO_MODELO.md](PLAN_NUEVO_MODELO.md) y el de las mejoras anteriores en
-[PLAN_IMPLEMENTACION.md](PLAN_IMPLEMENTACION.md).
+[docs/PLAN_NUEVO_MODELO.md](docs/PLAN_NUEVO_MODELO.md) y el de las mejoras anteriores en
+[docs/PLAN_IMPLEMENTACION.md](docs/PLAN_IMPLEMENTACION.md). La auditoria tecnica del frontend y su seguimiento estan en
+[docs/AUDITORIA_FRONTEND.md](docs/AUDITORIA_FRONTEND.md).
 
 ## Solucion de problemas comunes
 

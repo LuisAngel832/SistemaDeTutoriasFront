@@ -61,6 +61,6 @@ Tipos habituales: `feat`, `fix`, `refactor`, `style`, `test`, `docs`, `build`, `
 - [ ] `npm run format:check` en verde
 - [ ] `npm run build` exitoso
 - [ ] Pruebas manuales en las pantallas afectadas, en escritorio y movil
-      (ver "Checklist de pruebas manuales" en [PLAN_IMPLEMENTACION.md](PLAN_IMPLEMENTACION.md))
+      (ver "Checklist de pruebas manuales" en [docs/PLAN_IMPLEMENTACION.md](docs/PLAN_IMPLEMENTACION.md))
 - [ ] Capturas antes/despues si hay cambios visuales
 - [ ] README actualizado si cambian estructura, scripts o variables de entorno
