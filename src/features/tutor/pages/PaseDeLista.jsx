@@ -72,12 +72,12 @@ const PaseDeLista = () => {
     <Pagina>
       <div>
         <Button as={Link} to={ROUTES.tutor.detalle(sesion.idTutoria)} variant="secondary" size="sm">
-          ← {sesion.materia}
+          ← {sesion.materia?.nombre}
         </Button>
       </div>
       <EncabezadoPagina
         title="Pase de lista"
-        subtitle={`${sesion.materia} · ${formatFechaLarga(sesion.fecha, { anio: true, mayuscula: false })} · ${formatRangoHora(sesion.horaInicio, sesion.horaFin)} · ${formatLugar(sesion.edificio, sesion.aula)}`}
+        subtitle={`${sesion.materia?.nombre} · ${formatFechaLarga(sesion.fecha, { anio: true, mayuscula: false })} · ${formatRangoHora(sesion.horaInicio, sesion.horaFin)} · ${formatLugar(sesion.edificio, sesion.aula)}`}
         action={<BadgeEstado tipo="sesion" estado={sesion.estado} />}
       />
 
@@ -268,7 +268,7 @@ const ModalCierre = ({ open, sesion, resumen, bajas, loading, onConfirmar, onCer
     open={open}
     onClose={loading ? undefined : onCerrar}
     title="¿Cerrar el pase de lista?"
-    description={`${sesion.materia} · ${formatFechaLarga(sesion.fecha, { mayuscula: false })} · ${formatRangoHora(sesion.horaInicio, sesion.horaFin)}`}
+    description={`${sesion.materia?.nombre} · ${formatFechaLarga(sesion.fecha, { mayuscula: false })} · ${formatRangoHora(sesion.horaInicio, sesion.horaFin)}`}
     actions={
       <>
         <Button variant="secondary" onClick={onCerrar} disabled={loading}>

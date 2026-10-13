@@ -445,10 +445,7 @@ export const historialAsistencia = () => ({
     materia: 'Estructuras de Datos',
     edificio: 2,
     aula: 7,
-    horarios: [
-      { dia: 'LUNES', horaInicio: '10:00', horaFin: '12:00' },
-      { dia: 'MIERCOLES', horaInicio: '10:00', horaFin: '12:00' },
-    ],
+    horarios: [horario(31, 'LUNES', '10:00', '12:00'), horario(32, 'MIERCOLES', '10:00', '12:00')],
     cupo: cupo(4),
   },
   resumen: {

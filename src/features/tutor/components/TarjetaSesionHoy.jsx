@@ -32,7 +32,7 @@ export const TarjetaSesionHoy = ({ sesion, ocupado, onAbrirLista, onCancelar }) 
         <BadgeEstado tipo="sesion" estado={estado} />
       </div>
       <h3 className={styles.titulo} id={idTitulo}>
-        {sesion.materia}
+        {sesion.materia?.nombre}
       </h3>
       <p className={styles.detalle}>
         {formatLugar(sesion.edificio, sesion.aula)} ·{' '}

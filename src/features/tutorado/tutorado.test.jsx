@@ -2,6 +2,7 @@ import { act, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { esquemas } from '@/api/esquemas'
 import { iniciarSesionComo, ok, renderApp, usuarioActual } from '@/test/app'
 import {
   choqueBasesDeDatos,
@@ -176,10 +177,11 @@ describe('Detalle e inscripción (04 y 05)', () => {
 })
 
 describe('Panel de inscripción (06)', () => {
+  // El panel recibe la tutoria como la entrega la API: validada y con `materia` normalizada.
   const renderPanel = (cambios, props = {}) =>
     renderConProveedores(
       <PanelInscripcion
-        tutoria={detalleTutoria(cambios)}
+        tutoria={esquemas.detalle.parse(detalleTutoria(cambios))}
         isSubmitting={false}
         onInscribirse={vi.fn()}
         onDarseDeBaja={vi.fn().mockResolvedValue()}

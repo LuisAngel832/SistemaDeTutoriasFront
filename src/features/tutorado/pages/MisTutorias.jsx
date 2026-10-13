@@ -111,7 +111,7 @@ const ProximaSesion = ({ sesion }) => {
       <div className={styles.proximaDatos}>
         <p className={styles.proximaEtiqueta}>Próxima sesión · {cuando}</p>
         <h2 className={styles.proximaTitulo}>
-          <Link to={ROUTES.tutorado.asistencia(sesion.idTutoria)}>{sesion.materia}</Link>
+          <Link to={ROUTES.tutorado.asistencia(sesion.idTutoria)}>{sesion.materia?.nombre}</Link>
         </h2>
         <p className={styles.proximaDetalle}>
           {formatRangoHora(sesion.horaInicio, sesion.horaFin)} ·{' '}

@@ -161,7 +161,7 @@ const Historial = ({ historial }) => {
       <Card as="section" padding="lg" aria-label="Asistencia por sesión">
         <div className={styles.encabezado}>
           <h2 className={styles.titulo}>
-            {tutoria.materia} · {formatListaDias(tutoria.horarios).toLowerCase()}
+            {tutoria.materia?.nombre} · {formatListaDias(tutoria.horarios).toLowerCase()}
             {horas ? ` ${horas}` : ''}
           </h2>
           <p className={styles.lugar}>

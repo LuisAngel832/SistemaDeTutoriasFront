@@ -1,5 +1,6 @@
 // Cliente HTTP unico para hablar con el backend.
-// Centraliza: URL base, token, timeout, formato de errores y respuesta ante 401.
+// Centraliza: URL base, token, timeout, formato de errores, respuesta ante 401 y validacion de
+// las respuestas (opcion `esquema`, ver esquemas.js).
 
 // Vacio en desarrollo para usar el proxy de Vite (mismo origen, sin CORS).
 const BASE_URL = import.meta.env.VITE_API_URL ?? ''
@@ -11,6 +12,7 @@ export const MENSAJES_ERROR = {
   sesion: 'Tu sesión expiró, vuelve a iniciar sesión',
   permisos: 'No tienes permiso para realizar esta acción',
   generico: 'Ocurrió un error inesperado',
+  formato: 'El servidor respondió con datos que no esperábamos. Inténtalo más tarde.',
 }
 
 // En los errores de validacion `data` es un mapa { campo: 'mensaje' }; `errores` lo expone para
@@ -38,6 +40,23 @@ export const configureApi = (opciones = {}) => {
   if (opciones.getToken) getToken = opciones.getToken
   if (opciones.onUnauthorized) onUnauthorized = opciones.onUnauthorized
 }
+
+// La respuesta no tiene la forma que espera el front: el contrato con el backend cambio.
+// `ruta` (sin query) y `detalles` (campos que fallaron) se envian a Sentry.
+export class RespuestaInvalidaError extends Error {
+  constructor(ruta, detalles) {
+    super(MENSAJES_ERROR.formato)
+    this.name = 'RespuestaInvalidaError'
+    this.ruta = ruta
+    this.detalles = detalles
+  }
+}
+
+const describirProblemas = (issues) =>
+  issues.slice(0, 5).map((issue) => {
+    const campo = issue.path.join('.') || '(raiz)'
+    return issue.expected ? `${campo}: se esperaba ${issue.expected}` : `${campo}: ${issue.code}`
+  })
 
 // Una peticion cancelada por quien la hizo (p. ej. al desmontar) no es un error que mostrar.
 export const esCancelacion = (error) => error?.name === 'AbortError'
@@ -72,7 +91,7 @@ const extraerMensaje = (cuerpo, fallback) => {
 
 export async function request(
   path,
-  { method = 'GET', body, auth = true, signal, timeout = TIMEOUT_MS } = {},
+  { method = 'GET', body, auth = true, signal, timeout = TIMEOUT_MS, esquema } = {},
 ) {
   const headers = { Accept: 'application/json' }
   if (body !== undefined) headers['Content-Type'] = 'application/json'
@@ -117,7 +136,14 @@ export async function request(
     throw new ApiError(extraerMensaje(cuerpo, fallback), { status: response.status, data: cuerpo })
   }
 
-  return cuerpo?.data ?? null
+  const data = cuerpo?.data ?? null
+  if (!esquema) return data
+  const resultado = esquema.safeParse(data)
+  if (resultado.success) return resultado.data
+  throw new RespuestaInvalidaError(
+    `${method} ${path.split('?')[0]}`,
+    describirProblemas(resultado.error.issues),
+  )
 }
 
 // Agrega query params omitiendo los vacios: conParametros('/tutorias', { q: 'web', dia: '' })

@@ -21,7 +21,7 @@ export const TuSemana = ({ tutoria, semana = [] }) => {
       clave: `${item.idTutoria}-${item.dia}-${item.horaInicio}`,
       dia: item.dia,
       horaInicio: item.horaInicio,
-      texto: `${formatRangoHora(item.horaInicio, item.horaFin)} · ${item.materia}`,
+      texto: `${formatRangoHora(item.horaInicio, item.horaFin)} · ${item.materia?.nombre}`,
       tipo: chocaCon(item.dia, item.idTutoria) ? 'choque' : 'otra',
     })),
     ...(tutoria.horarios ?? []).map((horario) => ({
