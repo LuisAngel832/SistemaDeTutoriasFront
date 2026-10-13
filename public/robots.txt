@@ -1,0 +1,5 @@
+# La aplicacion es privada: solo el acceso y el registro son publicos.
+User-agent: *
+Allow: /login
+Allow: /registro
+Disallow: /
