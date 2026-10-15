@@ -1,17 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { materiasApi } from '@/api/materias'
 import { clavesAdmin, clavesMaterias } from '@/api/queryKeys'
-
-// Envuelve una mutacion: { ok, message } o { ok: false, message, errores } con los errores
-// por campo del backend (NRC duplicado).
-const ejecutar = async (mutacion, variables, mensajeExito) => {
-  try {
-    await mutacion.mutateAsync(variables)
-    return { ok: true, message: mensajeExito }
-  } catch (error) {
-    return { ok: false, message: error.message, errores: error.errores ?? {} }
-  }
-}
+import { ejecutarMutacion } from '@/utils/ejecutarMutacion'
 
 // Catalogo de Experiencias Educativas (pantalla 16).
 export const useExperiencias = (q) => {
@@ -41,9 +31,10 @@ export const useExperiencias = (q) => {
     error: listaQuery.error?.message ?? '',
     guardando: crearM.isPending || actualizarM.isPending,
     eliminando: eliminarM.isPending,
-    crear: (datos) => ejecutar(crearM, datos, 'Experiencia educativa creada.'),
+    crear: (datos) => ejecutarMutacion(crearM, datos, 'Experiencia educativa creada.'),
     actualizar: (idMateria, datos) =>
-      ejecutar(actualizarM, { idMateria, ...datos }, 'Experiencia educativa actualizada.'),
-    eliminar: (idMateria) => ejecutar(eliminarM, idMateria, 'Experiencia educativa eliminada.'),
+      ejecutarMutacion(actualizarM, { idMateria, ...datos }, 'Experiencia educativa actualizada.'),
+    eliminar: (idMateria) =>
+      ejecutarMutacion(eliminarM, idMateria, 'Experiencia educativa eliminada.'),
   }
 }

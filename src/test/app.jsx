@@ -2,21 +2,16 @@ import { render } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { rutas } from '@/app/router'
-import { guardarSesion } from '@/features/auth/storage'
+import { guardarToken } from '@/features/auth/storage'
 import { USUARIOS } from './fixtures'
 import { respuestaOk } from './servidor'
 import { crearToken } from './tokens'
 
-// Inicia sesion como un usuario de los fixtures: rol 'tutorado' | 'tutor' | 'admin'.
+// Inicia sesion como un usuario de los fixtures: rol 'tutorado' | 'tutor' | 'admin'. El nombre
+// y el correo llegan con GET /usuarios/me (ver `usuarioActual`).
 export const iniciarSesionComo = (rol) => {
   const usuario = USUARIOS[rol]
-  guardarSesion({
-    token: crearToken({ rol: usuario.rol, matricula: usuario.matricula }),
-    rol,
-    matricula: usuario.matricula,
-    nombre: `${usuario.nombre} ${usuario.apellidos}`,
-    correo: usuario.correo,
-  })
+  guardarToken(crearToken({ rol: usuario.rol, matricula: usuario.matricula }))
 }
 
 // Renderiza la app completa (router real) en una ruta.

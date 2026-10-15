@@ -4,7 +4,7 @@ import { respuestaOk, servidor, usarServidorMock } from '@/test/servidor'
 import { adminApi } from './admin'
 import { authApi } from './auth'
 import { catalogosApi } from './catalogos'
-import { configureApi, conParametros } from './client'
+import { configureApi, conParametros, RespuestaInvalidaError } from './client'
 import { comentariosApi } from './comentarios'
 import { inscripcionesApi } from './inscripciones'
 import { materiasApi } from './materias'
@@ -35,6 +35,13 @@ beforeEach(() => {
     }),
   )
 })
+
+// Aqui solo importa la peticion: el backend simulado responde null y los endpoints que validan
+// su respuesta la rechazan (ver esquemas.test.js).
+const pedir = (llamada) =>
+  llamada().catch((error) => {
+    if (!(error instanceof RespuestaInvalidaError)) throw error
+  })
 
 const casos = [
   [
@@ -221,7 +228,7 @@ const casos = [
 
 describe('rutas del contrato', () => {
   it.each(casos)('%s', async (_nombre, llamar, metodo, ruta, cuerpo) => {
-    await llamar()
+    await pedir(llamar)
     expect(peticion).toMatchObject({ metodo, ruta })
     expect(peticion.cuerpo).toEqual(cuerpo)
   })
@@ -229,7 +236,7 @@ describe('rutas del contrato', () => {
   it('el login no envia el token de la sesion', async () => {
     await authApi.iniciarSesion({ matricula: 'S23014587', pwd: 'x' })
     expect(peticion.auth).toBeNull()
-    await usuariosApi.actual()
+    await pedir(() => usuariosApi.actual())
     expect(peticion.auth).toBe('Bearer token')
   })
 })

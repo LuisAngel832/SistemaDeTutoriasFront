@@ -1,40 +1,39 @@
 import { describe, expect, it } from 'vitest'
-import {
-  esClaveDeSesion,
-  guardarSesion,
-  leerSesion,
-  limpiarSesion,
-  SESION_VACIA,
-  STORAGE_KEYS,
-} from './storage'
+import { CLAVE_TOKEN, esClaveDeSesion, guardarToken, leerToken, limpiarToken } from './storage'
 
 describe('storage de la sesion', () => {
-  it('guarda y lee la sesion con las claves historicas', () => {
-    const sesion = {
-      token: 't',
-      rol: 'tutor',
-      matricula: 'S21009342',
-      nombre: 'Ana',
-      correo: 'ana@uv.mx',
+  it('guarda solo el token en una clave', () => {
+    guardarToken('t')
+
+    expect(localStorage.getItem(CLAVE_TOKEN)).toBe('t')
+    expect(localStorage.length).toBe(1)
+    expect(leerToken()).toBe('t')
+  })
+
+  it('borra las claves de la version anterior al guardar', () => {
+    for (const [clave, valor] of Object.entries({ rol: 'admin', matricula: 'S1', nombre: 'Ana' })) {
+      localStorage.setItem(clave, valor)
     }
-    guardarSesion(sesion)
+    localStorage.setItem('sidebarCollapsed', 'true')
 
-    expect(localStorage.getItem(STORAGE_KEYS.TOKEN)).toBe('t')
-    expect(localStorage.getItem('rol')).toBe('tutor')
-    expect(leerSesion()).toEqual(sesion)
-  })
+    guardarToken('t')
 
-  it('elimina los campos vacios y limpia la sesion', () => {
-    guardarSesion({ token: 't', rol: 'tutor', matricula: 'S1', nombre: '' })
+    expect(localStorage.getItem('rol')).toBeNull()
+    expect(localStorage.getItem('matricula')).toBeNull()
     expect(localStorage.getItem('nombre')).toBeNull()
-
-    limpiarSesion()
-    expect(leerSesion()).toEqual(SESION_VACIA)
+    expect(localStorage.getItem('sidebarCollapsed')).toBe('true')
   })
 
-  it('reconoce las claves de sesion (null = localStorage.clear en otra pestana)', () => {
+  it('limpia la sesion', () => {
+    guardarToken('t')
+    limpiarToken()
+    expect(leerToken()).toBe('')
+  })
+
+  it('reconoce la clave de sesion (null = localStorage.clear en otra pestana)', () => {
     expect(esClaveDeSesion('token')).toBe(true)
     expect(esClaveDeSesion(null)).toBe(true)
+    expect(esClaveDeSesion('rol')).toBe(false)
     expect(esClaveDeSesion('sidebarCollapsed')).toBe(false)
   })
 })

@@ -11,6 +11,7 @@ import {
   IconLogout,
   IconMisTutorias,
   IconTutorias,
+  IconUsuarios,
 } from '@/components/ui/icons'
 
 const iconsByName = {
@@ -20,6 +21,7 @@ const iconsByName = {
   explorar: IconExplorar,
   misTutorias: IconMisTutorias,
   cuadricula: IconCuadricula,
+  usuarios: IconUsuarios,
 }
 
 export const Sidebar = ({

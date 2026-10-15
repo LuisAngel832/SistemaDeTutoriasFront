@@ -1,5 +1,5 @@
 import { useId, useState } from 'react'
-import { Alert, Avatar, Button, EmptyState, Textarea } from '@/components/ui'
+import { Alert, Avatar, Button, ConfirmDialog, EmptyState, Textarea } from '@/components/ui'
 import { MAX_CARACTERES_COMENTARIO } from '@/constants/tutoria'
 import { useComentarios } from './useComentarios'
 import { avisar } from '@/utils/avisos'
@@ -19,6 +19,8 @@ export const Comentarios = ({
   const [texto, setTexto] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [eliminandoId, setEliminandoId] = useState(null)
+  // Comentario que el usuario pidio borrar; se confirma antes porque no se puede deshacer.
+  const [porBorrar, setPorBorrar] = useState(null)
   const idCampo = useId()
   const idContador = useId()
 
@@ -34,10 +36,12 @@ export const Comentarios = ({
     avisar(res)
   }
 
-  const borrar = async (idComentario) => {
+  const borrar = async () => {
+    const idComentario = porBorrar
     setEliminandoId(idComentario)
     const res = await eliminar(idComentario)
     setEliminandoId(null)
+    setPorBorrar(null)
     avisar(res)
   }
 
@@ -109,7 +113,7 @@ export const Comentarios = ({
                   <button
                     type="button"
                     className={styles.borrar}
-                    onClick={() => borrar(comentario.idComentario)}
+                    onClick={() => setPorBorrar(comentario.idComentario)}
                     disabled={eliminandoId === comentario.idComentario}
                     aria-label="Eliminar mi comentario"
                     title="Eliminar mi comentario"
@@ -124,6 +128,17 @@ export const Comentarios = ({
           })}
         </ul>
       )}
+
+      <ConfirmDialog
+        open={porBorrar !== null}
+        title="¿Eliminar tu comentario?"
+        description="Se borrará para ti y para el tutor. No se puede deshacer."
+        confirmLabel="Eliminar"
+        tone="danger"
+        loading={eliminandoId !== null}
+        onConfirm={borrar}
+        onCancel={() => setPorBorrar(null)}
+      />
     </div>
   )
 }

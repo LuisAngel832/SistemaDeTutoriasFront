@@ -1,10 +1,11 @@
-// Ejecuta una mutacion y devuelve { ok, message } para mostrarlo en la pantalla.
-// Las pantallas no manejan excepciones: solo muestran el mensaje.
+// Ejecuta una mutacion y devuelve el resultado para la pantalla, que no maneja excepciones:
+// { ok: true, message, resultado } con lo que respondio el backend, o
+// { ok: false, message, errores } con los errores por campo (p. ej. un NRC duplicado).
 export const ejecutarMutacion = async (mutacion, variables, mensajeExito) => {
   try {
-    await mutacion.mutateAsync(variables)
-    return { ok: true, message: mensajeExito }
+    const resultado = await mutacion.mutateAsync(variables)
+    return { ok: true, message: mensajeExito, resultado }
   } catch (error) {
-    return { ok: false, message: error.message }
+    return { ok: false, message: error.message, errores: error.errores ?? {} }
   }
 }

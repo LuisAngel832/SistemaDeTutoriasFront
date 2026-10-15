@@ -62,7 +62,7 @@ const TutorHome = () => {
             {listasSinCerrar.map((sesion) => (
               <li key={sesion.idSesion}>
                 <span>
-                  {sesion.materia} · {formatFechaCorta(sesion.fecha)} ·{' '}
+                  {sesion.materia?.nombre} · {formatFechaCorta(sesion.fecha)} ·{' '}
                   {formatRangoHora(sesion.horaInicio, sesion.horaFin)}
                 </span>
                 <Link to={ROUTES.tutor.paseDeLista(sesion.idSesion)}>Ir al pase de lista</Link>

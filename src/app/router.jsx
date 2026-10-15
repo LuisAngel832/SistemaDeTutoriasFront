@@ -139,6 +139,11 @@ export const rutas = [
                     handle: { titulo: 'Experiencias Educativas' },
                     lazy: pagina(() => import('@/features/admin/pages/ExperienciasEducativas')),
                   },
+                  {
+                    path: ROUTES.admin.tutores,
+                    handle: { titulo: 'Tutores' },
+                    lazy: pagina(() => import('@/features/admin/pages/TutoresAutorizados')),
+                  },
                 ],
               },
             ],

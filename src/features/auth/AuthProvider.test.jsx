@@ -1,5 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { http, HttpResponse } from 'msw'
 import { useState } from 'react'
 import { createMemoryRouter, Outlet, RouterProvider } from 'react-router-dom'
@@ -11,7 +12,7 @@ import { crearToken } from '@/test/tokens'
 import { useAuth } from './AuthContext'
 import { AuthProvider } from './AuthProvider'
 import { RequireRole, SoloInvitados } from './guards'
-import { guardarSesion, leerSesion } from './storage'
+import { CLAVE_TOKEN, guardarToken, leerToken } from './storage'
 
 usarServidorMock()
 
@@ -84,9 +85,11 @@ const renderApp = (ruta) => {
     [
       {
         element: (
-          <AuthProvider>
-            <Outlet />
-          </AuthProvider>
+          <QueryClientProvider client={new QueryClient()}>
+            <AuthProvider>
+              <Outlet />
+            </AuthProvider>
+          </QueryClientProvider>
         ),
         children: [
           {
@@ -119,8 +122,8 @@ const renderApp = (ruta) => {
 }
 
 describe('inicio de sesion', () => {
-  it('guarda la sesion del usuario y vuelve a la ruta pedida', async () => {
-    const token = crearToken()
+  it('guarda solo el token y vuelve a la ruta pedida', async () => {
+    const token = crearToken({ rol: 'TUTOR', matricula: 'S21009342' })
     let cuerpo
     servidor.use(
       http.post('*/auth/signin', async ({ request }) => {
@@ -136,11 +139,25 @@ describe('inicio de sesion', () => {
     expect(router.state.location.pathname).toBe('/tutor/tutorias/5')
     expect(cuerpo).toEqual({ matricula: 'S21009342', pwd: 'secreta1' })
     expect(screen.getByText('S21009342 - tutor - Rocío Hernández Aguilar')).toBeInTheDocument()
-    expect(leerSesion()).toMatchObject({
-      token,
-      rol: 'tutor',
-      matricula: 'S21009342',
-      correo: 'zS21009342@estudiantes.uv.mx',
+    expect(leerToken()).toBe(token)
+    expect(localStorage.length).toBe(1)
+  })
+
+  it('vuelve a la ruta pedida con sus parametros y su ancla', async () => {
+    servidor.use(
+      http.post('*/auth/signin', () =>
+        HttpResponse.json(respuestaOk({ token: crearToken(), usuario: USUARIOS.tutor })),
+      ),
+    )
+    const router = renderApp('/tutor/tutorias/5?pestana=sesiones#inscritos')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Entrar' }))
+
+    expect(await screen.findByText('Detalle tutor')).toBeInTheDocument()
+    expect(router.state.location).toMatchObject({
+      pathname: '/tutor/tutorias/5',
+      search: '?pestana=sesiones',
+      hash: '#inscritos',
     })
   })
 
@@ -154,7 +171,7 @@ describe('inicio de sesion', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Entrar' }))
     expect(await screen.findByText('Inicio tutorado')).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/tutorado/home')
-    expect(leerSesion()).toMatchObject({ rol: 'tutorado', matricula: 'S23014587' })
+    expect(screen.getByText(/S23014587 - tutorado/)).toBeInTheDocument()
   })
 
   it('muestra el error del backend si las credenciales son incorrectas', async () => {
@@ -167,7 +184,7 @@ describe('inicio de sesion', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Entrar' }))
     expect(await screen.findByRole('alert')).toHaveTextContent('Usuario o contraseña incorrectos.')
-    expect(leerSesion().token).toBe('')
+    expect(leerToken()).toBe('')
   })
 })
 
@@ -200,7 +217,7 @@ describe('registro', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Registrar' }))
     expect(await screen.findByText('Cuenta creada')).toBeInTheDocument()
-    expect(leerSesion().token).toBe('')
+    expect(leerToken()).toBe('')
   })
 
   it('expone los errores por campo del backend', async () => {
@@ -223,18 +240,18 @@ describe('registro', () => {
 
 describe('sesion activa', () => {
   it('descarta un token vencido al cargar y avisa que la sesion expiro', async () => {
-    guardarSesion({ token: crearToken({ expiraEnSeg: -60 }), rol: 'tutor', matricula: 'S1' })
+    guardarToken(crearToken({ expiraEnSeg: -60 }))
     renderApp('/tutor/home')
 
     expect(await screen.findByText('Pantalla de login')).toBeInTheDocument()
     expect(screen.getByText('Sesion expirada')).toBeInTheDocument()
-    expect(leerSesion().token).toBe('')
+    expect(leerToken()).toBe('')
   })
 
   it('envia el token y ante un 401 cierra la sesion recordando la pagina', async () => {
     const token = crearToken()
     let autorizacion
-    guardarSesion({ token, rol: 'tutor', matricula: 'S21009342' })
+    guardarToken(token)
     servidor.use(
       http.get('*/tutorias/mis-tutorias', ({ request }) => {
         autorizacion = request.headers.get('Authorization')
@@ -249,25 +266,45 @@ describe('sesion activa', () => {
     expect(screen.getByText('Sesion expirada')).toBeInTheDocument()
     expect(autorizacion).toBe(`Bearer ${token}`)
     expect(router.state.location.state?.from?.pathname).toBe('/tutor/tutorias/8')
-    expect(leerSesion().token).toBe('')
+    expect(leerToken()).toBe('')
   })
 
   it('manda a su propio inicio a un usuario con otro rol', async () => {
-    guardarSesion({ token: crearToken({ rol: 'TUTORADO' }), rol: 'tutorado', matricula: 'S2' })
+    guardarToken(crearToken({ rol: 'TUTORADO' }))
     renderApp('/tutor/home')
 
     expect(await screen.findByText('Inicio tutorado')).toBeInTheDocument()
   })
 
+  it('toma el rol y la matricula del token e ignora las claves sueltas anteriores', async () => {
+    guardarToken(crearToken({ rol: 'TUTORADO', matricula: 'S23014587' }))
+    localStorage.setItem('rol', 'tutor')
+    localStorage.setItem('matricula', 'S99999999')
+    renderApp('/tutor/home')
+
+    expect(await screen.findByText('Inicio tutorado')).toBeInTheDocument()
+    expect(screen.getByText(/S23014587 - tutorado/)).toBeInTheDocument()
+    // Al cargar se borran las claves de la version anterior.
+    expect(localStorage.getItem('rol')).toBeNull()
+    expect(localStorage.getItem('matricula')).toBeNull()
+  })
+
+  it('sin token no usa el rol que quede en localStorage', async () => {
+    localStorage.setItem('rol', 'tutor')
+    renderApp('/tutor/home')
+
+    expect(await screen.findByText('Pantalla de login')).toBeInTheDocument()
+  })
+
   it('con sesion activa no deja ver el login', async () => {
-    guardarSesion({ token: crearToken(), rol: 'tutor', matricula: 'S1' })
+    guardarToken(crearToken())
     renderApp('/login')
 
     expect(await screen.findByText('Inicio tutor')).toBeInTheDocument()
   })
 
   it('cierra la sesion con logout sin marcarla como expirada', async () => {
-    guardarSesion({ token: crearToken(), rol: 'tutor', matricula: 'S1' })
+    guardarToken(crearToken())
     const router = renderApp('/tutor/home')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Salir' }))
@@ -275,6 +312,61 @@ describe('sesion activa', () => {
     await waitFor(() => expect(screen.getByText('Pantalla de login')).toBeInTheDocument())
     expect(screen.queryByText('Sesion expirada')).not.toBeInTheDocument()
     expect(router.state.location.state?.from).toBeUndefined()
-    expect(leerSesion().token).toBe('')
+    expect(leerToken()).toBe('')
+  })
+})
+
+describe('sincronizacion entre pestanas', () => {
+  // Otra pestana escribe el token: el navegador avisa con un evento `storage`.
+  const otraPestanaGuarda = (token) =>
+    act(() => {
+      if (token) localStorage.setItem(CLAVE_TOKEN, token)
+      else localStorage.removeItem(CLAVE_TOKEN)
+      window.dispatchEvent(new StorageEvent('storage', { key: CLAVE_TOKEN, newValue: token }))
+    })
+
+  it('cierra la sesion si en otra pestana se cerro', async () => {
+    guardarToken(crearToken())
+    renderApp('/tutor/home')
+    expect(await screen.findByText('Inicio tutor')).toBeInTheDocument()
+
+    otraPestanaGuarda(null)
+
+    expect(await screen.findByText('Pantalla de login')).toBeInTheDocument()
+  })
+
+  it('entra con el usuario que inicio sesion en otra pestana', async () => {
+    renderApp('/login')
+    expect(await screen.findByText('Pantalla de login')).toBeInTheDocument()
+
+    otraPestanaGuarda(crearToken({ rol: 'TUTORADO', matricula: 'S23014587' }))
+
+    expect(await screen.findByText('Inicio tutorado')).toBeInTheDocument()
+    expect(screen.getByText(/S23014587 - tutorado/)).toBeInTheDocument()
+  })
+
+  it('trata como expirada una sesion con el token vencido', async () => {
+    guardarToken(crearToken())
+    renderApp('/tutor/home')
+    expect(await screen.findByText('Inicio tutor')).toBeInTheDocument()
+
+    otraPestanaGuarda(crearToken({ expiraEnSeg: -60 }))
+
+    expect(await screen.findByText('Pantalla de login')).toBeInTheDocument()
+    expect(screen.getByText('Sesion expirada')).toBeInTheDocument()
+    expect(leerToken()).toBe('')
+  })
+
+  it('ignora los cambios de otras claves', async () => {
+    guardarToken(crearToken())
+    renderApp('/tutor/home')
+    expect(await screen.findByText('Inicio tutor')).toBeInTheDocument()
+
+    act(() => {
+      localStorage.setItem('rol', 'tutorado')
+      window.dispatchEvent(new StorageEvent('storage', { key: 'rol', newValue: 'tutorado' }))
+    })
+
+    expect(screen.getByText('Inicio tutor')).toBeInTheDocument()
   })
 })

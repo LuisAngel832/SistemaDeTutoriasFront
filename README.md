@@ -25,13 +25,14 @@ Vite que consume la API REST del [backend en Spring Boot](https://github.com/Sht
 
 Sigue los mockups de escritorio del 5 oct 2026 (16 pantallas) y el contrato de la API
 documentado en el backend (`docs/API.md`). El plan de la migracion esta en
-[PLAN_NUEVO_MODELO.md](PLAN_NUEVO_MODELO.md).
+[docs/PLAN_NUEVO_MODELO.md](docs/PLAN_NUEVO_MODELO.md).
 
 ### Acceso
 
-- Inicio de sesion con correo o matricula y contrasena; el backend entrega un JWT.
+- Inicio de sesion con correo o matricula y contrasena; el backend entrega un JWT. Los admin
+  entran con su numero de personal (p. ej. `25480`) o su correo.
 - Registro con nombre, apellidos, matricula (`S` + 8 digitos), correo, contrasena y rol
-  (tutorado o tutor).
+  (tutorado o tutor). Solo se puede registrar como tutor quien el admin autorizo antes.
 - Redireccion al panel de cada rol: tutorado, tutor o administrador.
 
 ### Panel del tutorado
@@ -57,6 +58,8 @@ documentado en el backend (`docs/API.md`). El plan de la migracion esta en
 - Tutorias de la facultad: indicadores, filtros, cupo y asistencia por tutoria, desactivar
   una tutoria y cierre de periodo.
 - Catalogo de Experiencias Educativas: alta, edicion y eliminacion.
+- Tutores autorizados: el admin pre-registra la matricula y el correo de cada tutor y puede
+  quitar a quien todavia no crea su cuenta.
 
 ### Interfaz
 
@@ -127,6 +130,7 @@ local esta listado en `.gitignore`.
 | `npm run dev`           | Levanta el servidor de desarrollo con HMR en `http://localhost:5173` (o el siguiente puerto disponible). |
 | `npm run build`         | Compila a produccion en la carpeta `dist/`.                                                              |
 | `npm run preview`       | Sirve el `dist/` localmente para probar el build.                                                        |
+| `npm run analizar`      | Compila y genera `dist/estadisticas.html` con el peso de cada modulo (gzip incluido).                    |
 | `npm run lint`          | Ejecuta ESLint sobre todo el codigo.                                                                     |
 | `npm run format`        | Formatea todo el proyecto con Prettier.                                                                  |
 | `npm run format:check`  | Verifica el formato sin modificar archivos (lo usa el CI).                                               |
@@ -166,6 +170,7 @@ El front se despliega como **Static Site** en Render usando el blueprint
 | Build command     | `npm ci && npm run build`         |
 | Publish directory | `dist`                            |
 | Rewrite (SPA)     | `/*` -> `/index.html`             |
+| Auto-deploy       | `checksPass` (tras pasar la CI)   |
 | `VITE_API_URL`    | `https://tutoriasbe.onrender.com` |
 
 Pasos:
@@ -177,12 +182,38 @@ Pasos:
 2. La URL de produccion del backend se toma de [`.env.production`](.env.production)
    (versionado, sin secretos) y/o de la env var `VITE_API_URL` de Render. Se
    incrusta en el bundle durante el build.
+3. Render despliega un commit de `main` solo cuando pasan sus checks de GitHub
+   (`autoDeployTrigger: checksPass`). En un servicio creado antes de este ajuste, comprobar en
+   **Settings > Build & Deploy > Auto-Deploy** que diga **After CI Checks Pass** (o sincronizar
+   el blueprint).
 
 > **Importante — CORS:** en produccion **no existe el proxy de Vite**, así que el
 > navegador llama al backend en `https://tutoriasbe.onrender.com` desde otro
 > origen. El backend de Spring Boot debe habilitar CORS para el dominio del
-> Static Site (ej. `https://tutorias-frontend.onrender.com`), de lo contrario las
+> Static Site (`https://sistemadetutoriasfront.onrender.com`), de lo contrario las
 > peticiones seran bloqueadas por el navegador.
+
+### Cabeceras de seguridad
+
+`render.yaml` envia `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`,
+`Permissions-Policy` y una CSP. La CSP esta en modo **Report-Only**: el navegador muestra
+en la consola lo que bloquearia, sin bloquearlo.
+
+- Para probarlas en local: `npm run build` y `npm run preview`, que aplica las mismas
+  cabeceras (`CABECERAS_SEGURIDAD` en `vite.config.js`). Si se cambia una, cambiar la otra.
+- Si cambia la URL del backend, actualizar `connect-src` en ambos archivos.
+- Cuando la consola no muestre violaciones en ningun rol, renombrar la cabecera a
+  `Content-Security-Policy` para que se aplique.
+
+### Monitoreo de errores
+
+Con `VITE_SENTRY_DSN` (Sentry o GlitchTip) se reportan los errores de render y de carga de
+paginas (`PaginaError`), los de consultas y mutaciones de React Query y los no capturados. No
+se reportan los 4xx, las cancelaciones ni los fallos de red del usuario. El `release` es el
+SHA del commit (`RENDER_GIT_COMMIT`). Sin DSN no se descarga el SDK. No se envian datos del
+usuario, cabeceras (el token), cuerpos de peticiones ni parametros de URL
+([`src/app/monitoreo.js`](src/app/monitoreo.js)). Con GlitchTip u otro host, agregar su
+dominio a `connect-src` de la CSP.
 
 ## Estructura del proyecto
 
@@ -247,6 +278,7 @@ Las rutas se definen en [`src/app/router.jsx`](src/app/router.jsx) y sus URLs en
 | `/tutor/historial?tutoria=:id`       | TUTOR    | 14 Historial de asistencia                       |
 | `/administracion/tutorias`           | ADMIN    | 15 Tutorias de la facultad                       |
 | `/administracion/experiencias`       | ADMIN    | 16 Experiencias Educativas                       |
+| `/administracion/tutores`            | ADMIN    | Tutores autorizados (diseno propio)              |
 
 - `RequireRole` redirige a `/login` si no hay sesion (y vuelve a la ruta pedida despues del
   login) o a la pantalla inicial del usuario si su rol no corresponde.
@@ -259,28 +291,36 @@ Las rutas se definen en [`src/app/router.jsx`](src/app/router.jsx) y sus URLs en
 
 ## Integracion con el backend
 
-El contrato es el de `TutoriasBackend/docs/API.md`, salvo el acceso. Todas las llamadas usan
+El contrato es el de `TutoriasBackend/docs/API.md` y `docs/AUTENTICACION.md`. Todas las llamadas usan
 el JWT del backend en el header `Authorization: Bearer <token>` (salvo `/auth/**`).
 
 Acceso con contrasena (en lugar de Microsoft y Google):
 
 - `POST /auth/signin` con `{ matricula, pwd }` o `{ correo, pwd }` (el front envia `correo`
   si lo escrito lleva `@`). Respuesta: `{ token, usuario }`; tambien acepta `{ token, rol }`
-  y toma la matricula del claim `sub` del token.
+  y toma la matricula del claim `sub` del token. Un `401` aqui son credenciales incorrectas
+  (no cierra ninguna sesion) y un `429`, demasiados intentos fallidos.
 - `POST /auth/signup` con `{ nombre, apellidos, matricula, correo, pwd, rol }` (`rol`:
   `TUTORADO` o `TUTOR`). Si responde `{ token, usuario }` entra directo; si no, manda al login.
-  La matricula o el correo duplicados se muestran bajo su campo si llegan como
-  `data: { matricula }` o `data: { correo }`.
+  Los errores por campo (matricula o correo duplicados, tutor sin autorizar en `rol`) se
+  muestran bajo su campo.
+- Tutores autorizados: `GET`, `POST /admin/tutores` y `DELETE /admin/tutores/{matricula}`.
+
+Lo que todavia se le pide al backend esta en
+[docs/PENDIENTES_BACKEND.md](docs/PENDIENTES_BACKEND.md).
 
 - **Cliente HTTP** ([`src/api/client.js`](src/api/client.js)): agrega el token, aplica un
   timeout de 15 s, convierte los errores en `ApiError` con el mensaje del backend (y los
   errores por campo en `errores`) y cancela peticiones al desmontar las pantallas.
 - **Modulos por recurso** (`src/api/*.js`): `auth`, `usuarios`, `materias`, `catalogos`,
-  `tutorias`, `temas`, `inscripciones`, `sesiones`, `comentarios` y `admin`. Los DTOs se usan
-  tal como llegan; el formato para mostrar vive en `src/utils/formatters.js`.
-- **Sesion** ([`src/features/auth`](src/features/auth)): `AuthProvider` guarda token, rol,
-  matricula, nombre y correo (en `localStorage`). La sesion se cierra y se avisa al usuario cuando el token vence (segun
-  su `exp`) o el backend responde `401`.
+  `tutorias`, `temas`, `inscripciones`, `sesiones`, `comentarios` y `admin`. Las respuestas de
+  los endpoints criticos se validan con los esquemas de
+  [`src/api/esquemas.js`](src/api/esquemas.js), que ademas convierten `materia` siempre a
+  objeto. El formato para mostrar vive en `src/utils/formatters.js`.
+- **Sesion** ([`src/features/auth`](src/features/auth)): `AuthProvider` guarda solo el token
+  en `localStorage`. El rol y la matricula salen de sus claims, y el nombre y el correo de
+  `/usuarios/me`. La sesion se cierra y se avisa al usuario cuando el token vence (segun su
+  `exp`) o el backend responde `401`.
 
 Wrapper de respuesta esperado del backend:
 
@@ -297,8 +337,9 @@ validacion (`data: { nrc }`),
 
 Las convenciones de ramas, commits, codigo y el checklist de cada PR estan en
 [CONTRIBUTING.md](CONTRIBUTING.md). El plan del nuevo modelo esta en
-[PLAN_NUEVO_MODELO.md](PLAN_NUEVO_MODELO.md) y el de las mejoras anteriores en
-[PLAN_IMPLEMENTACION.md](PLAN_IMPLEMENTACION.md).
+[docs/PLAN_NUEVO_MODELO.md](docs/PLAN_NUEVO_MODELO.md) y el de las mejoras anteriores en
+[docs/PLAN_IMPLEMENTACION.md](docs/PLAN_IMPLEMENTACION.md). La auditoria tecnica del frontend y su seguimiento estan en
+[docs/AUDITORIA_FRONTEND.md](docs/AUDITORIA_FRONTEND.md).
 
 ## Solucion de problemas comunes
 

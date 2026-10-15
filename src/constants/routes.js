@@ -21,5 +21,6 @@ export const ROUTES = {
   admin: {
     inicio: '/administracion/tutorias',
     experiencias: '/administracion/experiencias',
+    tutores: '/administracion/tutores',
   },
 }

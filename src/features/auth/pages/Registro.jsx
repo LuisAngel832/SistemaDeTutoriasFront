@@ -1,11 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { Alert, Button, FormField, Input, PasswordInput, RadioGroup } from '@/components/ui'
 import { ROUTES } from '@/constants/routes'
 import { useAuth } from '@/features/auth/AuthContext'
 import { AuthLayout } from '@/features/auth/components/AuthLayout'
-import { MIN_CARACTERES_CONTRASENA, registroSchema, ROLES_REGISTRO } from '@/schemas/auth'
+import {
+  MAX_CARACTERES_CONTRASENA,
+  MIN_CARACTERES_CONTRASENA,
+  registroSchema,
+  ROLES_REGISTRO,
+} from '@/schemas/auth'
 import { clases } from '@/utils/clases'
 import styles from './Registro.module.css'
 
@@ -15,7 +20,11 @@ const OPCIONES_ROL = [
     label: 'Tutorado',
     description: 'Quiero inscribirme a tutorías',
   },
-  { value: ROLES_REGISTRO.TUTOR, label: 'Tutor', description: 'Quiero impartir tutorías' },
+  {
+    value: ROLES_REGISTRO.TUTOR,
+    label: 'Tutor',
+    description: 'Quiero impartir tutorías (el administrador debe autorizarme)',
+  },
 ]
 
 const CARACTERISTICAS = [
@@ -48,6 +57,8 @@ const Registro = () => {
       pwd: '',
     },
   })
+  // Un tutor solo se da de alta si el admin pre-registro su matricula con ese mismo correo.
+  const esTutor = useWatch({ control, name: 'rol' }) === ROLES_REGISTRO.TUTOR
 
   const enviar = handleSubmit(async (datos) => {
     const res = await registro(datos)
@@ -56,7 +67,8 @@ const Registro = () => {
       if (!res.sesionIniciada) navigate(ROUTES.login, { state: { registrado: true } })
       return
     }
-    // La matricula o el correo duplicados llegan como error de su campo.
+    // La matricula o el correo duplicados y las reglas de la lista de tutores autorizados (en
+    // `rol` o `correo`) llegan como error de su campo.
     const campos = Object.entries(res.errores ?? {}).filter(([campo]) => CAMPOS.includes(campo))
     if (campos.length) campos.forEach(([campo, mensaje]) => setError(campo, { message: mensaje }))
     else setError('root', { message: res.message })
@@ -122,7 +134,12 @@ const Registro = () => {
           />
         </FormField>
 
-        <FormField label="Correo electrónico" htmlFor="correo" error={errors.correo?.message}>
+        <FormField
+          label="Correo electrónico"
+          htmlFor="correo"
+          hint={esTutor ? 'Usa el mismo correo que registró el administrador.' : undefined}
+          error={errors.correo?.message}
+        >
           <Input
             id="correo"
             type="email"
@@ -135,7 +152,7 @@ const Registro = () => {
         <FormField
           label="Contraseña"
           htmlFor="pwd"
-          hint={`Debe tener al menos ${MIN_CARACTERES_CONTRASENA} caracteres.`}
+          hint={`De ${MIN_CARACTERES_CONTRASENA} a ${MAX_CARACTERES_CONTRASENA} caracteres.`}
           className={styles.completo}
           error={errors.pwd?.message}
         >

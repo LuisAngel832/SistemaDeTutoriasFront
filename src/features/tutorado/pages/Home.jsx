@@ -7,6 +7,7 @@ import { DIAS_HABILES } from '@/constants/horarios'
 import { ROUTES } from '@/constants/routes'
 import { TarjetaExplorar } from '@/features/tutorado/components/TarjetaExplorar'
 import { useExplorarTutorias } from '@/features/tutorado/hooks/useExplorarTutorias'
+import { useValorDiferido } from '@/features/tutorias/hooks/useValorDiferido'
 import { clases } from '@/utils/clases'
 import { pluralizar } from '@/utils/formatters'
 import styles from './Home.module.css'
@@ -42,13 +43,23 @@ const ExplorarTutorias = () => {
     [setParametros],
   )
 
-  // La busqueda se envia cuando se deja de escribir.
+  // El campo sigue a la URL cuando esta cambia sin escribir (menu, historial): se ajusta durante
+  // el render, como recomienda React para el estado derivado de otro valor.
   const [busqueda, setBusqueda] = useState(q)
+  const [qAnterior, setQAnterior] = useState(q)
+  if (q !== qAnterior) {
+    setQAnterior(q)
+    if (q !== busqueda.trim()) setBusqueda(q)
+  }
+
+  // La busqueda se envia cuando se deja de escribir. Solo cuando el valor diferido ya alcanzo lo
+  // escrito: si la URL acaba de cambiar, el valor diferido anterior no debe pisarla.
+  const busquedaDiferida = useValorDiferido(busqueda.trim(), ESPERA_BUSQUEDA_MS)
   useEffect(() => {
-    if (busqueda.trim() === q) return undefined
-    const id = setTimeout(() => cambiar('q', busqueda.trim()), ESPERA_BUSQUEDA_MS)
-    return () => clearTimeout(id)
-  }, [busqueda, q, cambiar])
+    if (busquedaDiferida === busqueda.trim() && busquedaDiferida !== q) {
+      cambiar('q', busquedaDiferida)
+    }
+  }, [busquedaDiferida, busqueda, q, cambiar])
 
   const hayFiltros = Boolean(q || dia || soloConLugar || ocultarChoques)
 

@@ -18,14 +18,17 @@ const useTituloDocumento = () => {
 
 export const RaizApp = () => {
   const navegacion = useNavigation()
+  const cargando = navegacion.state !== 'idle'
   useTituloDocumento()
 
   return (
     <Providers>
       <AuthProvider>
-        {navegacion.state !== 'idle' ? (
-          <div className="barra-navegacion" role="progressbar" aria-label="Cargando página" />
-        ) : null}
+        {/* La region existe siempre para que el lector de pantalla anuncie el cambio de texto. */}
+        <div className="solo-lectores" role="status">
+          {cargando ? 'Cargando página' : ''}
+        </div>
+        {cargando ? <div className="barra-navegacion" aria-hidden="true" /> : null}
         <Outlet />
         <ScrollRestoration />
       </AuthProvider>

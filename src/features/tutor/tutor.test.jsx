@@ -80,7 +80,11 @@ describe('Mis tutorías y sesiones de hoy (09)', () => {
   it('abre el pase de lista y lleva a la lista de la sesion', async () => {
     const [apertura, abrir] = capturar(
       listaDeSesion({
-        sesion: sesion({ idSesion: 95, idHorario: 61, materia: 'Programación Web' }),
+        sesion: sesion({
+          idSesion: 95,
+          idHorario: 61,
+          materia: { idMateria: 11, nombre: 'Programación Web', nrc: 48260 },
+        }),
       }),
     )
     servidor.use(
@@ -436,6 +440,12 @@ describe('Pase de lista (12 y 13)', () => {
     expect(
       screen.getByText(/Se aplicó la baja automática a Mariana López Herrera/),
     ).toBeInTheDocument()
+
+    // El aviso sale del historial del navegador (no reaparece al recargar ni con atras y
+    // adelante), pero sigue visible y la URL conserva la tutoria elegida.
+    await waitFor(() => expect(router.state.location.state).toBeNull())
+    expect(router.state.location.search).toBe('?tutoria=12')
+    expect(screen.getByText('Lista del lunes 5 de octubre cerrada.')).toBeInTheDocument()
   })
 
   it('no deja cerrar si faltan marcas', async () => {

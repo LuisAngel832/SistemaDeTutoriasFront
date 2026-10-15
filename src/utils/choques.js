@@ -1,11 +1,11 @@
 import { formatDiaNombre, formatRangoHora } from './formatters'
 
 // Textos de los choques de horario que calcula el backend (RN-4):
-// { dia, horaInicio, horaFin, conTutoria: { idTutoria, materia, horaInicio, horaFin } }.
+// { dia, horaInicio, horaFin, conTutoria: { idTutoria, materia: { nombre }, horaInicio, horaFin } }.
 
 // "El jueves choca con Bases de Datos (16:00 – 18:00)."
 export const describirChoqueCorto = (choque) =>
-  `El ${formatDiaNombre(choque.dia).toLowerCase()} choca con ${choque.conTutoria?.materia} (${formatRangoHora(
+  `El ${formatDiaNombre(choque.dia).toLowerCase()} choca con ${choque.conTutoria?.materia?.nombre} (${formatRangoHora(
     choque.conTutoria?.horaInicio,
     choque.conTutoria?.horaFin,
   )}).`
@@ -14,5 +14,5 @@ export const describirChoqueCorto = (choque) =>
 export const describirChoque = (choque) => {
   const dia = formatDiaNombre(choque.dia).toLowerCase()
   const otra = choque.conTutoria ?? {}
-  return `El ${dia} de ${choque.horaInicio} a ${choque.horaFin} choca con tu inscripción en ${otra.materia} (${dia} ${formatRangoHora(otra.horaInicio, otra.horaFin)}).`
+  return `El ${dia} de ${choque.horaInicio} a ${choque.horaFin} choca con tu inscripción en ${otra.materia?.nombre} (${dia} ${formatRangoHora(otra.horaInicio, otra.horaFin)}).`
 }

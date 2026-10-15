@@ -1,3 +1,8 @@
+/* Recibe el foco desde "Saltar al contenido"; no es un control, no lleva contorno. */
+.pagina:focus {
+  outline: none;
+}
+
 .pagina {
   display: flex;
   flex-direction: column;

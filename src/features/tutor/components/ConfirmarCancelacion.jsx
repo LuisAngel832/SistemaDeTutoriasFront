@@ -9,7 +9,7 @@ export const ConfirmarCancelacion = ({ sesion, loading, onConfirmar, onCerrar })
     title="¿Cancelar la sesión?"
     description={
       sesion
-        ? `${sesion.materia} · ${formatFechaLarga(sesion.fecha, { mayuscula: false })} · ${formatRangoHora(sesion.horaInicio, sesion.horaFin)}. Avisaremos por correo a ${sesion.inscritos ? `los ${pluralizar(sesion.inscritos, 'tutorado')}` : 'los tutorados inscritos'} y la sesión no contará para inasistencias. No se puede deshacer.`
+        ? `${sesion.materia?.nombre} · ${formatFechaLarga(sesion.fecha, { mayuscula: false })} · ${formatRangoHora(sesion.horaInicio, sesion.horaFin)}. Avisaremos por correo a ${sesion.inscritos ? `los ${pluralizar(sesion.inscritos, 'tutorado')}` : 'los tutorados inscritos'} y la sesión no contará para inasistencias. No se puede deshacer.`
         : ''
     }
     confirmLabel="Sí, cancelar sesión"

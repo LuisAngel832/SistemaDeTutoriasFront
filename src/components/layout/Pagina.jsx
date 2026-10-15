@@ -4,9 +4,17 @@ import styles from './Pagina.module.css'
 
 // Estructura comun de las paginas privadas.
 
+// Destino del enlace "Saltar al contenido" de AppLayout.
+export const ID_CONTENIDO = 'contenido'
+
 // width: wide (listados y detalles) | form (formularios centrados)
 export const Pagina = ({ width = 'wide', className, children, ...props }) => (
-  <main className={clases(styles.pagina, styles[width], className)} {...props}>
+  <main
+    id={ID_CONTENIDO}
+    tabIndex={-1}
+    className={clases(styles.pagina, styles[width], className)}
+    {...props}
+  >
     {children}
   </main>
 )

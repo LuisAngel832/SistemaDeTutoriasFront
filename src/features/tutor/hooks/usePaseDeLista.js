@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { clavesAdmin, clavesSesiones, clavesTutorias } from '@/api/queryKeys'
 import { sesionesApi } from '@/api/sesiones'
+import { ejecutarMutacion } from '@/utils/ejecutarMutacion'
 
 // Pase de lista de una sesion (pantallas 12 y 13). Cada marca se guarda al momento (PUT
 // parcial) y la respuesta, que es la lista completa, reemplaza la que hay en cache.
@@ -51,24 +52,10 @@ export const usePaseDeLista = (idSesion) => {
       ]),
   })
 
-  const marcar = async (marcas) => {
-    try {
-      await marcarM.mutateAsync(marcas)
-      return { ok: true }
-    } catch (error) {
-      return { ok: false, message: error.message }
-    }
-  }
+  const marcar = (marcas) => ejecutarMutacion(marcarM, marcas)
 
-  // Devuelve { ok, message, resultado: { asistieron, noAsistieron, bajasAplicadas } }.
-  const cerrar = async () => {
-    try {
-      const resultado = await cerrarM.mutateAsync()
-      return { ok: true, message: 'Pase de lista cerrado.', resultado }
-    } catch (error) {
-      return { ok: false, message: error.message }
-    }
-  }
+  // Con exito, `resultado` trae { asistieron, noAsistieron, bajasAplicadas }.
+  const cerrar = () => ejecutarMutacion(cerrarM, undefined, 'Pase de lista cerrado.')
 
   return {
     lista: listaQuery.data ?? null,

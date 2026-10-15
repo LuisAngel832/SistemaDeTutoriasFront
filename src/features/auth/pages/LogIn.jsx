@@ -14,6 +14,9 @@ const CARACTERISTICAS = [
   'Tu historial de asistencia siempre a la mano',
 ]
 
+// El backend nombra los errores por campo como el body de POST /auth/signin.
+const CAMPO_DEL_FORMULARIO = { matricula: 'usuario', correo: 'usuario', pwd: 'contrasena' }
+
 // Pantalla 01: inicio de sesion con correo o matricula y contrasena.
 const LogIn = () => {
   const { login, sesionExpirada } = useAuth()
@@ -32,7 +35,16 @@ const LogIn = () => {
   const enviar = handleSubmit(async (credenciales) => {
     const res = await login(credenciales)
     // Con exito no se navega aqui: SoloInvitados redirige a la pagina pedida o al inicio.
-    if (!res.ok) setError('root', { message: res.message })
+    if (res.ok) return
+    // Credenciales incorrectas (401) y demasiados intentos (429) van arriba del formulario.
+    const campos = Object.entries(res.errores ?? {}).filter(
+      ([campo]) => campo in CAMPO_DEL_FORMULARIO,
+    )
+    if (campos.length) {
+      campos.forEach(([campo, mensaje]) =>
+        setError(CAMPO_DEL_FORMULARIO[campo], { message: mensaje }),
+      )
+    } else setError('root', { message: res.message })
   })
 
   const aviso = sesionExpirada

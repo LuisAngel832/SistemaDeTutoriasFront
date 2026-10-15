@@ -50,3 +50,34 @@ html,
 body {
   overflow-x: hidden;
 }
+
+/* Texto solo para lectores de pantalla */
+.solo-lectores {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* "Saltar al contenido": invisible hasta recibir el foco con el teclado (WCAG 2.4.1) */
+.saltar-contenido {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1100;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radio-sm);
+  background-color: var(--color-superficie);
+  color: var(--color-primario);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: var(--sombra-tarjeta-hover);
+  transform: translateY(calc(-100% - 1rem));
+}
+
+.saltar-contenido:focus {
+  outline: var(--contorno-foco);
+  outline-offset: 2px;
+  transform: none;
+}

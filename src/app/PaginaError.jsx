@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { useRouteError } from 'react-router-dom'
+import { reportarError } from './monitoreo'
 import './sistema.css'
 
 // Error inesperado al renderizar o al descargar una pagina (p. ej. tras un nuevo despliegue).
@@ -6,9 +8,10 @@ import './sistema.css'
 const PaginaError = () => {
   const error = useRouteError()
 
-  if (import.meta.env.DEV) {
-    console.error(error)
-  }
+  useEffect(() => {
+    if (import.meta.env.DEV) console.error(error)
+    reportarError(error, { origen: 'router' })
+  }, [error])
 
   return (
     <main className="sistema-page">

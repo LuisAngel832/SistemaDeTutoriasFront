@@ -70,9 +70,29 @@ describe('Iniciar sesion (01)', () => {
     expect(recibido.cuerpo).toEqual({ correo: 'zs21009342@estudiantes.uv.mx', pwd: 'secreta1' })
   })
 
+  it('entra como admin con su numero de personal', async () => {
+    const recibido = capturarLogin(() =>
+      HttpResponse.json(
+        respuestaOk({
+          token: crearToken({ rol: 'ADMIN', matricula: '25480' }),
+          usuario: USUARIOS.admin,
+        }),
+      ),
+    )
+    const router = renderRuta('/login')
+
+    await userEvent.type(await screen.findByLabelText('Correo o matrícula'), '25480')
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'secreta1')
+    await userEvent.click(screen.getByRole('button', { name: 'Iniciar sesión' }))
+
+    await waitFor(() => expect(router.state.location.pathname).toBe('/administracion/tutorias'))
+    expect(recibido.cuerpo).toEqual({ matricula: '25480', pwd: 'secreta1' })
+  })
+
   it('valida los campos y muestra el error del backend', async () => {
+    // En /auth/signin un 401 son credenciales incorrectas, no una sesion vencida.
     capturarLogin(() =>
-      HttpResponse.json(respuestaError('Usuario o contraseña incorrectos.'), { status: 400 }),
+      HttpResponse.json(respuestaError('Usuario o contraseña incorrectos.'), { status: 401 }),
     )
     renderRuta('/login')
 
@@ -84,6 +104,32 @@ describe('Iniciar sesion (01)', () => {
     await userEvent.type(screen.getByLabelText('Contraseña'), 'mala')
     await userEvent.click(screen.getByRole('button', { name: 'Iniciar sesión' }))
     expect(await screen.findByRole('alert')).toHaveTextContent('Usuario o contraseña incorrectos.')
+  })
+
+  it('muestra el bloqueo por intentos y los errores por campo del backend', async () => {
+    let respuesta = () =>
+      HttpResponse.json(
+        respuestaError('Demasiados intentos fallidos. Intenta de nuevo en 15 minutos.'),
+        { status: 429 },
+      )
+    capturarLogin(() => respuesta())
+    renderRuta('/login')
+
+    await userEvent.type(await screen.findByLabelText('Correo o matrícula'), 'S23014587')
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'secreta1')
+    await userEvent.click(screen.getByRole('button', { name: 'Iniciar sesión' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Demasiados intentos fallidos. Intenta de nuevo en 15 minutos.',
+    )
+
+    respuesta = () =>
+      HttpResponse.json(
+        respuestaError('Error de validación', { pwd: 'La contraseña es obligatoria.' }),
+        { status: 400 },
+      )
+    await userEvent.click(screen.getByRole('button', { name: 'Iniciar sesión' }))
+    expect(await screen.findByText('La contraseña es obligatoria.')).toBeInTheDocument()
+    expect(screen.getByLabelText('Contraseña')).toHaveAttribute('aria-invalid', 'true')
   })
 })
 
@@ -160,5 +206,37 @@ describe('Crear cuenta (02)', () => {
 
     expect(await screen.findByText('La matrícula ya está registrada.')).toBeInTheDocument()
     expect(screen.getByLabelText('Matrícula institucional')).toHaveAttribute('aria-invalid', 'true')
+  })
+
+  it('avisa que un tutor necesita autorizacion y muestra el rechazo bajo el rol', async () => {
+    servidor.use(
+      http.post('*/auth/signup', () =>
+        HttpResponse.json(
+          respuestaError('Error de validación', {
+            rol: 'Tu matrícula no está autorizada como tutor. Pide al administrador que te registre.',
+          }),
+          { status: 400 },
+        ),
+      ),
+    )
+    renderRuta('/registro')
+
+    expect(
+      await screen.findByText('Quiero impartir tutorías (el administrador debe autorizarme)'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('Usa el mismo correo que registró el administrador.'),
+    ).not.toBeInTheDocument()
+
+    await llenar()
+
+    expect(
+      screen.getByText('Usa el mismo correo que registró el administrador.'),
+    ).toBeInTheDocument()
+    expect(
+      await screen.findByText(
+        'Tu matrícula no está autorizada como tutor. Pide al administrador que te registre.',
+      ),
+    ).toBeInTheDocument()
   })
 })

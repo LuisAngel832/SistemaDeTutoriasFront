@@ -1,5 +1,8 @@
 # Puntos de mejora y refactorizacion
 
+> **Documento historico.** Describe la estructura anterior a la reorganizacion por features;
+> varios enlaces apuntan a archivos que ya no existen.
+
 Analisis del frontend del Sistema de Tutorias (React 19 + Vite 8 + React Router 7).
 El objetivo es listar cambios concretos que hagan el proyecto mas mantenible,
 robusto y profesional. Cada punto indica **que pasa hoy**, **por que importa** y
@@ -33,8 +36,8 @@ robusto y profesional. Cada punto indica **que pasa hoy**, **por que importa** y
 
 ### 1.1 El rol `admin` queda en un loop hacia `/login`
 
-[useAutentificacion.jsx:84](src/hooks/useAutentificacion.jsx#L84) navega a `/tutor/home`
-cuando el rol es `admin`, pero [AppRouter.jsx:37](src/Routes/AppRouter.jsx#L37) solo
+[useAutentificacion.jsx:84](../src/hooks/useAutentificacion.jsx#L84) navega a `/tutor/home`
+cuando el rol es `admin`, pero [AppRouter.jsx:37](../src/Routes/AppRouter.jsx#L37) solo
 permite `['tutor']`. `PrivateRoute` lo manda a `/login` aun teniendo token valido.
 
 **Solucion:** agregar `'admin'` a `allowedRoles` de las rutas de tutor, o crear su
@@ -44,8 +47,8 @@ propio panel. Centralizar el mapa `rol -> ruta inicial` en una sola constante
 ### 1.2 `min` de la fecha calculado en UTC
 
 `new Date().toISOString().split('T')[0]` en
-[FormCrearTutoria.jsx:23](src/pages/Tutor/CrearTutoria/FormCrearTutoria.jsx#L23) y
-[TutoriaDetalle.jsx:188](src/pages/Tutor/TutoriaDetalle/TutoriaDetalle.jsx#L188)
+[FormCrearTutoria.jsx:23](../src/pages/Tutor/CrearTutoria/FormCrearTutoria.jsx#L23) y
+[TutoriaDetalle.jsx:188](../src/pages/Tutor/TutoriaDetalle/TutoriaDetalle.jsx#L188)
 devuelve la fecha **UTC**. En Mexico (UTC-6), despues de las 18:00 el minimo
 permitido ya es "manana" y el tutor no puede crear una tutoria para hoy.
 
@@ -60,7 +63,7 @@ export const hoyLocalISO = () => {
 
 ### 1.3 Deteccion de exito buscando texto en el mensaje
 
-[Tutorado/TutoriaDetalle.jsx:93](src/pages/Tutorado/TutoriaDetalle.jsx#L93) decide si
+[Tutorado/TutoriaDetalle.jsx:93](../src/pages/Tutorado/TutoriaDetalle.jsx#L93) decide si
 la inscripcion fue exitosa buscando `"no fue posible"` o `"error"` en el mensaje. Si el
 backend responde "No hay cupo", se muestra como **exito**.
 
@@ -70,7 +73,7 @@ hace `useTutoriaDetalleTutor`. Unificar el contrato de retorno en todos los hook
 ### 1.4 Al editar una tutoria el horario se pierde
 
 Al pulsar "Editar tutoria" se ejecuta `setIdHorario('')`
-([TutoriaDetalle.jsx:435](src/pages/Tutor/TutoriaDetalle/TutoriaDetalle.jsx#L435)) y el
+([TutoriaDetalle.jsx:435](../src/pages/Tutor/TutoriaDetalle/TutoriaDetalle.jsx#L435)) y el
 efecto que precarga el formulario no incluye el horario. El usuario siempre debe
 volver a elegirlo o el guardado falla con "Completa todos los campos". Ademas,
 `Number('')` es `0`, que **si** pasa `Number.isFinite`, por lo que se podria enviar
@@ -82,14 +85,14 @@ con `!valor` antes de convertir a numero.
 
 ### 1.5 Otros detalles
 
-- `response.json()` sin `.catch` en [useCrearTutoria.jsx:76](src/hooks/useCrearTutoria.jsx#L76)
-  y [useTutoriasExplorar.jsx:28](src/hooks/useTutoriasExplorar.jsx#L28): si el backend
+- `response.json()` sin `.catch` en [useCrearTutoria.jsx:76](../src/hooks/useCrearTutoria.jsx#L76)
+  y [useTutoriasExplorar.jsx:28](../src/hooks/useTutoriasExplorar.jsx#L28): si el backend
   responde sin cuerpo (ej. 204 o 500 HTML) se muestra "Error al conectar con el servidor".
-- `console.log` de depuracion en [useTutoriaDetalleTutorado.jsx:25](src/hooks/useTutoriaDetalleTutorado.jsx#L25)
+- `console.log` de depuracion en [useTutoriaDetalleTutorado.jsx:25](../src/hooks/useTutoriaDetalleTutorado.jsx#L25)
   que expone las inscripciones en la consola de produccion.
-- `handleLimpiar` en [CrearTutoria.jsx:38](src/pages/Tutor/CrearTutoria/CrearTutoria.jsx#L38)
+- `handleLimpiar` en [CrearTutoria.jsx:38](../src/pages/Tutor/CrearTutoria/CrearTutoria.jsx#L38)
   recorre los temas llamando `quitarTema` uno por uno; el hook deberia exponer un `reset()`.
-- La fuente `Montserrat` se declara en [index.css](src/index.css) pero nunca se carga
+- La fuente `Montserrat` se declara en [index.css](../src/index.css) pero nunca se carga
   (no hay `<link>` a Google Fonts ni `@font-face`), asi que cada equipo ve una fuente distinta.
 - El texto "Los inscritos seran notificados" al cancelar promete algo que el frontend
   no puede garantizar; confirmar con el backend o quitarlo.
@@ -170,7 +173,7 @@ hooks quedan en 10-20 lineas; los servicios se pueden mockear en tests.
 
 Los "adaptadores" de shapes inconsistentes del backend estan dispersos:
 `h.idHorario ?? h.id ?? h.idHorarios ?? h.horarioId` (dos veces), `normalizar` en
-[MisTutorias.jsx](src/pages/Tutorado/MisTutorias.jsx), `findInscripcion` con 4 candidatos
+[MisTutorias.jsx](../src/pages/Tutorado/MisTutorias.jsx), `findInscripcion` con 4 candidatos
 de id, `tema.tema || tema.nombre || String(tema)` (5 veces). Moverlos a
 `src/api/mappers.js` para que los componentes siempre reciban el mismo shape.
 Idealmente, abrir issues en el backend para estabilizar los DTOs y borrar estos fallbacks.
@@ -221,7 +224,7 @@ Idealmente, abrir issues en el backend para estabilizar los DTOs y borrar estos 
 | Paginas Login y Registro (panel de marca)             | 2      | `<AuthLayout>`                                       |
 | `MAX_CARACTERES_TEMA = 60`                            | 2      | `constants/tutoria.js`                               |
 
-[TutoriaDetalle.jsx del tutor](src/pages/Tutor/TutoriaDetalle/TutoriaDetalle.jsx) tiene
+[TutoriaDetalle.jsx del tutor](../src/pages/Tutor/TutoriaDetalle/TutoriaDetalle.jsx) tiene
 586 lineas; tras extraer `TutoriaInfoGrid`, `TemasEditor`, `EditarTutoriaForm`,
 `AccionesCard` e `InscritosList` deberia quedar por debajo de 150.
 
@@ -266,7 +269,7 @@ Como las clases son globales, cualquier nombre repetido entre paginas (`btn-acep
 5. Media queries dentro del mismo archivo del componente, con breakpoints como
    constantes documentadas.
 6. Reemplazar emojis usados como iconos (📅 🕐 🏛️ 🚪 🔍) por SVG del mismo set que
-   [icons.jsx](src/components/layout/icons.jsx) (o `lucide-react`): se ven igual en todos
+   [icons.jsx](../src/components/layout/icons.jsx) (o `lucide-react`): se ven igual en todos
    los sistemas operativos.
 7. Cargar la tipografia correctamente (`@fontsource/montserrat` o Google Fonts).
 
@@ -278,7 +281,7 @@ Los hooks manejan a mano `isLoading/error/data`, recargan todo despues de cada m
 y no cancelan peticiones al desmontar (posibles `setState` sobre componentes
 desmontados y condiciones de carrera al cambiar de `:id`). Tambien generan los 7
 warnings `react-hooks/set-state-in-effect`, que hoy se silencian bajando la regla a `warn`
-en [eslint.config.js](eslint.config.js).
+en [eslint.config.js](../eslint.config.js).
 
 **Propuesta:** adoptar **TanStack Query** (`@tanstack/react-query`).
 
@@ -422,7 +425,7 @@ Scripts: `"test": "vitest"`, `"test:coverage": "vitest run --coverage"`.
 
 ## 12. Accesibilidad
 
-- El modal [VentanaEmerjente](src/components/Tutor/VentanaEmerjente.jsx) no tiene
+- El modal [VentanaEmerjente](../src/components/Tutor/VentanaEmerjente.jsx) no tiene
   `role="dialog"`, `aria-modal`, foco inicial, trampa de foco ni cierre con Escape.
   Usar `<dialog>` nativo o un componente accesible.
 - Los mensajes de feedback/error no se anuncian: agregar `role="alert"` (errores) o
@@ -455,7 +458,7 @@ Si el backend publica OpenAPI (springdoc), generar los tipos automaticamente con
 
 ## 14. Configuracion, despliegue y documentacion
 
-- La lista de prefijos del proxy en [vite.config.js](vite.config.js) debe mantenerse a mano
+- La lista de prefijos del proxy en [vite.config.js](../vite.config.js) debe mantenerse a mano
   cada vez que el backend agrega un recurso. Si el backend expone todo bajo `/api`,
   bastaria un solo proxy.
 - `VITE_API_URL` esta definido tanto en `.env.production` como en `render.yaml`; dejar una
@@ -470,7 +473,7 @@ Si el backend publica OpenAPI (springdoc), generar los tipos automaticamente con
   reemplazados por `layout/AppLayout` + `Sidebar`. Actualizar la seccion de estructura.
 - Agregar capturas de pantalla o un GIF al README y un `CONTRIBUTING.md`.
 - El enlace a `issues/8` del backend esta hardcodeado en
-  [MisTutorias.jsx](src/pages/Tutorado/MisTutorias.jsx); los avisos tecnicos no deberian
+  [MisTutorias.jsx](../src/pages/Tutorado/MisTutorias.jsx); los avisos tecnicos no deberian
   mostrarse al usuario final. Mover a un log o eliminar cuando el backend lo resuelva.
 
 ---

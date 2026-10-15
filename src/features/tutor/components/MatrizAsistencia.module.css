@@ -154,7 +154,7 @@ thead .columnaCancelada {
 }
 
 .noInscrito {
-  color: var(--color-texto-placeholder);
+  color: var(--color-texto-tenue);
   font-size: 1.2rem;
 }
 

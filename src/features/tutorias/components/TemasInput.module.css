@@ -19,7 +19,7 @@
   min-width: 0;
   height: 42px;
   padding: 0 0.85rem;
-  border: 1px solid var(--color-borde);
+  border: 1px solid var(--color-borde-control);
   border-radius: var(--radio-sm);
   background-color: var(--color-superficie);
   color: var(--color-texto);
@@ -35,7 +35,7 @@
 }
 
 .campo:hover:not(:focus):not(:disabled) {
-  border-color: var(--color-borde-fuerte);
+  border-color: var(--color-borde-control-hover);
 }
 
 .campo:focus {

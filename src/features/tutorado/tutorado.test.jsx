@@ -1,7 +1,8 @@
-import { screen, waitFor, within } from '@testing-library/react'
+import { act, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { esquemas } from '@/api/esquemas'
 import { iniciarSesionComo, ok, renderApp, usuarioActual } from '@/test/app'
 import {
   choqueBasesDeDatos,
@@ -105,6 +106,20 @@ describe('Explorar tutorías (03)', () => {
     expect(router.state.location.search).toBe('?dia=LUNES&lugar=1&choques=1&q=datos')
     expect(screen.getByRole('button', { name: 'Lunes' })).toHaveAttribute('aria-pressed', 'true')
   })
+
+  it('el buscador sigue a la URL si cambia sin escribir (menu o historial)', async () => {
+    servidor.use(http.get('*/tutorias', ok(tutorias)))
+    const router = renderApp('/tutorado/home?q=datos')
+    expect(await screen.findByRole('searchbox')).toHaveValue('datos')
+
+    // "Explorar tutorías" del menu lleva a la misma pagina sin filtros.
+    await act(() => router.navigate('/tutorado/home'))
+
+    expect(screen.getByRole('searchbox')).toHaveValue('')
+    // Pasado el tiempo de espera de la busqueda, la URL no recupera el texto anterior.
+    await new Promise((resolver) => setTimeout(resolver, 500))
+    expect(router.state.location.search).toBe('')
+  })
 })
 
 describe('Detalle e inscripción (04 y 05)', () => {
@@ -162,10 +177,11 @@ describe('Detalle e inscripción (04 y 05)', () => {
 })
 
 describe('Panel de inscripción (06)', () => {
+  // El panel recibe la tutoria como la entrega la API: validada y con `materia` normalizada.
   const renderPanel = (cambios, props = {}) =>
     renderConProveedores(
       <PanelInscripcion
-        tutoria={detalleTutoria(cambios)}
+        tutoria={esquemas.detalle.parse(detalleTutoria(cambios))}
         isSubmitting={false}
         onInscribirse={vi.fn()}
         onDarseDeBaja={vi.fn().mockResolvedValue()}
