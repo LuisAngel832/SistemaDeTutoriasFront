@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { loginSchema, registroSchema } from './auth'
+import { autorizarTutorSchema, loginSchema, registroSchema } from './auth'
 import { materiaSchema } from './materia'
 import { aPayloadTutoria, formularioTutoriaSchema } from './tutoria'
 
@@ -19,8 +19,15 @@ describe('loginSchema', () => {
     })
   })
 
+  it('acepta el numero de personal de un admin tal cual', () => {
+    expect(loginSchema.parse({ usuario: ' 25480 ', contrasena: 'secreta' })).toEqual({
+      matricula: '25480',
+      pwd: 'secreta',
+    })
+  })
+
   it('exige un correo o una matricula valida y la contrasena', () => {
-    expect(porCampo(loginSchema.safeParse({ usuario: '1234', contrasena: '' }))).toEqual({
+    expect(porCampo(loginSchema.safeParse({ usuario: 'S2301458', contrasena: '' }))).toEqual({
       usuario: 'Escribe tu correo o tu matrícula (S seguida de 8 dígitos)',
       contrasena: 'Ingresa tu contraseña',
     })
@@ -66,6 +73,61 @@ describe('registroSchema', () => {
       matricula: 'Escribe la S seguida de 8 dígitos, por ejemplo S24011236',
       correo: 'Escribe un correo electrónico válido',
       pwd: 'La contraseña debe tener al menos 8 caracteres',
+    })
+  })
+
+  it('aplica los limites del backend', () => {
+    expect(
+      porCampo(
+        registroSchema.safeParse({
+          ...valido,
+          nombre: 'a'.repeat(51),
+          apellidos: 'a'.repeat(201),
+          correo: `${'a'.repeat(250)}@uv.mx`,
+          pwd: 'a'.repeat(73),
+        }),
+      ),
+    ).toEqual({
+      nombre: 'El nombre no puede tener más de 50 caracteres',
+      apellidos: 'Los apellidos no pueden tener más de 200 caracteres',
+      correo: 'El correo no puede tener más de 255 caracteres',
+      pwd: 'La contraseña no puede tener más de 72 caracteres',
+    })
+    // 40 caracteres, pero 80 bytes: BCrypt solo usa los primeros 72.
+    expect(mensajes(registroSchema.safeParse({ ...valido, pwd: 'ñ'.repeat(40) }))).toEqual([
+      'La contraseña es demasiado larga: los acentos y los emojis ocupan más espacio',
+    ])
+    expect(registroSchema.safeParse({ ...valido, pwd: 'a'.repeat(72) }).success).toBe(true)
+  })
+})
+
+describe('autorizarTutorSchema', () => {
+  it('normaliza la matricula y el correo y no pide contrasena ni rol', () => {
+    expect(
+      autorizarTutorSchema.parse({
+        nombre: ' Luis ',
+        apellidos: 'Pérez Montiel',
+        matricula: 'zs21008800',
+        correo: 'ZS21008800@estudiantes.uv.mx',
+      }),
+    ).toEqual({
+      nombre: 'Luis',
+      apellidos: 'Pérez Montiel',
+      matricula: 'S21008800',
+      correo: 'zs21008800@estudiantes.uv.mx',
+    })
+  })
+
+  it('valida cada campo', () => {
+    expect(
+      porCampo(
+        autorizarTutorSchema.safeParse({ nombre: '', apellidos: '', matricula: '', correo: 'x' }),
+      ),
+    ).toEqual({
+      nombre: 'Ingresa el nombre',
+      apellidos: 'Ingresa los apellidos',
+      matricula: 'Escribe la S seguida de 8 dígitos, por ejemplo S24011236',
+      correo: 'Escribe un correo electrónico válido',
     })
   })
 })

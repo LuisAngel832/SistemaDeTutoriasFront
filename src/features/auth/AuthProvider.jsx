@@ -156,7 +156,7 @@ export const AuthProvider = ({ children }) => {
         iniciarSesion(data ?? {}, credenciales)
         return { ok: true }
       } catch (err) {
-        return { ok: false, message: err.message }
+        return { ok: false, message: err.message, errores: err.errores ?? {} }
       }
     },
     [iniciarSesion],
