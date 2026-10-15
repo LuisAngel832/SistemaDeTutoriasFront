@@ -300,6 +300,9 @@ Acceso con contrasena (en lugar de Microsoft y Google):
   La matricula o el correo duplicados se muestran bajo su campo si llegan como
   `data: { matricula }` o `data: { correo }`.
 
+El backend todavia no publica estos dos endpoints. Lo que falta del lado del backend esta en
+[docs/PENDIENTES_BACKEND.md](docs/PENDIENTES_BACKEND.md).
+
 - **Cliente HTTP** ([`src/api/client.js`](src/api/client.js)): agrega el token, aplica un
   timeout de 15 s, convierte los errores en `ApiError` con el mensaje del backend (y los
   errores por campo en `errores`) y cancela peticiones al desmontar las pantallas.

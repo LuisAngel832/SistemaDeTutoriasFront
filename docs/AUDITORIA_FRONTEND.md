@@ -434,3 +434,6 @@ backend desplegado y la rama `master` de `Shtven/TutoriasBackend` solo exponen
 `/auth/microsoft`, `/auth/google` y `/auth/registro` (comprobado en `/v3/api-docs` del backend
 desplegado). Hasta que el backend publique esos endpoints, el login y el registro de esta rama
 no funcionan contra producción.
+
+El contrato de ambos endpoints y lo demás que se le pide al backend (H-02, CORS, `materia`,
+pruebas de roles) está en [PENDIENTES_BACKEND.md](PENDIENTES_BACKEND.md).
