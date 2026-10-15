@@ -307,11 +307,14 @@ El backend todavia no publica estos dos endpoints. Lo que falta del lado del bac
   timeout de 15 s, convierte los errores en `ApiError` con el mensaje del backend (y los
   errores por campo en `errores`) y cancela peticiones al desmontar las pantallas.
 - **Modulos por recurso** (`src/api/*.js`): `auth`, `usuarios`, `materias`, `catalogos`,
-  `tutorias`, `temas`, `inscripciones`, `sesiones`, `comentarios` y `admin`. Los DTOs se usan
-  tal como llegan; el formato para mostrar vive en `src/utils/formatters.js`.
-- **Sesion** ([`src/features/auth`](src/features/auth)): `AuthProvider` guarda token, rol,
-  matricula, nombre y correo (en `localStorage`). La sesion se cierra y se avisa al usuario cuando el token vence (segun
-  su `exp`) o el backend responde `401`.
+  `tutorias`, `temas`, `inscripciones`, `sesiones`, `comentarios` y `admin`. Las respuestas de
+  los endpoints criticos se validan con los esquemas de
+  [`src/api/esquemas.js`](src/api/esquemas.js), que ademas convierten `materia` siempre a
+  objeto. El formato para mostrar vive en `src/utils/formatters.js`.
+- **Sesion** ([`src/features/auth`](src/features/auth)): `AuthProvider` guarda solo el token
+  en `localStorage`. El rol y la matricula salen de sus claims, y el nombre y el correo de
+  `/usuarios/me`. La sesion se cierra y se avisa al usuario cuando el token vence (segun su
+  `exp`) o el backend responde `401`.
 
 Wrapper de respuesta esperado del backend:
 
