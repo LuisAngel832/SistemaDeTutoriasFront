@@ -12,8 +12,9 @@ import { crearRouter } from './router'
 // Sin el modo JIT de Zod (usa new Function), que la CSP sin 'unsafe-eval' reporta como violacion.
 z.config({ jitless: true })
 
-// No bloquea el arranque: los errores previos a que cargue el SDK se envian despues.
-iniciarMonitoreo({
+// No bloquea el arranque: los errores previos a que cargue el SDK se envian despues. No se
+// espera a proposito y nunca rechaza (atrapa sus propios errores).
+void iniciarMonitoreo({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   release: import.meta.env.VITE_RELEASE,
   entorno: import.meta.env.MODE,
