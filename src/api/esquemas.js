@@ -14,9 +14,9 @@ const lista = (esquema) =>
 
 const objeto = (campos = {}) => z.looseObject(campos)
 
-// El backend manda la materia como objeto { idMateria, nombre, nrc } en las tutorias y como
-// texto (solo el nombre) en sesiones, historial, proxima sesion, choques y la semana. El front
-// la usa siempre como objeto.
+// El backend manda la materia como objeto { idMateria, nombre, nrc } en todas las respuestas
+// (TutoriasBackend 2f199d5). Antes la mandaba como texto en sesiones, historial, proxima sesion,
+// choques y la semana; se sigue aceptando esa forma. El front la usa siempre como objeto.
 export const materia = z.pipe(
   z.union([
     z.string(),

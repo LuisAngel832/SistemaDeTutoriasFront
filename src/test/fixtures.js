@@ -8,7 +8,7 @@ export const USUARIOS = {
     apellidos: 'Mendoza Cruz',
     correo: 'zS23014587@estudiantes.uv.mx',
     rol: 'TUTORADO',
-    proveedor: 'MICROSOFT',
+    proveedor: 'LOCAL',
   },
   tutor: {
     matricula: 'S21009342',
@@ -16,7 +16,7 @@ export const USUARIOS = {
     apellidos: 'Hernández Aguilar',
     correo: 'zS21009342@estudiantes.uv.mx',
     rol: 'TUTOR',
-    proveedor: 'MICROSOFT',
+    proveedor: 'LOCAL',
   },
   admin: {
     matricula: '25480',
@@ -24,7 +24,7 @@ export const USUARIOS = {
     apellidos: 'Salas Ortega',
     correo: 'asalas@uv.mx',
     rol: 'ADMIN',
-    proveedor: 'MICROSOFT',
+    proveedor: 'LOCAL',
   },
 }
 
@@ -64,7 +64,12 @@ export const choqueBasesDeDatos = {
   dia: 'JUEVES',
   horaInicio: '17:00',
   horaFin: '19:00',
-  conTutoria: { idTutoria: 7, materia: 'Bases de Datos', horaInicio: '16:00', horaFin: '18:00' },
+  conTutoria: {
+    idTutoria: 7,
+    materia: { idMateria: 2, nombre: 'Bases de Datos', nrc: 48241 },
+    horaInicio: '16:00',
+    horaFin: '18:00',
+  },
 }
 
 export const proximaSesion = {
@@ -124,14 +129,26 @@ export const comentarios = [
 ]
 
 export const semana = [
-  { dia: 'MARTES', horaInicio: '16:00', horaFin: '18:00', idTutoria: 7, materia: 'Bases de Datos' },
-  { dia: 'JUEVES', horaInicio: '16:00', horaFin: '18:00', idTutoria: 7, materia: 'Bases de Datos' },
+  {
+    dia: 'MARTES',
+    horaInicio: '16:00',
+    horaFin: '18:00',
+    idTutoria: 7,
+    materia: { idMateria: 2, nombre: 'Bases de Datos', nrc: 48241 },
+  },
+  {
+    dia: 'JUEVES',
+    horaInicio: '16:00',
+    horaFin: '18:00',
+    idTutoria: 7,
+    materia: { idMateria: 2, nombre: 'Bases de Datos', nrc: 48241 },
+  },
   {
     dia: 'VIERNES',
     horaInicio: '08:00',
     horaFin: '10:00',
     idTutoria: 3,
-    materia: 'Álgebra Lineal',
+    materia: { idMateria: 1, nombre: 'Álgebra Lineal', nrc: 47702 },
   },
 ]
 
@@ -155,7 +172,7 @@ export const basesDeDatos = (cambios = {}) =>
 export const misInscripciones = () => ({
   proximaSesion: {
     idTutoria: 7,
-    materia: 'Bases de Datos',
+    materia: { idMateria: 2, nombre: 'Bases de Datos', nrc: 48241 },
     fecha: '2026-10-06',
     dia: 'MARTES',
     horaInicio: '16:00',
@@ -305,7 +322,7 @@ export const sesion = (cambios = {}) => ({
   idSesion: 88,
   idHorario: 31,
   idTutoria: 12,
-  materia: 'Estructuras de Datos',
+  materia: { idMateria: 5, nombre: 'Estructuras de Datos', nrc: 48215 },
   fecha: '2026-10-05',
   dia: 'LUNES',
   horaInicio: '10:00',
@@ -327,7 +344,7 @@ export const sesionProgramada = (cambios = {}) =>
     idSesion: null,
     idHorario: 61,
     idTutoria: 15,
-    materia: 'Programación Web',
+    materia: { idMateria: 11, nombre: 'Programación Web', nrc: 48260 },
     horaInicio: '16:00',
     horaFin: '18:00',
     aula: 11,
@@ -442,7 +459,7 @@ export const listaDeSesion = (cambios = {}) => ({
 export const historialAsistencia = () => ({
   tutoria: {
     idTutoria: 12,
-    materia: 'Estructuras de Datos',
+    materia: { idMateria: 5, nombre: 'Estructuras de Datos', nrc: 48215 },
     edificio: 2,
     aula: 7,
     horarios: [horario(31, 'LUNES', '10:00', '12:00'), horario(32, 'MIERCOLES', '10:00', '12:00')],

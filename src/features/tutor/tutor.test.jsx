@@ -80,7 +80,11 @@ describe('Mis tutorías y sesiones de hoy (09)', () => {
   it('abre el pase de lista y lleva a la lista de la sesion', async () => {
     const [apertura, abrir] = capturar(
       listaDeSesion({
-        sesion: sesion({ idSesion: 95, idHorario: 61, materia: 'Programación Web' }),
+        sesion: sesion({
+          idSesion: 95,
+          idHorario: 61,
+          materia: { idMateria: 11, nombre: 'Programación Web', nrc: 48260 },
+        }),
       }),
     )
     servidor.use(
