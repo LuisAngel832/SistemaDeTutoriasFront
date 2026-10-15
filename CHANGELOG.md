@@ -7,22 +7,24 @@ proyecto sigue [Versionado Semantico](https://semver.org/lang/es/).
 
 ## [Sin publicar]
 
-> Requiere el backend con la API nueva (`TutoriasBackend/docs/API.md`): este front ya no
-> funciona con la API anterior.
+> Requiere el backend con la API nueva (`TutoriasBackend/docs/API.md`, desde el commit
+> `2f199d5`): este front ya no funciona con la API anterior.
 
 ### Agregado
 
 - Nuevo modelo de tutorias (mockups de escritorio del 5 oct 2026): tutorias recurrentes con
   horarios semanales y temas por horario, inscripciones, sesiones, pase de lista e historial.
 - Inicio de sesion con correo o matricula y contrasena, y registro con nombre, apellidos,
-  matricula, correo, contrasena y rol.
+  matricula, correo, contrasena y rol. Los admin entran con su numero de personal; el login
+  muestra el bloqueo por intentos fallidos y el registro valida los limites del backend.
 - Tutorado: explorar con filtros, panel de inscripcion con sus seis estados, "Tu semana",
   Mis tutorias con la proxima sesion y Mi asistencia con historial, comentarios y baja.
 - Tutor: sesiones de hoy (abrir pase de lista, cancelar, listas sin cerrar), crear y editar
   tutorias con varios horarios, detalle con temas en linea y desactivar, pase de lista con
   cierre y bajas automaticas, e historial de asistencia en matriz.
 - Panel de administracion: tutorias de la facultad con indicadores, desactivar y cierre de
-  periodo, y catalogo de Experiencias Educativas.
+  periodo, catalogo de Experiencias Educativas y tutores autorizados (solo quien esta en la
+  lista puede registrarse como tutor).
 - TanStack Query para los datos del servidor: cache entre pantallas, reintentos controlados
   e invalidacion automatica despues de cada operacion.
 - Validacion de formularios con react-hook-form y Zod: cada error se muestra junto a su campo

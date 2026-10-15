@@ -29,9 +29,10 @@ documentado en el backend (`docs/API.md`). El plan de la migracion esta en
 
 ### Acceso
 
-- Inicio de sesion con correo o matricula y contrasena; el backend entrega un JWT.
+- Inicio de sesion con correo o matricula y contrasena; el backend entrega un JWT. Los admin
+  entran con su numero de personal (p. ej. `25480`) o su correo.
 - Registro con nombre, apellidos, matricula (`S` + 8 digitos), correo, contrasena y rol
-  (tutorado o tutor).
+  (tutorado o tutor). Solo se puede registrar como tutor quien el admin autorizo antes.
 - Redireccion al panel de cada rol: tutorado, tutor o administrador.
 
 ### Panel del tutorado
@@ -57,6 +58,8 @@ documentado en el backend (`docs/API.md`). El plan de la migracion esta en
 - Tutorias de la facultad: indicadores, filtros, cupo y asistencia por tutoria, desactivar
   una tutoria y cierre de periodo.
 - Catalogo de Experiencias Educativas: alta, edicion y eliminacion.
+- Tutores autorizados: el admin pre-registra la matricula y el correo de cada tutor y puede
+  quitar a quien todavia no crea su cuenta.
 
 ### Interfaz
 
@@ -187,7 +190,7 @@ Pasos:
 > **Importante — CORS:** en produccion **no existe el proxy de Vite**, así que el
 > navegador llama al backend en `https://tutoriasbe.onrender.com` desde otro
 > origen. El backend de Spring Boot debe habilitar CORS para el dominio del
-> Static Site (ej. `https://tutorias-frontend.onrender.com`), de lo contrario las
+> Static Site (`https://sistemadetutoriasfront.onrender.com`), de lo contrario las
 > peticiones seran bloqueadas por el navegador.
 
 ### Cabeceras de seguridad
@@ -275,6 +278,7 @@ Las rutas se definen en [`src/app/router.jsx`](src/app/router.jsx) y sus URLs en
 | `/tutor/historial?tutoria=:id`       | TUTOR    | 14 Historial de asistencia                       |
 | `/administracion/tutorias`           | ADMIN    | 15 Tutorias de la facultad                       |
 | `/administracion/experiencias`       | ADMIN    | 16 Experiencias Educativas                       |
+| `/administracion/tutores`            | ADMIN    | Tutores autorizados (diseno propio)              |
 
 - `RequireRole` redirige a `/login` si no hay sesion (y vuelve a la ruta pedida despues del
   login) o a la pantalla inicial del usuario si su rol no corresponde.
@@ -287,20 +291,22 @@ Las rutas se definen en [`src/app/router.jsx`](src/app/router.jsx) y sus URLs en
 
 ## Integracion con el backend
 
-El contrato es el de `TutoriasBackend/docs/API.md`, salvo el acceso. Todas las llamadas usan
+El contrato es el de `TutoriasBackend/docs/API.md` y `docs/AUTENTICACION.md`. Todas las llamadas usan
 el JWT del backend en el header `Authorization: Bearer <token>` (salvo `/auth/**`).
 
 Acceso con contrasena (en lugar de Microsoft y Google):
 
 - `POST /auth/signin` con `{ matricula, pwd }` o `{ correo, pwd }` (el front envia `correo`
   si lo escrito lleva `@`). Respuesta: `{ token, usuario }`; tambien acepta `{ token, rol }`
-  y toma la matricula del claim `sub` del token.
+  y toma la matricula del claim `sub` del token. Un `401` aqui son credenciales incorrectas
+  (no cierra ninguna sesion) y un `429`, demasiados intentos fallidos.
 - `POST /auth/signup` con `{ nombre, apellidos, matricula, correo, pwd, rol }` (`rol`:
   `TUTORADO` o `TUTOR`). Si responde `{ token, usuario }` entra directo; si no, manda al login.
-  La matricula o el correo duplicados se muestran bajo su campo si llegan como
-  `data: { matricula }` o `data: { correo }`.
+  Los errores por campo (matricula o correo duplicados, tutor sin autorizar en `rol`) se
+  muestran bajo su campo.
+- Tutores autorizados: `GET`, `POST /admin/tutores` y `DELETE /admin/tutores/{matricula}`.
 
-El backend todavia no publica estos dos endpoints. Lo que falta del lado del backend esta en
+Lo que todavia se le pide al backend esta en
 [docs/PENDIENTES_BACKEND.md](docs/PENDIENTES_BACKEND.md).
 
 - **Cliente HTTP** ([`src/api/client.js`](src/api/client.js)): agrega el token, aplica un
