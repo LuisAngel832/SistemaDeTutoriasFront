@@ -32,6 +32,7 @@ const MENU_POR_ROL = {
     items: [
       { to: ROUTES.admin.inicio, label: 'Tutorías', icon: 'cuadricula' },
       { to: ROUTES.admin.experiencias, label: 'Experiencias Educativas', icon: 'tutorias' },
+      { to: ROUTES.admin.tutores, label: 'Tutores', icon: 'usuarios' },
     ],
   },
 }

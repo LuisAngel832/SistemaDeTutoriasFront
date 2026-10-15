@@ -215,6 +215,124 @@ describe('Experiencias Educativas (16)', () => {
   })
 })
 
+describe('Tutores autorizados', () => {
+  const preRegistrado = {
+    matricula: 'S21008800',
+    nombre: 'Luis',
+    apellidos: 'Pérez Montiel',
+    nombreCompleto: 'Luis Pérez Montiel',
+  }
+
+  const usarTutores = () => {
+    const lista = [...tutores, preRegistrado]
+    const peticiones = []
+    servidor.use(
+      http.get('*/admin/tutores', () => HttpResponse.json(respuestaOk(lista))),
+      http.post('*/admin/tutores', async ({ request }) => {
+        const cuerpo = await request.json()
+        peticiones.push({ metodo: 'POST', cuerpo })
+        if (lista.some((tutor) => tutor.matricula === cuerpo.matricula)) {
+          return HttpResponse.json(
+            respuestaError('Error de validación', {
+              matricula: 'La matrícula ya está registrada.',
+            }),
+            { status: 400 },
+          )
+        }
+        const nuevo = { ...cuerpo, nombreCompleto: `${cuerpo.nombre} ${cuerpo.apellidos}` }
+        lista.push(nuevo)
+        return HttpResponse.json(
+          respuestaOk({ ...cuerpo, rol: 'TUTOR', proveedor: null }, 'Tutor autorizado.'),
+        )
+      }),
+      http.delete('*/admin/tutores/:matricula', ({ params }) => {
+        peticiones.push({ metodo: 'DELETE', matricula: params.matricula })
+        if (params.matricula !== preRegistrado.matricula) {
+          return HttpResponse.json(
+            respuestaError(
+              'Solo se puede quitar un tutor pre-registrado que aún no crea su cuenta.',
+            ),
+            { status: 400 },
+          )
+        }
+        lista.splice(lista.indexOf(preRegistrado), 1)
+        return HttpResponse.json(respuestaOk(null, 'Pre-registro eliminado.'))
+      }),
+    )
+    return peticiones
+  }
+
+  const llenar = async ({ matricula }) => {
+    await userEvent.type(screen.getByLabelText('Nombre(s)'), 'Ana')
+    await userEvent.type(screen.getByLabelText('Apellidos'), 'Ruiz Soto')
+    await userEvent.clear(screen.getByLabelText('Matrícula'))
+    await userEvent.type(screen.getByLabelText('Matrícula'), matricula)
+    await userEvent.type(
+      screen.getByLabelText('Correo electrónico'),
+      'ZS21007700@estudiantes.uv.mx',
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Autorizar' }))
+  }
+
+  it('autoriza un tutor y muestra la matricula duplicada debajo del campo', async () => {
+    const peticiones = usarTutores()
+    renderApp('/administracion/tutores')
+
+    expect(await screen.findByText('Luis Pérez Montiel')).toBeInTheDocument()
+
+    await llenar({ matricula: 'S21009342' })
+    expect(await screen.findByText('La matrícula ya está registrada.')).toBeInTheDocument()
+    expect(screen.getByLabelText('Matrícula')).toHaveAttribute('aria-invalid', 'true')
+
+    await userEvent.clear(screen.getByLabelText('Nombre(s)'))
+    await userEvent.clear(screen.getByLabelText('Apellidos'))
+    await userEvent.clear(screen.getByLabelText('Correo electrónico'))
+    await llenar({ matricula: 'zs21007700' })
+
+    await waitFor(() =>
+      expect(peticiones.at(-1)).toEqual({
+        metodo: 'POST',
+        cuerpo: {
+          nombre: 'Ana',
+          apellidos: 'Ruiz Soto',
+          matricula: 'S21007700',
+          correo: 'zs21007700@estudiantes.uv.mx',
+        },
+      }),
+    )
+    expect(await screen.findByText('Tutor autorizado.')).toBeInTheDocument()
+    expect(await screen.findByText('Ana Ruiz Soto')).toBeInTheDocument()
+    expect(screen.getByLabelText('Nombre(s)')).toHaveValue('')
+  })
+
+  it('quita un pre-registro tras confirmar y muestra el rechazo si ya creo su cuenta', async () => {
+    const peticiones = usarTutores()
+    renderApp('/administracion/tutores')
+
+    await userEvent.click(
+      await screen.findByRole('button', {
+        name: 'Quitar la autorización de Rocío Hernández Aguilar',
+      }),
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Sí, quitar' }))
+    expect(
+      await screen.findByText(
+        'Solo se puede quitar un tutor pre-registrado que aún no crea su cuenta.',
+      ),
+    ).toBeInTheDocument()
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Quitar la autorización de Luis Pérez Montiel' }),
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Sí, quitar' }))
+    await waitFor(() =>
+      expect(peticiones.at(-1)).toEqual({ metodo: 'DELETE', matricula: 'S21008800' }),
+    )
+    expect(await screen.findByText('Pre-registro eliminado.')).toBeInTheDocument()
+    await waitFor(() => expect(screen.queryByText('Luis Pérez Montiel')).not.toBeInTheDocument())
+  })
+})
+
 describe('acceso del admin', () => {
   it('entra a su propio panel y no a las pantallas del tutor', async () => {
     servidor.use(http.get('*', ok([])))
@@ -222,5 +340,6 @@ describe('acceso del admin', () => {
 
     await waitFor(() => expect(router.state.location.pathname).toBe('/administracion/tutorias'))
     expect(await screen.findByRole('link', { name: 'Experiencias Educativas' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Tutores' })).toBeInTheDocument()
   })
 })

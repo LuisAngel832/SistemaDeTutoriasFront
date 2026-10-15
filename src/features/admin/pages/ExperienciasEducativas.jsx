@@ -20,7 +20,7 @@ import { materiaSchema } from '@/schemas/materia'
 import { avisar } from '@/utils/avisos'
 import { clases } from '@/utils/clases'
 import { pluralizar } from '@/utils/formatters'
-import styles from './ExperienciasEducativas.module.css'
+import styles from './catalogo.module.css'
 
 const VACIO = { nombre: '', nrc: '' }
 
@@ -87,7 +87,7 @@ const ExperienciasEducativas = () => {
                         editando?.idMateria === materia.idMateria && styles.seleccionada,
                       )}
                     >
-                      <td className={styles.nrc}>{materia.nrc}</td>
+                      <td className={styles.codigo}>{materia.nrc}</td>
                       <th scope="row">{materia.nombre}</th>
                       <td className={styles.derecha}>{materia.tutoriasActivas ?? 0}</td>
                       <td className={styles.derecha}>
