@@ -5,6 +5,9 @@
 // Vacio en desarrollo para usar el proxy de Vite (mismo origen, sin CORS).
 const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 const TIMEOUT_MS = 15_000
+// El backend se duerme tras un rato sin uso y tarda en despertar (17 s medidos en nov. 2026). El
+// login y el registro suelen ser la primera peticion, asi que esperan mas que las demas.
+export const TIMEOUT_DESPERTAR_MS = 60_000
 
 export const MENSAJES_ERROR = {
   red: 'Error al conectar con el servidor',

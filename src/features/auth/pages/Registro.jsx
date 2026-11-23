@@ -5,6 +5,8 @@ import { Alert, Button, FormField, Input, PasswordInput, RadioGroup } from '@/co
 import { ROUTES } from '@/constants/routes'
 import { useAuth } from '@/features/auth/AuthContext'
 import { AuthLayout } from '@/features/auth/components/AuthLayout'
+import { AvisoDespertando } from '@/features/auth/components/AvisoDespertando'
+import { useEsperaLarga } from '@/features/auth/hooks/useEsperaLarga'
 import {
   MAX_CARACTERES_CONTRASENA,
   MIN_CARACTERES_CONTRASENA,
@@ -59,6 +61,7 @@ const Registro = () => {
   })
   // Un tutor solo se da de alta si el admin pre-registro su matricula con ese mismo correo.
   const esTutor = useWatch({ control, name: 'rol' }) === ROLES_REGISTRO.TUTOR
+  const despertando = useEsperaLarga(isSubmitting)
 
   const enviar = handleSubmit(async (datos) => {
     const res = await registro(datos)
@@ -171,8 +174,13 @@ const Registro = () => {
           loading={isSubmitting}
           className={clases(styles.completo, styles.enviar)}
         >
-          {isSubmitting ? 'Creando tu cuenta…' : 'Crear cuenta'}
+          {isSubmitting
+            ? despertando
+              ? 'Despertando el servidor…'
+              : 'Creando tu cuenta…'
+            : 'Crear cuenta'}
         </Button>
+        <AvisoDespertando visible={despertando} className={styles.completo} />
       </form>
     </AuthLayout>
   )

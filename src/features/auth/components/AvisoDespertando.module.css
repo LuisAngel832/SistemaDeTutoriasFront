@@ -1,0 +1,17 @@
+.aviso {
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+/* Vacia: fuera de la vista pero en el arbol de accesibilidad (ver AvisoDespertando.jsx). */
+.aviso:empty {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
