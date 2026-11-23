@@ -5,6 +5,8 @@ import { Alert, Button, FormField, Input, PasswordInput } from '@/components/ui'
 import { ROUTES } from '@/constants/routes'
 import { useAuth } from '@/features/auth/AuthContext'
 import { AuthLayout } from '@/features/auth/components/AuthLayout'
+import { AvisoDespertando } from '@/features/auth/components/AvisoDespertando'
+import { useEsperaLarga } from '@/features/auth/hooks/useEsperaLarga'
 import { loginSchema } from '@/schemas/auth'
 import styles from './LogIn.module.css'
 
@@ -31,6 +33,7 @@ const LogIn = () => {
     resolver: zodResolver(loginSchema),
     defaultValues: { usuario: '', contrasena: '' },
   })
+  const despertando = useEsperaLarga(isSubmitting)
 
   const enviar = handleSubmit(async (credenciales) => {
     const res = await login(credenciales)
@@ -94,8 +97,13 @@ const LogIn = () => {
         </FormField>
 
         <Button type="submit" size="lg" fullWidth loading={isSubmitting} className={styles.enviar}>
-          {isSubmitting ? 'Ingresando…' : 'Iniciar sesión'}
+          {isSubmitting
+            ? despertando
+              ? 'Despertando el servidor…'
+              : 'Ingresando…'
+            : 'Iniciar sesión'}
         </Button>
+        <AvisoDespertando visible={despertando} />
       </form>
     </AuthLayout>
   )

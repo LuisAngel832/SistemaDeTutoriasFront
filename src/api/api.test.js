@@ -1,10 +1,10 @@
 import { http, HttpResponse } from 'msw'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { respuestaOk, servidor, usarServidorMock } from '@/test/servidor'
 import { adminApi } from './admin'
 import { authApi } from './auth'
 import { catalogosApi } from './catalogos'
-import { configureApi, conParametros, RespuestaInvalidaError } from './client'
+import { configureApi, conParametros, RespuestaInvalidaError, TIMEOUT_DESPERTAR_MS } from './client'
 import { comentariosApi } from './comentarios'
 import { inscripcionesApi } from './inscripciones'
 import { materiasApi } from './materias'
@@ -34,6 +34,20 @@ beforeEach(() => {
       return HttpResponse.json(respuestaOk(null))
     }),
   )
+})
+
+describe('timeout del acceso', () => {
+  // El login y el registro despiertan al backend dormido (~17 s): no deben cortar a los 15 s.
+  it('el login y el registro esperan mas que las demas peticiones', async () => {
+    const espera = vi.spyOn(globalThis, 'setTimeout')
+
+    await authApi.iniciarSesion({ matricula: 'S23014587', pwd: 'x' })
+    await authApi.registrarse({ matricula: 'S23014587', pwd: 'x' })
+    await materiasApi.listar().catch(() => {})
+
+    const plazos = espera.mock.calls.map(([, ms]) => ms).filter((ms) => ms >= 10_000)
+    expect(plazos).toEqual([TIMEOUT_DESPERTAR_MS, TIMEOUT_DESPERTAR_MS, 15_000])
+  })
 })
 
 // Aqui solo importa la peticion: el backend simulado responde null y los endpoints que validan
