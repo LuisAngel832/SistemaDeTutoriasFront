@@ -11,11 +11,13 @@ const SIN_NOMBRE = 'Experiencia Educativa sin nombre'
 export const DetalleTutoriaLayout = ({ back, main, aside, footer }) => (
   <>
     <div className={styles.volver}>{back}</div>
-    <div className={styles.grid}>
-      <Card as="article" padding="lg" className={styles.principal}>
-        {main}
-      </Card>
-      <aside className={styles.lateral}>{aside}</aside>
+    <div className={styles.contenedor}>
+      <div className={styles.grid}>
+        <Card as="article" padding="lg" className={styles.principal}>
+          {main}
+        </Card>
+        <aside className={styles.lateral}>{aside}</aside>
+      </div>
     </div>
     {footer}
   </>
@@ -72,9 +74,11 @@ export const DatosDetalle = ({ datos }) => (
 export const DetalleCargando = ({ back }) => (
   <>
     <div className={styles.volver}>{back}</div>
-    <div className={styles.grid} aria-busy="true">
-      <Skeleton height={360} className={styles.skeleton} />
-      <Skeleton height={260} className={styles.skeleton} />
+    <div className={styles.contenedor}>
+      <div className={styles.grid} aria-busy="true">
+        <Skeleton height={360} className={styles.skeleton} />
+        <Skeleton height={260} className={styles.skeleton} />
+      </div>
     </div>
   </>
 )

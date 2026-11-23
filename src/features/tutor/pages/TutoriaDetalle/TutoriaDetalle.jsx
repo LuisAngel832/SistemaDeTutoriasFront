@@ -5,12 +5,14 @@ import { Alert, Button, Card, ConfirmDialog, Skeleton } from '@/components/ui'
 import { IconEdificio, IconReloj } from '@/components/ui/icons'
 import { ROUTES } from '@/constants/routes'
 import { ESTADO_SESION, ESTADO_TUTORIA } from '@/constants/tutoria'
+import { useAuth } from '@/features/auth/AuthContext'
 import { Comentarios } from '@/features/comentarios/Comentarios'
 import { ConfirmarCancelacion } from '@/features/tutor/components/ConfirmarCancelacion'
 import { ListaSesiones } from '@/features/tutor/components/ListaSesiones'
 import { PanelInscritos } from '@/features/tutor/components/PanelInscritos'
 import { useAccionesSesion } from '@/features/tutor/hooks/useAccionesSesion'
 import { useDetalleTutor } from '@/features/tutor/hooks/useDetalleTutor'
+import { esTutoriaAjena, MENSAJE_TUTORIA_AJENA } from '@/features/tutor/tutoriaAjena'
 import { BadgeEstado } from '@/features/tutorias/components/BadgeEstado'
 import {
   DatosDetalle,
@@ -35,6 +37,7 @@ const Volver = () => (
 const TutoriaDetalleTutor = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { matricula } = useAuth()
   const detalle = useDetalleTutor(id)
   const { tutoria, sesiones, inscritos, isLoading, error } = detalle
   const { abrirLista, cancelar, abriendo, cancelando } = useAccionesSesion()
@@ -49,11 +52,12 @@ const TutoriaDetalleTutor = () => {
     )
   }
 
-  if (error || !tutoria) {
+  const ajena = esTutoriaAjena(tutoria, matricula)
+  if (error || !tutoria || ajena) {
     return (
       <Pagina>
         <DetalleError
-          message={error || 'No encontramos esta tutoría.'}
+          message={ajena ? MENSAJE_TUTORIA_AJENA : error || 'No encontramos esta tutoría.'}
           to={ROUTES.tutor.inicio}
           linkLabel="Volver a mis tutorías"
         />
@@ -186,7 +190,7 @@ const TutoriaDetalleTutor = () => {
             )}
           </>
         }
-        aside={<PanelInscritos datos={inscritos} />}
+        aside={<PanelInscritos datos={inscritos} error={detalle.errorInscritos} />}
         footer={
           <Card as="section" padding="lg" className={styles.comentarios}>
             <h2 className={styles.comentariosTitulo}>Comentarios de los tutorados</h2>

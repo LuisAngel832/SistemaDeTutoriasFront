@@ -52,6 +52,7 @@ export const useDetalleTutor = (idTutoria) => {
     cargandoSesiones: sesionesQuery.isPending,
     error: detalleQuery.error?.message ?? '',
     errorSesiones: sesionesQuery.error?.message ?? '',
+    errorInscritos: inscritosQuery.error?.message ?? '',
     ocupado: agregarTemaM.isPending || quitarTemaM.isPending,
     desactivando: desactivarM.isPending,
     agregarTema: (horario, tema) =>

@@ -2,6 +2,12 @@
   display: flex;
 }
 
+/* Los cortes se miden con el ancho del contenido y no con el de la ventana: la barra lateral
+   resta unos 250 px y, a ~1000 px de ventana, las dos columnas ya no cabian (informe B.2.7). */
+.contenedor {
+  container: detalle / inline-size;
+}
+
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
@@ -11,6 +17,7 @@
 
 .principal {
   min-width: 0;
+  container: principal / inline-size;
 }
 
 .lateral {
@@ -132,7 +139,7 @@
   color: var(--color-texto);
   font-size: 0.95rem;
   font-weight: 500;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .seccionTitulo {
@@ -167,15 +174,15 @@
   text-decoration: underline;
 }
 
-@media (max-width: 900px) {
+@container detalle (max-width: 860px) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-@media (max-width: 480px) {
+@container principal (max-width: 560px) {
   .datos {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
