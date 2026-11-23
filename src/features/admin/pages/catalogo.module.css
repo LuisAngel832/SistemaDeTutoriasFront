@@ -146,7 +146,8 @@
 
 @media (max-width: 900px) {
   .grid {
-    grid-template-columns: 1fr;
+    /* minmax(0, ...) deja que la columna sea mas angosta que la tabla (que hace scroll). */
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .panel {

@@ -24,6 +24,8 @@
 }
 
 .tablaContenedor {
+  /* Ancla los textos .oculto (position: absolute) de las celdas: sin esto ensanchan la pagina. */
+  position: relative;
   overflow-x: auto;
   border: 1px solid var(--color-borde-suave);
   border-radius: var(--radio-md);
@@ -95,6 +97,15 @@
 
 .baja {
   color: var(--color-alerta-texto) !important;
+}
+
+/* global.css pone los svg en block: el icono de asistencia baja va junto al porcentaje. */
+.asistencia svg {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-right: 0.25rem;
+  vertical-align: -2px;
 }
 
 .baja svg {

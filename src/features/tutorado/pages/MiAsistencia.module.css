@@ -58,6 +58,8 @@
 
 .asistio svg,
 .falto svg {
+  /* global.css pone los svg en block: aqui van en la linea del texto. */
+  display: inline-block;
   width: 14px;
   height: 14px;
   margin-right: 0.35rem;

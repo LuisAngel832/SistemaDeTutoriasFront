@@ -1,4 +1,6 @@
 .contenedor {
+  /* Ancla los textos ocultos (position: absolute) de las celdas: sin esto ensanchan la pagina. */
+  position: relative;
   overflow-x: auto;
   border: 1px solid var(--color-borde-suave);
   border-radius: var(--radio-md);
