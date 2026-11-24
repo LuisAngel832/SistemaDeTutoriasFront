@@ -8,9 +8,11 @@ import { clavesTutorias } from '@/api/queryKeys'
 import { tutoriasApi } from '@/api/tutorias'
 import { ROUTES } from '@/constants/routes'
 import { ESTADO_TUTORIA } from '@/constants/tutoria'
+import { useAuth } from '@/features/auth/AuthContext'
 import { FormularioTutoria } from '@/features/tutor/components/FormularioTutoria'
 import { useCatalogosTutoria } from '@/features/tutor/hooks/useCatalogosTutoria'
 import { useGuardarTutoria } from '@/features/tutor/hooks/useGuardarTutoria'
+import { esTutoriaAjena, MENSAJE_TUTORIA_AJENA } from '@/features/tutor/tutoriaAjena'
 import { ordenarHorarios } from '@/utils/formatters'
 
 // Datos del detalle -> valores del formulario (los selects trabajan con strings).
@@ -32,6 +34,7 @@ const aValores = (tutoria) => ({
 const EditarTutoria = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { matricula } = useAuth()
   const catalogos = useCatalogosTutoria()
   const { guardar } = useGuardarTutoria(id)
   const {
@@ -59,10 +62,14 @@ const EditarTutoria = () => {
   }
 
   let contenido
-  if (isPending) {
+  // El formulario espera a los catalogos: sus selects no estan controlados y, sin las opciones,
+  // el navegador no puede mostrar el edificio y el aula guardados (se veian vacios).
+  if (isPending || catalogos.cargando) {
     contenido = <Skeleton height={480} />
   } else if (error || !tutoria) {
     contenido = <Alert tone="error">{error?.message || 'No encontramos esta tutoría.'}</Alert>
+  } else if (esTutoriaAjena(tutoria, matricula)) {
+    contenido = <Alert tone="error">{MENSAJE_TUTORIA_AJENA}</Alert>
   } else if (tutoria.estado !== ESTADO_TUTORIA.ACTIVA) {
     contenido = <Alert tone="warning">La tutoría no está activa: ya no se puede editar.</Alert>
   } else if ((tutoria.cupo?.ocupados ?? 0) > 0) {
@@ -81,7 +88,6 @@ const EditarTutoria = () => {
           catalogos.materias.length ? catalogos.materias : tutoria.materia ? [tutoria.materia] : []
         }
         edificios={catalogos.edificios}
-        cargandoCatalogos={catalogos.cargando}
         textoEnviar="Guardar cambios"
         onEnviar={actualizar}
       />

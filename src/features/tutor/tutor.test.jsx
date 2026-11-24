@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { http, HttpResponse } from 'msw'
+import { delay, http, HttpResponse } from 'msw'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { iniciarSesionComo, ok, renderApp, usuarioActual } from '@/test/app'
 import {
@@ -162,7 +162,7 @@ describe('Crear tutoría (10)', () => {
     const [creacion, crear] = capturar({ ...detalleTutoria(), idTutoria: 30 })
     servidor.use(
       http.post('*/tutorias', crear),
-      http.get('*/tutorias/30', ok(detalleTutoria({ idTutoria: 30 }))),
+      http.get('*/tutorias/30', ok(detalleTutoria({ idTutoria: 30, esDueno: true }))),
       http.get('*/tutorias/30/sesiones', ok([])),
       http.get('*/tutorias/30/inscritos', ok({ cupo: cupo(0), inscritos: [] })),
     )
@@ -254,7 +254,7 @@ describe('Editar tutoría', () => {
   it('precarga la tutoria sin inscritos y envia los horarios con su id', async () => {
     const [edicion, editar] = capturar(detalleTutoria())
     servidor.use(
-      http.get('*/tutorias/12', ok(detalleTutoria({ cupo: cupo(0) }))),
+      http.get('*/tutorias/12', ok(detalleTutoria({ cupo: cupo(0), esDueno: true }))),
       http.put('*/tutorias/12', editar),
       http.get('*/tutorias/12/sesiones', ok([])),
       http.get('*/tutorias/12/inscritos', ok({ cupo: cupo(0), inscritos: [] })),
@@ -290,8 +290,32 @@ describe('Editar tutoría', () => {
     })
   })
 
+  it('muestra el edificio y el aula guardados aunque los catalogos lleguen despues', async () => {
+    servidor.use(
+      http.get('*/tutorias/12', ok(detalleTutoria({ cupo: cupo(0), esDueno: true }))),
+      http.get('*/catalogos/edificios', async () => {
+        await delay(150)
+        return HttpResponse.json(respuestaOk(edificios))
+      }),
+    )
+    renderApp('/tutor/tutorias/12/editar')
+
+    const edificio = await screen.findByLabelText('Edificio')
+    expect(edificio).toHaveValue('2')
+    expect(screen.getByLabelText('Aula')).toHaveValue('7')
+    expect(within(edificio).getByRole('option', { name: 'Edificio 2' }).selected).toBe(true)
+  })
+
+  it('no deja editar la tutoria de otro tutor', async () => {
+    servidor.use(http.get('*/tutorias/12', ok(detalleTutoria({ cupo: cupo(0), esDueno: false }))))
+    renderApp('/tutor/tutorias/12/editar')
+
+    expect(await screen.findByText(/la imparte otro tutor/)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Guardar cambios' })).not.toBeInTheDocument()
+  })
+
   it('no permite editar con tutorados inscritos', async () => {
-    servidor.use(http.get('*/tutorias/12', ok(detalleTutoria())))
+    servidor.use(http.get('*/tutorias/12', ok(detalleTutoria({ esDueno: true }))))
     renderApp('/tutor/tutorias/12/editar')
 
     expect(await screen.findByText('Tiene tutorados inscritos')).toBeInTheDocument()
@@ -340,6 +364,44 @@ describe('Detalle de tutoría (11)', () => {
     expect(await screen.findByText('En riesgo de baja')).toBeInTheDocument()
     // Aparece entre los inscritos y en los comentarios.
     expect(await screen.findAllByText('Diego Ramírez Soto')).toHaveLength(2)
+  })
+
+  it('no ofrece acciones sobre la tutoria de otro tutor', async () => {
+    usarDetalle()
+    servidor.use(
+      http.get(
+        '*/tutorias/12',
+        ok(
+          detalleTutoria({
+            esDueno: false,
+            panelTutorado: null,
+            tutor: { matricula: 'S21004455', nombreCompleto: 'Jorge Castillo Rivera' },
+          }),
+        ),
+      ),
+    )
+    renderApp('/tutor/tutorias/12')
+
+    expect(await screen.findByText(/la imparte otro tutor/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Volver a mis tutorías' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Desactivar tutoría' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Editar tutoría' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('textbox', { name: /Tema nuevo/ })).not.toBeInTheDocument()
+  })
+
+  it('muestra el error de los inscritos en lugar de una lista vacia', async () => {
+    usarDetalle()
+    servidor.use(
+      http.get('*/tutorias/12/inscritos', () =>
+        HttpResponse.json(respuestaError('No tienes permiso sobre este recurso'), {
+          status: 400,
+        }),
+      ),
+    )
+    renderApp('/tutor/tutorias/12')
+
+    expect(await screen.findByText(/No se pudieron cargar los inscritos/)).toBeInTheDocument()
+    expect(screen.queryByText('Todavía no hay tutorados inscritos.')).not.toBeInTheDocument()
   })
 
   it('edita los temas en linea', async () => {

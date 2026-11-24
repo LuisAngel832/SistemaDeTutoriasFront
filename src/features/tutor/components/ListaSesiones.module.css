@@ -1,4 +1,5 @@
 .lista {
+  container-type: inline-size;
   margin: 0;
   padding: 0;
   border: 1px solid var(--color-borde-suave);
@@ -57,7 +58,9 @@
   gap: 0.4rem;
 }
 
-@media (max-width: 760px) {
+/* Por debajo de ~640 px de lista, el recordatorio y los botones bajan a su propia linea en vez
+   de partirse palabra a palabra (informe B.2.7). */
+@container (max-width: 640px) {
   .fila {
     grid-template-columns: minmax(0, 1fr) auto;
   }

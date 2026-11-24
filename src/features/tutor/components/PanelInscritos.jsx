@@ -1,5 +1,5 @@
 import { useId } from 'react'
-import { Avatar, Badge, Card } from '@/components/ui'
+import { Alert, Avatar, Badge, Card } from '@/components/ui'
 import { IconAlerta } from '@/components/ui/icons'
 import { BarraCupo } from '@/features/tutorias/components/BarraCupo'
 import { clases } from '@/utils/clases'
@@ -7,10 +7,46 @@ import { pluralizar } from '@/utils/formatters'
 import styles from './PanelInscritos.module.css'
 
 // Inscritos de una tutoria con sus inasistencias (pantalla 11). `enRiesgo` = 2 inasistencias.
-export const PanelInscritos = ({ datos }) => {
+// Con `error` se muestra el error: una carga fallida no debe parecer una lista vacia.
+export const PanelInscritos = ({ datos, error }) => {
   const idTitulo = useId()
   const cupo = datos?.cupo
   const inscritos = datos?.inscritos ?? []
+
+  let contenido
+  if (error) {
+    contenido = (
+      <Alert tone="error" compact>
+        No se pudieron cargar los inscritos. {error}
+      </Alert>
+    )
+  } else if (inscritos.length) {
+    contenido = (
+      <ul className={styles.lista}>
+        {inscritos.map((inscrito) => (
+          <li
+            key={inscrito.matricula}
+            className={clases(styles.inscrito, inscrito.enRiesgo && styles.riesgo)}
+          >
+            <Avatar nombre={inscrito.nombreCompleto} una size="sm" />
+            <div className={styles.datos}>
+              <strong>{inscrito.nombreCompleto}</strong>
+              <span>
+                {inscrito.matricula} · {pluralizar(inscrito.inasistencias ?? 0, 'inasistencia')}
+              </span>
+              {inscrito.enRiesgo ? (
+                <span className={styles.aviso}>
+                  <IconAlerta /> En riesgo de baja
+                </span>
+              ) : null}
+            </div>
+          </li>
+        ))}
+      </ul>
+    )
+  } else {
+    contenido = <p className={styles.vacio}>Todavía no hay tutorados inscritos.</p>
+  }
 
   return (
     <Card as="section" padding="lg" aria-labelledby={idTitulo}>
@@ -28,31 +64,7 @@ export const PanelInscritos = ({ datos }) => {
         <BarraCupo cupo={cupo} etiqueta="Inscritos" variante="barra" className={styles.barra} />
       ) : null}
 
-      {inscritos.length ? (
-        <ul className={styles.lista}>
-          {inscritos.map((inscrito) => (
-            <li
-              key={inscrito.matricula}
-              className={clases(styles.inscrito, inscrito.enRiesgo && styles.riesgo)}
-            >
-              <Avatar nombre={inscrito.nombreCompleto} una size="sm" />
-              <div className={styles.datos}>
-                <strong>{inscrito.nombreCompleto}</strong>
-                <span>
-                  {inscrito.matricula} · {pluralizar(inscrito.inasistencias ?? 0, 'inasistencia')}
-                </span>
-                {inscrito.enRiesgo ? (
-                  <span className={styles.aviso}>
-                    <IconAlerta /> En riesgo de baja
-                  </span>
-                ) : null}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className={styles.vacio}>Todavía no hay tutorados inscritos.</p>
-      )}
+      {contenido}
 
       <p className={styles.nota}>
         Con la tercera inasistencia en una sesión completada, la baja es automática.
