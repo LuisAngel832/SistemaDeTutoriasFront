@@ -13,6 +13,41 @@ export const PanelInscritos = ({ datos, error }) => {
   const cupo = datos?.cupo
   const inscritos = datos?.inscritos ?? []
 
+  let contenido
+  if (error) {
+    contenido = (
+      <Alert tone="error" compact>
+        No se pudieron cargar los inscritos. {error}
+      </Alert>
+    )
+  } else if (inscritos.length) {
+    contenido = (
+      <ul className={styles.lista}>
+        {inscritos.map((inscrito) => (
+          <li
+            key={inscrito.matricula}
+            className={clases(styles.inscrito, inscrito.enRiesgo && styles.riesgo)}
+          >
+            <Avatar nombre={inscrito.nombreCompleto} una size="sm" />
+            <div className={styles.datos}>
+              <strong>{inscrito.nombreCompleto}</strong>
+              <span>
+                {inscrito.matricula} · {pluralizar(inscrito.inasistencias ?? 0, 'inasistencia')}
+              </span>
+              {inscrito.enRiesgo ? (
+                <span className={styles.aviso}>
+                  <IconAlerta /> En riesgo de baja
+                </span>
+              ) : null}
+            </div>
+          </li>
+        ))}
+      </ul>
+    )
+  } else {
+    contenido = <p className={styles.vacio}>Todavía no hay tutorados inscritos.</p>
+  }
+
   return (
     <Card as="section" padding="lg" aria-labelledby={idTitulo}>
       <div className={styles.encabezado}>
@@ -29,35 +64,7 @@ export const PanelInscritos = ({ datos, error }) => {
         <BarraCupo cupo={cupo} etiqueta="Inscritos" variante="barra" className={styles.barra} />
       ) : null}
 
-      {error ? (
-        <Alert tone="error" compact>
-          No se pudieron cargar los inscritos. {error}
-        </Alert>
-      ) : inscritos.length ? (
-        <ul className={styles.lista}>
-          {inscritos.map((inscrito) => (
-            <li
-              key={inscrito.matricula}
-              className={clases(styles.inscrito, inscrito.enRiesgo && styles.riesgo)}
-            >
-              <Avatar nombre={inscrito.nombreCompleto} una size="sm" />
-              <div className={styles.datos}>
-                <strong>{inscrito.nombreCompleto}</strong>
-                <span>
-                  {inscrito.matricula} · {pluralizar(inscrito.inasistencias ?? 0, 'inasistencia')}
-                </span>
-                {inscrito.enRiesgo ? (
-                  <span className={styles.aviso}>
-                    <IconAlerta /> En riesgo de baja
-                  </span>
-                ) : null}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className={styles.vacio}>Todavía no hay tutorados inscritos.</p>
-      )}
+      {contenido}
 
       <p className={styles.nota}>
         Con la tercera inasistencia en una sesión completada, la baja es automática.
